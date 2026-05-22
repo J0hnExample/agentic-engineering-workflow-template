@@ -1,0 +1,175 @@
+schema_version: 2
+
+ticket:
+  id: TKT-YYYY-MM-DD-orchestrator-short-name
+  title: "Orchestrate staged delivery of <feature>"
+  repo: "<repo-name>"
+  branch: "<target-branch>"
+  status: backlog
+  created_at: "YYYY-MM-DD"
+  owner_agent: manager
+  ticket_class: orchestrator
+  work_kind: multi_agent_execution
+  phase: "<project-phase-or-milestone>"
+
+context:
+  objective: >
+    Describe the full outcome, including what the user should see or be able to
+    do when the chain is complete.
+  constraints:
+    - "Use existing project conventions."
+    - "Do not touch forbidden files or unrelated features."
+    - "No bulk staging."
+  source_of_truth:
+    - "AGENTS.md"
+    - "agent/STATE.md"
+    - "agent/DECISIONS.md"
+    - "agent/KNOWN_ISSUES.md"
+    - "agent/TODO.md"
+    - "agent/PATHS.md"
+    - "agent/SERVICES.md"
+    - "agent/CHANGELOG.md"
+
+orchestration:
+  execution_intensity: bounded_expert_rounds
+  manager_role: >
+    The manager keeps full context, decomposes work into scoped child tickets,
+    runs one implementation worker at a time, reviews proof, and decides whether
+    to advance, retry, checkpoint, or stop.
+  max_iterations: 5
+  parallelism_policy: >
+    Read-only experts may run in parallel only for independent questions.
+    Implementation workers run serially unless child tickets declare disjoint
+    write scopes.
+  worker_sequence:
+    - stage: 0
+      id: planning_review
+      role: read_only_expert
+      mode: read_only
+      owns_files: []
+      task: "Review plan, risk, test strategy, and child-ticket decomposition."
+      exit_gate: "Expert review is recorded and manager accepts or revises the plan."
+    - stage: 1
+      id: foundation
+      role: scoped_worker
+      mode: implementation
+      owns_files:
+        - "<foundation-files>"
+      task: "Implement foundation only."
+      exit_gate: "Foundation proof passes and result is recorded."
+    - stage: 2
+      id: feature_behavior
+      role: scoped_worker
+      mode: implementation
+      owns_files:
+        - "<feature-files>"
+      task: "Implement user-visible behavior only after foundation passes."
+      exit_gate: "Behavior proof passes and result is recorded."
+    - stage: 3
+      id: final_verification
+      role: final_verifier
+      mode: read_only
+      owns_files: []
+      task: "Verify acceptance gates and regression gates without editing files."
+      exit_gate: "Verifier result is recorded."
+
+child_ticket_policy:
+  required: true
+  template: "tickets/templates/TEMPLATE.ticket.yaml"
+  naming: "TKT-YYYY-MM-DD-<feature>-<stage>.yaml"
+  requirements:
+    - "Each child ticket has one owner, one scope, and one done definition."
+    - "Each child ticket declares allowed_files and forbidden_files."
+    - "Each child ticket records execution_result before it can close."
+    - "The manager reconciles child results into this orchestrator ticket."
+
+debug_logging_plan:
+  owner: manager
+  surfaces:
+    - "Test output."
+    - "Browser console when frontend behavior changes."
+    - "Server logs when backend/API behavior changes."
+    - "Screenshots or recordings when visual_gate requires them."
+  correlation_policy: "Use ticket id, route, test name, or request id in proof notes."
+
+test_plan:
+  - "Parse this ticket and all child tickets as YAML."
+  - "Run repo-local lint/typecheck/build checks before final closeout."
+  - "Run targeted tests for each child ticket."
+  - "Run end-to-end or visual proof when user-facing behavior changes."
+  - "Check whether agent memory files need updates and record updated files or `agent memory checked: no update needed`."
+
+proof_gates:
+  - "All required child tickets are done or explicitly deferred with blockers."
+  - "Final verifier result is recorded."
+  - "No unresolved blocker remains for the requested outcome."
+  - "The final user-visible behavior is proven."
+  - "agent memory update check is recorded, including updated files or `agent memory checked: no update needed`."
+
+regression_gates:
+  - "No child worker edits outside declared scope."
+  - "No unrelated product behavior changes without a recorded decision."
+  - "No secrets, local paths, generated caches, or dependency folders are committed."
+
+visual_gate:
+  required: false
+  required_views: []
+  pass_rule: "If UI changed, final proof includes browser screenshots or equivalent inspection."
+
+checkpoint_policy: >
+  After each done child ticket, checkpoint only that child scope plus ticket
+  records when the user or repo policy allows commits.
+
+rollback_or_accept_policy: >
+  If a stage fails and bounded repair is possible, run one scoped repair worker.
+  If a stage regresses accepted behavior or exceeds iteration budget, stop,
+  record the blocker, and recommend rollback-to-best or a new plan.
+
+stop_conditions:
+  - "A worker needs files outside its declared scope."
+  - "The plan requires a missing external service or credential."
+  - "The iteration cap is reached."
+  - "Final proof cannot be collected."
+
+allowed_files:
+  - "agent/**"
+  - "tickets/**"
+  - "docs/**"
+  - "<project-files-owned-by-child-tickets>"
+
+forbidden_files:
+  - ".env"
+  - ".env.*"
+  - "node_modules/**"
+  - "dist/**"
+  - "build/**"
+  - ".next/**"
+  - "coverage/**"
+
+handoff_requirements:
+  - "List each child ticket status."
+  - "List changed files by child ticket."
+  - "List commands and proof artifacts."
+  - "List agent files updated or record that agent memory was checked and no update was needed."
+  - "List blockers, risks, skipped checks, and exact next action."
+
+done_definition: >
+  Done when the requested outcome is delivered through completed scoped child
+  tickets, final proof passes, the agent memory update check is complete, and
+  this orchestrator ticket contains a concise `execution_result` manager
+  closeout.
+
+execution_result:
+  status: pending
+  child_ticket_status: []
+  changed_files: []
+  commands_run: []
+  proof: []
+  skipped_checks: []
+  agent_memory_updates:
+    checked: false
+    updated_files: []
+    notes: null
+  blockers: []
+  risks: []
+  next_recommended_step: null
