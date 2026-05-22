@@ -1,5 +1,7 @@
 # Agentic Engineering Workflow Template
 
+Current version: 0.3.0
+
 `Agentic Engineering Workflow Template` is a workflow package for Codex-first
 software engineering. It is not an app, framework, service, or runtime. It gives
 an existing or new target repository a durable way to plan work, write scoped
@@ -11,6 +13,31 @@ multi-step delivery, risky refactors, UI changes that need proof, migrations,
 diagnosis tasks, or handoffs between planning, implementation, review, and final
 verification.
 
+## Public Release Status
+
+Version 0.3.0 is an early public template release for Codex-managed repository
+workflows. It is meant to be copied, reviewed, and adapted inside a target
+repository before relying on it for day-to-day work.
+
+Maturity: early practical template / pre-1.0.
+
+The template is mature enough to describe repeatable Codex roles, scoped tickets,
+proof expectations, and closeout records. It is not a guarantee that a target
+repository is ready to ship.
+
+## Calibration Loop
+
+Before serious use, run one or two small calibration loops in a non-critical
+target repository. A useful pair is one documentation-only ticket and one small
+code-change ticket with tests, each run from planning through final verification.
+Compare the ticket scope, proof, closeout, and memory updates against the target
+repository's actual work style. Tighten the copied prompts, ticket templates, and
+closeout wording until Codex consistently asks before expanding scope and records
+proof in the form the project owner can review.
+
+Rules and approval boundaries are context-dependent. Adapt them for each target
+repository's risk level, ownership model, release process, and review habits.
+
 ## Who It Is For
 
 - Developers using Codex to execute changes in a real repository.
@@ -21,8 +48,18 @@ verification.
   results before another bounded implementation step.
 
 This package works by copying templates and prompts into a target repository. It
-does not promise automation, CI setup, dependency installation, issue tracker
-integration, or production readiness by itself.
+does not promise automation, pipeline setup, dependency installation, issue
+tracker integration, or production readiness by itself.
+
+## What This Template Is Not
+
+- It is not an application runtime, service, library, or framework.
+- It is not a replacement for project ownership, code review, or release
+  decisions.
+- It is not a guarantee that Codex output is correct without repository-specific
+  proof and final verification.
+- It does not provide secret handling, deployment, publishing, or remote
+  management.
 
 ## 5-Minute Quickstart
 
@@ -55,7 +92,8 @@ Use the package prompt at:
 First confirm which directory is the workflow package and which directory is the
 target repository. Then inspect the target repository evidence before writing
 anything. Identify manifests, lockfiles, framework config, test config, build
-config, CI files, Docker files, environment examples, scripts, and existing docs.
+config, pipeline files, Docker files, environment examples, scripts, and existing
+docs.
 
 Propose the minimal package-to-target copy plan for AGENTS.md, agent/*.md,
 tickets/templates/*, and docs/reusable_feature_implementation_paths.md. Ask for
@@ -139,7 +177,7 @@ The package is built around narrow scope and explicit proof:
 - Codex inspects repository evidence before writing initialization files.
 - Unknown values are marked as unknown instead of invented.
 - Dependencies are proposed before installation and require approval.
-- Secrets, credentials, `.env` files, destructive commands, scope expansion,
+- Secrets, credentials, local secret files, destructive commands, scope expansion,
   pushes, releases, deployments, publishing, and remote modifications require
   explicit approval for the exact action.
 - Tickets declare `allowed_files`, `forbidden_files`, in-scope work,
