@@ -1,0 +1,185 @@
+# Agent Workflow Rules
+
+If this file is still located at `templates/AGENTS.md.template` inside the
+workflow package, it is template source only and is not active rules for that
+package. When installing the workflow package in a target repository, copy this
+file to `AGENTS.md` and copy package source files from `agent/*.md` into target
+repo `agent/*.md`. After installation as `AGENTS.md`, the rules below are
+active for the target repository.
+
+This installed file defines durable rules for AI agents working in the target
+repository. Keep it generic. Do not store one-off task history, stale ticket
+details, machine-specific paths, private credentials, or product-specific
+assumptions in this file.
+
+## Target Repository Map
+
+- `AGENTS.md` - durable Codex agent workflow rules.
+- `agent/` - repo-local state, decisions, known issues, and handoff notes.
+- `tickets/` - scoped workflow records for non-trivial work.
+- `docs/` - reusable implementation paths, architecture notes, and proof
+  records.
+- `src/`, `app/`, `pages/`, `components/`, `lib/`, `server/`, `tests/`, and
+  similar directories - product code, depending on the project.
+
+## Required Read Order
+
+Before planning or implementation work, read:
+
+1. `AGENTS.md`
+2. `agent/STATE.md`
+3. `agent/DECISIONS.md`
+4. `agent/KNOWN_ISSUES.md`
+5. `agent/TODO.md`
+6. `agent/PATHS.md`
+7. `agent/SERVICES.md`
+8. `agent/CHANGELOG.md`
+9. the newest relevant ticket in `tickets/`
+10. docs named by the ticket
+11. files in the ticket's allowed scope
+
+If a referenced file is missing, stale, or conflicts with the current user
+instruction, report that fact instead of silently filling the gap.
+
+On the first read in a fresh project or after adding `agent/` templates, inspect
+the repository stack before implementation starts and propose initial `agent`
+entries. Use repo evidence such as package manifests, lockfiles, framework
+config, test config, build config, CI files, Docker/compose files, environment
+examples, scripts, and existing docs. Suggest updates for `agent/STATE.md`,
+`agent/PATHS.md`, `agent/SERVICES.md`, `agent/KNOWN_ISSUES.md`, and
+`agent/TODO.md`. Do not invent unknown values; mark them as unknown and write
+updates only when they are inside the active ticket scope or the user approves
+the bootstrap update.
+
+## Ticketed Workflow
+
+- Non-trivial planning and implementation work must be ticketed.
+- Planning work must create or update a scoped ticket before implementation
+  starts.
+- Implementation agents must work from the active ticket scope and keep changes
+  inside the ticket's declared files unless the user widens scope.
+- After each meaningful step, record the result as a ticket comment or result
+  note. Include proof, changed files, blockers, and next action.
+- A ticket may be marked `done` only after required proof has been collected and
+  recorded.
+- If proof is missing, leave the ticket non-done and report the missing proof.
+- Completed tickets must include a human-readable `execution_result` block.
+- Before closing any ticket, explicitly check whether `agent/STATE.md`,
+  `agent/DECISIONS.md`, `agent/KNOWN_ISSUES.md`, `agent/TODO.md`,
+  `agent/PATHS.md`, `agent/SERVICES.md`, or `agent/CHANGELOG.md` need an
+  update. If they do, update them inside the ticket scope or record why the
+  update is deferred. If they do not, record `agent memory checked: no update
+  needed` in the ticket result.
+- Stage only files in the ticket scope plus the ticket record. Do not use bulk
+  staging such as `git add -A`.
+- Do not revert changes you did not make unless explicitly requested.
+
+## Ticket Planning Contract
+
+Every implementation ticket must include these fields before product-code work:
+
+- `execution_intensity`
+- `manager_role`
+- `worker_sequence`
+- `expert_plan`
+- `debug_logging_plan`
+- `test_plan`
+- `proof_gates`
+- `regression_gates`
+- `visual_gate`
+- `checkpoint_policy`
+- `rollback_or_accept_policy`
+- `stop_conditions`
+- `allowed_files`
+- `forbidden_files`
+- `handoff_requirements`
+- `done_definition`
+
+The `test_plan` or closeout proof must include an agent-memory update check for
+`agent/` files whenever the ticket changes durable project state, decisions,
+known issues, setup paths, service assumptions, or follow-up work.
+
+The `test_plan` must list concrete checks that decide whether the ticket may be
+marked done. For web applications, use relevant repo-local checks such as:
+
+- formatter checks
+- lint checks
+- type checks
+- unit tests
+- integration tests
+- build checks
+- database migration checks
+- API contract checks
+- accessibility checks
+- Playwright or browser-based visual/flow checks
+
+Complex, risky, visual, diagnostic, performance-sensitive, or expert-backed
+tickets must include a read-only planning or review expert before
+implementation. Diagnostic and performance tickets must name a debug/logging
+owner.
+
+## Execution Intensities
+
+- `standard_worker`: one scoped worker, direct proof, scoped checkpoint.
+- `expert_supported`: one planning or review expert, then one scoped worker.
+- `bounded_expert_rounds`: iterative blocker or complex-feature loop with a
+  fixed iteration cap, default maximum five.
+- `research_only`: experts analyze and recommend; product files do not change.
+
+## Multi-Agent Rules
+
+- The main executor acts as manager/observer for complex tickets.
+- The manager keeps global context, owns scope, and chooses the next action.
+- Run exactly one implementation worker at a time unless the ticket explicitly
+  declares disjoint write scopes.
+- Independent read-only experts may run in parallel only when the ticket allows
+  it and their questions are distinct.
+- Workers receive a narrow file scope and must not edit outside it.
+- Workers must report changed files, commands run, proof, blockers, and risks.
+- The manager reviews worker output before continuing.
+- A bounded expert round runs: gather proof, ask expert, choose one bounded
+  worker task, run one worker, run proof, then checkpoint or record blocker.
+- Stop if an iteration is worse than the previous accepted state or if the
+  iteration cap is reached.
+
+## Verification
+
+Verification is part of the task, not an optional epilogue.
+
+Before marking a ticket done:
+
+- run every command in `test_plan` that is available in the repo
+- inspect relevant UI behavior when user-facing frontend changes were made
+- capture screenshots or recordings when required by `visual_gate`
+- record failed commands exactly enough for the next agent to reproduce
+- record skipped checks with a concrete reason
+
+## Completion Report
+
+Every completed ticket must end with `execution_result` or a clearly named
+completion block that states:
+
+- what changed
+- what intentionally did not change
+- changed files
+- commands run
+- proof collected
+- skipped proof and why
+- blockers, if any
+- risks, if any
+- whether a human smoke test is useful
+- exact next recommended step
+- agent memory files updated or `agent memory checked: no update needed`
+
+## Commit Policy
+
+- Commit only after the ticket is done or after explicit user approval for a
+  checkpoint.
+- Use scoped staging with explicit paths.
+- Commit message format:
+
+```text
+TKT-YYYY-MM-DD-short-name: concise result
+```
+
+- Do not include unrelated files in the commit.

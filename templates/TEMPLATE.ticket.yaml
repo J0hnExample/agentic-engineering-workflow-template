@@ -1,0 +1,114 @@
+schema_version: 2
+
+ticket:
+  id: TKT-YYYY-MM-DD-short-name
+  title: "Short human-readable title"
+  repo: "<repo-name>"
+  branch: "<target-branch>"
+  status: backlog
+  created_at: "YYYY-MM-DD"
+  owner_agent: "<manager-or-worker-name>"
+  ticket_class: implementation
+  work_kind: "<feature|bugfix|refactor|test|documentation|diagnosis>"
+  phase: "<project-phase-or-milestone>"
+
+context:
+  problem: >
+    Describe the user-visible or engineering problem this ticket solves.
+  current_behavior: >
+    Describe the known current behavior. Mark unknowns explicitly.
+  desired_behavior: >
+    Describe the target behavior and acceptance expectations.
+  relevant_prior_work:
+    - "Link or path to prior ticket/doc, or 'none'."
+
+scope:
+  goal: >
+    One concrete outcome for this ticket.
+  allowed_files:
+    - "tickets/TKT-YYYY-MM-DD-short-name.yaml"
+    - "agent/**"
+    - "src/**"
+    - "tests/**"
+  forbidden_files:
+    - ".env"
+    - ".env.*"
+    - "node_modules/**"
+    - "dist/**"
+    - "build/**"
+    - ".next/**"
+    - "coverage/**"
+  in_scope:
+    - "Specific behavior or files the worker may change."
+  out_of_scope:
+    - "Related work that must not be done in this ticket."
+
+execution:
+  execution_intensity: standard_worker
+  manager_role: >
+    Main agent owns scope, verifies the work, and records proof in this ticket.
+  worker_sequence:
+    - role: scoped_worker
+      mode: implementation
+      task: "Implement only the scoped change described in this ticket."
+  expert_plan:
+    required: false
+    planning_expert: null
+    reviewer: null
+    record_location: "execution_result"
+  debug_logging_plan:
+    owner: scoped_worker
+    surfaces:
+      - "Browser console when UI behavior is affected."
+      - "Server logs when API behavior is affected."
+      - "Test output for failing checks."
+    temporary_logging_policy: "Remove or gate temporary logs before done."
+  test_plan:
+    - "Parse this ticket as YAML."
+    - "Run formatter/lint command if present."
+    - "Run typecheck command if present."
+    - "Run targeted unit/integration tests."
+    - "Run build command if present."
+    - "Check whether agent files need updates and record the result."
+  proof_gates:
+    - "Implementation matches desired behavior."
+    - "Relevant automated checks pass or skipped checks are justified."
+    - "Agent-memory update check is recorded."
+    - "Ticket result records changed files, commands, proof, and blockers."
+  regression_gates:
+    - "No unrelated files changed."
+    - "No secrets or local machine paths are committed."
+    - "Existing public API or UI behavior is preserved unless intentionally changed."
+  visual_gate:
+    required: false
+    required_views: []
+    pass_rule: "Not required unless this ticket changes user-facing UI."
+  checkpoint_policy: >
+    Create a scoped checkpoint commit only after proof passes or after explicit
+    user approval.
+  rollback_or_accept_policy: >
+    If the scoped change fails proof and a bounded fix is not obvious, keep the
+    ticket non-done, record the blocker, and do not widen scope without approval.
+  stop_conditions:
+    - "Required files or commands are missing and cannot be inferred safely."
+    - "The change requires editing forbidden files."
+    - "Automated proof reveals an unrelated broader failure."
+  handoff_requirements:
+    - "Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates, and next action."
+  done_definition: >
+    Done when the scoped behavior is implemented, required proof has passed or
+    justified skips are recorded, and the execution_result is complete.
+
+execution_result:
+  status: pending
+  changed_files: []
+  commands_run: []
+  proof: []
+  skipped_checks: []
+  agent_memory_updates:
+    checked: false
+    updated_files: []
+    notes: null
+  blockers: []
+  risks: []
+  next_recommended_step: null

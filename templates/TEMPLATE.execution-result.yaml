@@ -1,0 +1,30 @@
+execution_result:
+  status: done
+  summary: >
+    One or two sentences explaining what happened and what is now true.
+  implemented:
+    - "Concrete change that was made."
+  intentionally_unchanged:
+    - "Related item intentionally left out of scope."
+  changed_files:
+    - "path/to/file"
+  commands_run:
+    - "command exactly as run"
+  proof:
+    - "Observed passing result or artifact path."
+  skipped_checks:
+    - check: "command or proof not run"
+      reason: "Concrete reason."
+  agent_memory_updates:
+    checked: true
+    updated_files:
+      - "agent/STATE.md"
+    notes: >
+      List updated agent files, or write: agent memory checked: no update
+      needed.
+  blockers: []
+  risks:
+    - "Remaining risk, or 'none'."
+  human_smoke_test_recommended: true
+  next_recommended_step: >
+    Exact next action for the human or next agent.
