@@ -3,7 +3,7 @@
 `Agentic Engineering Workflow Template` is a workflow package for Codex-first
 software engineering. It is not an app, framework, service, or runtime. It gives
 an existing or new target repository a durable way to plan work, write scoped
-tickets, run implementation agents, verify results, and close out project memory.
+tickets, run scoped Codex work, verify results, and close out project memory.
 Think of it as a Codex starter for repository workflow, not product code.
 
 Use this package when the work needs more structure than a single chat prompt:
@@ -15,10 +15,10 @@ verification.
 
 - Developers using Codex to execute changes in a real repository.
 - Project owners who want repeatable tickets, proof gates, and handoff records.
-- Teams that want one manager/orchestrator agent to keep context while scoped
-  workers edit only assigned files.
-- Review-heavy workflows where read-only experts can inspect plans or results
-  before another bounded implementation step.
+- Teams that want one Codex manager/orchestrator to keep context while scoped
+  Codex workers edit only assigned files.
+- Review-heavy workflows where read-only Codex reviewers can inspect plans or
+  results before another bounded implementation step.
 
 This package works by copying templates and prompts into a target repository. It
 does not promise automation, CI setup, dependency installation, issue tracker
@@ -41,13 +41,13 @@ from the target repository before copying anything.
 ## Copy-Paste Codex Initialization Prompt
 
 ```text
-You are Codex initializing this repository for agentic software work.
+You are Codex initializing this repository for Codex-managed software work.
 
 Workflow package source:
-<absolute-or-relative-path-to-agentic-engeneering-workflow-repo>
+<path-to-workflow-package>
 
 Target repository:
-<absolute-or-relative-path-to-the-repo-being-initialized>
+<path-to-target-repository>
 
 Use the package prompt at:
 <workflow-package-source>/prompts/initialize-repo.md
@@ -115,13 +115,18 @@ docs, and scripts. This package adds the agent workflow layer around that work.
 - `manager-orchestrator`: keeps the ticket chain in view, creates child
   tickets, assigns scoped work, reviews proof, and decides whether to advance,
   retry, checkpoint, or stop.
-- `scoped worker`: implements one bounded ticket inside explicit
+- `scoped worker`: a Codex worker that implements one bounded ticket inside explicit
   `allowed_files`, reports changed files and proof, and stops if scope needs to
   expand.
-- `read-only expert`: reviews plans, risks, code, tests, or architecture without
-  editing files.
-- `final verifier`: checks scope, proof gates, regression gates, skipped checks,
-  and agent-memory closeout before a ticket or chain is marked done.
+- `read-only reviewer`: a Codex subagent or role prompt that reviews plans,
+  risks, code, tests, or architecture without editing files.
+- `final verifier`: a Codex reviewer that checks scope, proof gates, regression
+  gates, skipped checks, and agent-memory closeout before a ticket or chain is
+  marked done.
+
+All roles are Codex roles. Codex subagents inherit the installed `AGENTS.md`, the
+active ticket scope, approval boundaries, forbidden actions, and verification
+requirements of the main Codex session.
 
 The execution modes are defined in the templates and docs:
 `standard_worker`, `expert_supported`, `bounded_expert_rounds`, and
@@ -134,11 +139,14 @@ The package is built around narrow scope and explicit proof:
 - Codex inspects repository evidence before writing initialization files.
 - Unknown values are marked as unknown instead of invented.
 - Dependencies are proposed before installation and require approval.
+- Secrets, credentials, `.env` files, destructive commands, scope expansion,
+  pushes, releases, deployments, publishing, and remote modifications require
+  explicit approval for the exact action.
 - Tickets declare `allowed_files`, `forbidden_files`, in-scope work,
   out-of-scope work, proof gates, regression gates, stop conditions, and done
   definitions.
 - Implementation workers edit only assigned scope and do not use bulk staging.
-- Read-only experts may analyze but do not edit files.
+- Read-only Codex reviewers may analyze but do not edit files.
 - Closeout records changed files, commands run, proof, skipped checks, blockers,
   risks, and whether `agent/*.md` needed updates.
 - If no durable agent-memory update is needed, closeout records:
@@ -156,7 +164,7 @@ agent memory checked: no update needed
 3. A scoped worker runs with
    [`prompts/scoped-worker.md`](prompts/scoped-worker.md), edits only the ticket
    scope, and records proof.
-4. If the work is risky or blocked, the manager asks a read-only expert using
+4. If the work is risky or blocked, the manager asks a read-only Codex reviewer using
    [`prompts/read-only-expert.md`](prompts/read-only-expert.md).
 5. The worker or manager records closeout using
    [`templates/TEMPLATE.execution-result.yaml`](templates/TEMPLATE.execution-result.yaml).
@@ -183,8 +191,8 @@ and let the manager split the outcome into child tickets.
   parent ticket chain.
 - [`prompts/scoped-worker.md`](prompts/scoped-worker.md) runs one bounded
   implementation ticket.
-- [`prompts/read-only-expert.md`](prompts/read-only-expert.md) supports planning
-  or review without file edits.
+- [`prompts/read-only-expert.md`](prompts/read-only-expert.md) supports Codex
+  planning or review without file edits.
 - [`prompts/final-verifier.md`](prompts/final-verifier.md) checks completion
   before done.
 - [`checklists/ticket-readiness.md`](checklists/ticket-readiness.md) checks a

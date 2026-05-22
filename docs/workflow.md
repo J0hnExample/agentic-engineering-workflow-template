@@ -1,7 +1,7 @@
-# Agent Workflow
+# Codex Workflow
 
 This template supports Codex-first planning, execution, verification, and
-memory closeout for a public repository.
+memory closeout for a target repository.
 
 ## Basic Workflow
 
@@ -52,28 +52,34 @@ advance, retry, checkpoint, or stop.
 `scoped worker` executes one ticket inside its allowed files. It reports changed
 files, commands, proof, skipped checks, blockers, risks, and memory updates.
 
-`read-only expert` analyzes planning, risk, architecture, tests, or review
-questions without editing files. Expert output should become ticket context for
-the next worker.
+`read-only reviewer` is a Codex subagent or role prompt that analyzes planning,
+risk, architecture, tests, or review questions without editing files. Reviewer
+output should become ticket context for the next worker.
 
 `final verifier` checks the result against scope, proof gates, regression gates,
 skipped checks, and memory closeout. It does not repair issues unless the
 manager creates or assigns a repair ticket.
+
+All Codex roles, including subagents, inherit the installed `AGENTS.md`, active
+ticket scope, approval boundaries, forbidden actions, and verification
+requirements. A subagent may not push, deploy, release, publish, edit secrets,
+install dependencies, widen scope, or write out-of-scope reports unless the
+active ticket and user approval allow the exact action.
 
 ## Execution Modes
 
 `standard_worker` means one scoped worker completes one bounded ticket with
 direct proof.
 
-`expert_supported` means a planning or review expert runs before or after one
-scoped worker.
+`expert_supported` means a read-only Codex planning or review subagent runs
+before or after one scoped worker.
 
 `bounded_expert_rounds` means the manager runs a capped loop: collect proof,
-ask an expert, assign one bounded worker task, run proof, then checkpoint or
-record a blocker.
+ask a read-only Codex reviewer, assign one bounded worker task, run proof, then
+checkpoint or record a blocker.
 
-`research_only` means experts analyze and recommend. Product files do not
-change.
+`research_only` means read-only Codex reviewers analyze and recommend. Product
+files do not change.
 
 ## Agent Memory
 

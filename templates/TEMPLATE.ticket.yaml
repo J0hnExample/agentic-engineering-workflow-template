@@ -46,14 +46,16 @@ scope:
 execution:
   execution_intensity: standard_worker
   manager_role: >
-    Main agent owns scope, verifies the work, and records proof in this ticket.
+    Main Codex agent owns scope, verifies the work, and records proof in this
+    ticket. Any Codex subagent inherits the same AGENTS.md rules, ticket scope,
+    approval boundaries, forbidden actions, and verification requirements.
   worker_sequence:
     - role: scoped_worker
       mode: implementation
       task: "Implement only the scoped change described in this ticket."
   expert_plan:
     required: false
-    planning_expert: null
+    planning_reviewer: null
     reviewer: null
     record_location: "execution_result"
   debug_logging_plan:
@@ -78,6 +80,7 @@ execution:
   regression_gates:
     - "No unrelated files changed."
     - "No secrets or local machine paths are committed."
+    - "No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service action occurs without explicit approval."
     - "Existing public API or UI behavior is preserved unless intentionally changed."
   visual_gate:
     required: false
@@ -93,6 +96,7 @@ execution:
     - "Required files or commands are missing and cannot be inferred safely."
     - "The change requires editing forbidden files."
     - "Automated proof reveals an unrelated broader failure."
+    - "The work requires dependency installation, destructive commands, remote operations, deployment, release, secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit approval."
   handoff_requirements:
     - "Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates, and next action."
   done_definition: >

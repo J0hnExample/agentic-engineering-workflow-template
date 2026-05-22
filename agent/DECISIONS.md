@@ -7,5 +7,5 @@ Newest entries go at the bottom.
 
 - Context: `<why the decision was needed>`
 - Decision: `<what was decided>`
-- Consequence: `<what future agents must do because of it>`
+- Consequence: `<what future Codex sessions must do because of it>`
 - Source: `<ticket or doc path>`

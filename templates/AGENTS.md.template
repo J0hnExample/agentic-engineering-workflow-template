@@ -1,4 +1,4 @@
-# Agent Workflow Rules
+# Codex Workflow Rules
 
 If this file is still located at `templates/AGENTS.md.template` inside the
 workflow package, it is template source only and is not active rules for that
@@ -7,10 +7,12 @@ file to `AGENTS.md` and copy package source files from `agent/*.md` into target
 repo `agent/*.md`. After installation as `AGENTS.md`, the rules below are
 active for the target repository.
 
-This installed file defines durable rules for AI agents working in the target
-repository. Keep it generic. Do not store one-off task history, stale ticket
-details, machine-specific paths, private credentials, or product-specific
-assumptions in this file.
+This installed file defines durable rules for Codex working in the target
+repository. The main Codex session and every Codex subagent, worker, reviewer,
+or verifier inherit these same rules, ticket scopes, approval boundaries, and
+verification requirements. Keep it generic. Do not store one-off task history,
+stale ticket details, machine-specific paths, private credentials, or
+product-specific assumptions in this file.
 
 ## Target Repository Map
 
@@ -51,12 +53,16 @@ examples, scripts, and existing docs. Suggest updates for `agent/STATE.md`,
 updates only when they are inside the active ticket scope or the user approves
 the bootstrap update.
 
+When inspecting environment examples, use filenames and variable names only.
+Do not read, print, copy, create, or modify secret values or private environment
+files.
+
 ## Ticketed Workflow
 
 - Non-trivial planning and implementation work must be ticketed.
 - Planning work must create or update a scoped ticket before implementation
   starts.
-- Implementation agents must work from the active ticket scope and keep changes
+- Codex implementation workers must work from the active ticket scope and keep changes
   inside the ticket's declared files unless the user widens scope.
 - After each meaningful step, record the result as a ticket comment or result
   note. Include proof, changed files, blockers, and next action.
@@ -73,6 +79,39 @@ the bootstrap update.
 - Stage only files in the ticket scope plus the ticket record. Do not use bulk
   staging such as `git add -A`.
 - Do not revert changes you did not make unless explicitly requested.
+
+## Safety And Approval Boundaries
+
+Forbidden unless the user explicitly requests or approves the exact action:
+
+- installing, upgrading, or removing dependencies
+- running destructive commands that delete, overwrite, reset, or discard work
+- running schema, data, or storage migrations with side effects
+- editing secrets, credentials, tokens, `.env`, or private local configuration
+- running network-dependent setup or external-service commands not already
+  approved by the ticket
+- pushing, force-pushing, releasing, deploying, publishing, or modifying remotes
+- committing or checkpointing when the ticket does not assign that action
+- widening ticket scope beyond `allowed_files`
+- changing application behavior outside the active ticket objective
+- broad staging such as `git add -A`
+- committing secrets, local private paths, generated caches, dependency folders,
+  or build output
+- writing run logs, review notes, transient conversation notes, or closeout
+  reports outside the ticket/result locations defined by the workflow
+
+Normally allowed inside the active scope:
+
+- reading repository files and metadata
+- editing files listed in `allowed_files`
+- creating or updating tickets and `agent/*.md` entries required by the ticket
+- running repo-local format, lint, typecheck, test, build, and proof commands
+  that do not install dependencies or mutate external systems
+- adding focused tests or docs required by the ticket
+
+When a command may contact external services, mutate persistent state, or depend
+on credentials, record the risk and ask before running it unless the active
+ticket already grants that permission.
 
 ## Ticket Planning Contract
 
@@ -113,32 +152,40 @@ marked done. For web applications, use relevant repo-local checks such as:
 - accessibility checks
 - Playwright or browser-based visual/flow checks
 
-Complex, risky, visual, diagnostic, performance-sensitive, or expert-backed
-tickets must include a read-only planning or review expert before
+Complex, risky, visual, diagnostic, performance-sensitive, or reviewer-backed
+tickets must include a read-only Codex planning or review subagent before
 implementation. Diagnostic and performance tickets must name a debug/logging
 owner.
 
 ## Execution Intensities
 
-- `standard_worker`: one scoped worker, direct proof, scoped checkpoint.
-- `expert_supported`: one planning or review expert, then one scoped worker.
+- `standard_worker`: one scoped Codex worker, direct proof, scoped checkpoint.
+- `expert_supported`: one read-only Codex planning or review subagent, then one
+  scoped Codex worker.
 - `bounded_expert_rounds`: iterative blocker or complex-feature loop with a
   fixed iteration cap, default maximum five.
-- `research_only`: experts analyze and recommend; product files do not change.
+- `research_only`: read-only Codex reviewers analyze and recommend; product
+  files do not change.
 
-## Multi-Agent Rules
+## Codex Subagent Rules
 
-- The main executor acts as manager/observer for complex tickets.
-- The manager keeps global context, owns scope, and chooses the next action.
+- Codex subagents follow this `AGENTS.md`, the active ticket, approval
+  boundaries, forbidden actions, and verification requirements.
+- The main Codex agent acts as manager/observer for complex tickets.
+- The manager keeps global context, owns scope, chooses the next action, and
+  reviews subagent output before continuing.
 - Run exactly one implementation worker at a time unless the ticket explicitly
   declares disjoint write scopes.
-- Independent read-only experts may run in parallel only when the ticket allows
-  it and their questions are distinct.
-- Workers receive a narrow file scope and must not edit outside it.
-- Workers must report changed files, commands run, proof, blockers, and risks.
-- The manager reviews worker output before continuing.
-- A bounded expert round runs: gather proof, ask expert, choose one bounded
-  worker task, run one worker, run proof, then checkpoint or record blocker.
+- Independent read-only Codex reviewers may run in parallel only when the ticket
+  allows it and their questions are distinct.
+- Codex workers receive a narrow file scope and must not edit outside it.
+- Codex workers must report changed files, commands run, proof, blockers, and
+  risks to the manager.
+- Codex subagents must not write logs, memory files, closeout reports, or review
+  notes unless those files are inside the active ticket scope.
+- A bounded expert round runs: gather proof, ask a read-only Codex reviewer,
+  choose one bounded worker task, run one worker, run proof, then checkpoint or
+  record blocker.
 - Stop if an iteration is worse than the previous accepted state or if the
   iteration cap is reached.
 
@@ -151,7 +198,7 @@ Before marking a ticket done:
 - run every command in `test_plan` that is available in the repo
 - inspect relevant UI behavior when user-facing frontend changes were made
 - capture screenshots or recordings when required by `visual_gate`
-- record failed commands exactly enough for the next agent to reproduce
+- record failed commands exactly enough for the next Codex session to reproduce
 - record skipped checks with a concrete reason
 
 ## Completion Report

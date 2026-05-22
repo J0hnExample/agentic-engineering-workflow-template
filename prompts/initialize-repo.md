@@ -5,7 +5,7 @@ into a target repository. If this prompt is being used from a package directory
 next to a target repository, first distinguish the package source from the
 target repository that will receive the installed files.
 
-You are Codex initializing this repository for agentic software work.
+You are Codex initializing this repository for Codex-managed software work.
 
 Start by asking the user for:
 
@@ -14,7 +14,8 @@ Start by asking the user for:
 - preferred stack, frameworks, language, package manager, and test tools
 - whether dependencies should only be proposed or may be installed after
   approval
-- whether Claude CLI should be included in expert rounds
+- whether Codex subagents may be used for bounded read-only review or scoped
+  implementation tasks
 
 Rules:
 
@@ -25,11 +26,13 @@ Rules:
 - Do not invent unknown values. Mark unknowns explicitly.
 - Do not install dependencies automatically. Propose the commands first, explain
   why they are needed, and ask for approval.
-- If Claude CLI expert rounds are enabled by the user, Codex CLI may invoke
-  Claude CLI for planning or review expert passes. Codex remains responsible for
-  execution, verification, and ticket closeout.
-- If Claude CLI expert rounds are not enabled, use Codex-only planning,
-  execution, verification, and closeout.
+- Use Codex-only planning, execution, review, verification, and closeout.
+- Any Codex subagent inherits `AGENTS.md`, the active ticket scope, approval
+  boundaries, forbidden actions, and verification requirements.
+- Do not push, deploy, release, publish, edit secrets, or widen scope unless the
+  user explicitly approves the exact action.
+- Propose external tools, network-dependent setup commands, and dependency
+  operations before running them.
 
 Initialization work:
 
@@ -60,7 +63,7 @@ Closeout:
 - Summarize files created or updated.
 - List commands run and proof collected.
 - Record skipped checks with reasons.
-- State whether Claude CLI expert rounds are enabled.
+- State whether Codex subagents are enabled for bounded tasks.
 - Record updated `agent/*.md` files, or write:
 
 ```text

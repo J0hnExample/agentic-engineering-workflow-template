@@ -12,7 +12,9 @@ Use before product-code work starts.
   `bounded_expert_rounds`, or `research_only`.
 - [ ] `manager_role` is explicit.
 - [ ] `worker_sequence` is ordered and each worker has a bounded task.
-- [ ] `expert_plan` says whether expert review is required.
+- [ ] `expert_plan` says whether read-only Codex reviewer input is required.
+- [ ] Any Codex subagent role inherits `AGENTS.md`, ticket scope, approval
+  boundaries, forbidden actions, and verification requirements.
 - [ ] `debug_logging_plan` names an owner and surfaces.
 - [ ] `test_plan` lists concrete commands or manual proof steps.
 - [ ] `proof_gates` define what must pass before done.
