@@ -1,7 +1,7 @@
 # SERVICES
 
 External services, credentials policy, jobs, queues, databases, and environment
-assumptions that affect agentwork.
+assumptions that affect Codex work.
 
 Do not store secrets in this file.
 
@@ -10,6 +10,6 @@ Do not store secrets in this file.
 - Purpose: `<why the project uses it>`
 - Environment variables: `<names only, no values>`
 - Local requirement: `<how to run or mock locally>`
-- Test strategy: `<how agents should verify integrations safely>`
+- Test strategy: `<how Codex should verify integrations safely>`
 - Risk: `<known failure mode>`
 - Source: `<ticket or doc path>`

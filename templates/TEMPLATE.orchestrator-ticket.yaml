@@ -9,7 +9,7 @@ ticket:
   created_at: "YYYY-MM-DD"
   owner_agent: manager
   ticket_class: orchestrator
-  work_kind: multi_agent_execution
+  work_kind: codex_subagent_execution
   phase: "<project-phase-or-milestone>"
 
 context:
@@ -20,6 +20,7 @@ context:
     - "Use existing project conventions."
     - "Do not touch forbidden files or unrelated features."
     - "No bulk staging."
+    - "No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service action without explicit approval."
   source_of_truth:
     - "AGENTS.md"
     - "agent/STATE.md"
@@ -35,20 +36,22 @@ orchestration:
   manager_role: >
     The manager keeps full context, decomposes work into scoped child tickets,
     runs one implementation worker at a time, reviews proof, and decides whether
-    to advance, retry, checkpoint, or stop.
+    to advance, retry, checkpoint, or stop. Any Codex subagent inherits the same
+    AGENTS.md rules, ticket scope, approval boundaries, forbidden actions, and
+    verification requirements.
   max_iterations: 5
   parallelism_policy: >
-    Read-only experts may run in parallel only for independent questions.
-    Implementation workers run serially unless child tickets declare disjoint
-    write scopes.
+    Read-only Codex reviewers may run in parallel only for independent
+    questions. Implementation workers run serially unless child tickets declare
+    disjoint write scopes.
   worker_sequence:
     - stage: 0
       id: planning_review
-      role: read_only_expert
+      role: read_only_reviewer
       mode: read_only
       owns_files: []
       task: "Review plan, risk, test strategy, and child-ticket decomposition."
-      exit_gate: "Expert review is recorded and manager accepts or revises the plan."
+      exit_gate: "Reviewer findings are recorded and manager accepts or revises the plan."
     - stage: 1
       id: foundation
       role: scoped_worker
@@ -110,6 +113,7 @@ regression_gates:
   - "No child worker edits outside declared scope."
   - "No unrelated product behavior changes without a recorded decision."
   - "No secrets, local paths, generated caches, or dependency folders are committed."
+  - "No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service action occurs without explicit approval."
 
 visual_gate:
   required: false
@@ -128,6 +132,7 @@ rollback_or_accept_policy: >
 stop_conditions:
   - "A worker needs files outside its declared scope."
   - "The plan requires a missing external service or credential."
+  - "The plan requires dependency installation, destructive commands, remote operations, deployment, release, secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit approval."
   - "The iteration cap is reached."
   - "Final proof cannot be collected."
 

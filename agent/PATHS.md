@@ -1,8 +1,9 @@
 # PATHS
 
 Important repo paths, commands, routes, artifact locations, and generated output
-locations. Avoid machine-specific absolute paths unless the target repo
-explicitly allows local-only notes.
+locations. Prefer repo-relative paths and named external locations. Avoid
+private absolute paths unless the user explicitly approves a narrow local-only
+note.
 
 ## Source Areas
 

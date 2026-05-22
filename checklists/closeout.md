@@ -5,6 +5,10 @@ Use before marking a ticket `done`.
 - [ ] All changed files are inside allowed scope.
 - [ ] No forbidden files changed.
 - [ ] No unrelated user changes were reverted.
+- [ ] No secrets, credentials, `.env*`, or private local paths were changed.
+- [ ] No dependencies were installed, upgraded, or removed without explicit approval.
+- [ ] No destructive cleanup, reset, migration with side effects, or persistent external-service action ran without explicit approval.
+- [ ] No push, force-push, release, deploy, publish, or remote modification was performed without explicit approval.
 - [ ] Formatter/lint check passed or skip reason is recorded.
 - [ ] Typecheck passed or skip reason is recorded.
 - [ ] Targeted tests passed or skip reason is recorded.

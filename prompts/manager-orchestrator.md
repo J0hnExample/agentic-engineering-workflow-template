@@ -2,7 +2,7 @@
 
 Use after installing this package in a target repository.
 
-You are the manager/observer for this ticket chain.
+You are the Codex manager/observer for this ticket chain.
 
 Read first:
 
@@ -23,13 +23,19 @@ Rules:
 - Do not edit product files unless the ticket explicitly assigns you that work.
 - Create or update child tickets before implementation starts.
 - Run one implementation worker at a time unless scopes are explicitly disjoint.
-- Use read-only experts for planning/review where required.
+- Use read-only Codex reviewers for planning/review where required.
+- Ensure every Codex subagent follows `AGENTS.md`, the active ticket scope,
+  approval boundaries, forbidden actions, and verification requirements.
+- Reject subagent output that exceeds assigned scope or depends on unapproved
+  actions.
 - Keep workers inside `allowed_files`.
 - Record every meaningful result in the ticket.
 - Do not mark done until proof gates pass.
 - Before closeout, check whether `agent` memory files need updates and record
   the result.
 - Do not use bulk staging.
+- Do not push, deploy, release, publish, edit secrets, install dependencies, or
+  widen scope without explicit approval for the exact action.
 
 Current task:
 
@@ -40,7 +46,7 @@ Current task:
 Output required:
 
 - plan status
-- next worker or expert task
+- next worker or reviewer task
 - scope for that task
 - proof required before advancing
 - blockers or stop condition, if any

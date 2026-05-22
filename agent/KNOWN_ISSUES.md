@@ -6,6 +6,6 @@ Repeatable hazards, unresolved bugs, sharp edges, and accepted workarounds.
 
 - Problem: `<what goes wrong>`
 - Cause: `<known cause or unknown>`
-- Rule: `<how future agents should handle it>`
+- Rule: `<how future Codex sessions should handle it>`
 - Verification: `<how to detect or prove it>`
-- Source: `<ticket, test, log, or doc path>`
+- Source: `<ticket, sanitized test artifact, or doc path>`

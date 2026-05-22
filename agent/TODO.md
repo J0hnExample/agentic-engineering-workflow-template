@@ -6,7 +6,7 @@ Follow-up work that remains after completed tickets.
 
 ## First-Read Bootstrap Rule
 
-When an agent reads this file for the first time in a new or newly bootstrapped
+When Codex reads this file for the first time in a new or newly bootstrapped
 project, it should inspect the repository stack and propose initial `agent`
 entries before implementation starts.
 
