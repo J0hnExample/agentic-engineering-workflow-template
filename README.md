@@ -2,16 +2,47 @@
 
 Current version: 0.3.0
 
+> **Codex 5.5-led setup:** do not install this workflow by hand first.
+> Use Codex 5.5 as the setup and orchestration agent, let it inspect the target
+> repository, and let it implement the workflow layer with a scoped setup plan.
+
 `Agentic Engineering Workflow Template` is a workflow package for Codex-first
 software engineering. It is not an app, framework, service, or runtime. It gives
 an existing or new target repository a durable way to plan work, write scoped
 tickets, run scoped Codex work, verify results, and close out project memory.
-Think of it as a Codex starter for repository workflow, not product code.
 
-Use this package when the work needs more structure than a single chat prompt:
-multi-step delivery, risky refactors, UI changes that need proof, migrations,
-diagnosis tasks, or handoffs between planning, implementation, review, and final
+**Use it when work needs more structure than one chat prompt:** multi-step
+delivery, risky refactors, UI changes that need proof, migrations, diagnosis
+tasks, or handoffs between planning, implementation, review, and final
 verification.
+
+| Signal | Meaning |
+| --- | --- |
+| Codex 5.5 first | Use Codex 5.5 to understand, initialize, calibrate, and orchestrate the workflow. |
+| Target-repo installed | This template stays the source; the workflow files are installed into another repo. |
+| No runtime dependency | It does not add an app runtime, framework, service, or product code. |
+| No project security rules | Security constraints must be added after target-context review. |
+
+## Start Here
+
+Choose the path that matches your repository, then ask Codex 5.5 to take over
+the setup.
+
+| If you are starting... | Do this |
+| --- | --- |
+| A new repository | Use this repository as a template, open the new repository in Codex 5.5, and ask Codex how the workflow works before changing product code. |
+| An existing repository | Download this repository as a zip or keep it as a local package folder, place it near the target repository, open Codex 5.5 in the target repository, and give Codex both paths. |
+
+> **Run calibration loops first:** before using this on important work, run 1-2
+> small test tickets. Let Codex 5.5 help tune ticket size, allowed files, proof
+> gates, stop conditions, review style, and memory closeout rules to match how
+> you want agents to operate.
+>
+> **Security note:** this template does not include project-specific security
+> rules. It includes workflow guardrails, but security constraints for secrets,
+> data handling, auth, deployment, compliance, or threat models must be added
+> only after Codex has reviewed the target project's context, stack, data flows,
+> deployment model, and risk profile.
 
 ## Public Release Status
 
@@ -25,31 +56,57 @@ The template is mature enough to describe repeatable Codex roles, scoped tickets
 proof expectations, and closeout records. It is not a guarantee that a target
 repository is ready to ship.
 
-## Calibration Loop
+## Codex Quickstart
 
-Before serious use, run one or two small calibration loops in a non-critical
-target repository. A useful pair is one documentation-only ticket and one small
-code-change ticket with tests, each run from planning through final verification.
-Compare the ticket scope, proof, closeout, and memory updates against the target
-repository's actual work style. Tighten the copied prompts, ticket templates, and
-closeout wording until Codex consistently asks before expanding scope and records
-proof in the form the project owner can review.
+1. Put this workflow template where Codex 5.5 can read it.
+2. Open Codex 5.5 in the target repository, not inside this template directory.
+3. Ask Codex to explain the workflow and initialize the target repository from
+   this template.
+4. Give Codex the workflow template path and the target repository path.
+5. Let Codex inspect the target repository before it proposes any file writes.
+6. Let Codex propose the minimal setup plan, including exactly which workflow
+   files it will install or update.
+7. After the setup plan is clear, let Codex implement it and run the first small
+   calibration ticket from `tickets/templates/TEMPLATE.ticket.yaml`.
 
-Rules and approval boundaries are context-dependent. Adapt them for each target
-repository's risk level, ownership model, release process, and review habits.
+Codex should distinguish the template source from the target repository before
+copying anything. It should mark unknown values as unknown instead of inventing
+them, and it should propose dependency installation before running it.
 
-## Who It Is For
+## Copy-Paste Codex Initialization Prompt
 
-- Developers using Codex to execute changes in a real repository.
-- Project owners who want repeatable tickets, proof gates, and handoff records.
-- Teams that want one Codex manager/orchestrator to keep context while scoped
-  Codex workers edit only assigned files.
-- Review-heavy workflows where read-only Codex reviewers can inspect plans or
-  results before another bounded implementation step.
+```text
+You are Codex 5.5 initializing this repository for Codex-managed software work.
 
-This package works by copying templates and prompts into a target repository. It
-does not promise automation, pipeline setup, dependency installation, issue
-tracker integration, or production readiness by itself.
+Workflow template source:
+<path-to-workflow-template>
+
+Target repository:
+<path-to-target-repository>
+
+Use the template prompt at:
+<workflow-template-source>/prompts/initialize-repo.md
+
+First confirm which directory is the workflow template and which directory is the
+target repository. Then inspect the target repository evidence before writing
+anything. Identify manifests, lockfiles, framework config, test config, build
+config, pipeline files, Docker files, environment examples, scripts, and existing
+docs.
+
+Propose the minimal template-to-target copy plan for AGENTS.md, agent/*.md,
+tickets/templates/*, and docs/reusable_feature_implementation_paths.md. Ask for
+approval before writing files or running dependency installation. Do not invent
+unknown values; mark unknowns explicitly.
+
+Before serious work starts, recommend 1-2 small calibration loops so the user can
+tune ticket size, scope rules, proof gates, stop conditions, review style, and
+memory behavior. Also identify that this template does not include
+project-specific security rules; propose security constraints only after
+reviewing the target repository context.
+```
+
+For the full initialization prompt, use
+[`prompts/initialize-repo.md`](prompts/initialize-repo.md).
 
 ## What This Template Is Not
 
@@ -58,57 +115,15 @@ tracker integration, or production readiness by itself.
   decisions.
 - It is not a guarantee that Codex output is correct without repository-specific
   proof and final verification.
-- It does not provide secret handling, deployment, publishing, or remote
-  management.
+- It does not provide project-specific security rules, secret handling,
+  deployment, publishing, or remote management.
 
-## 5-Minute Quickstart
+## What Gets Installed
 
-1. Put this workflow package next to the repository you want to initialize.
-2. Open Codex in the target repository, not inside this package directory.
-3. Paste the initialization prompt below and fill in the two paths.
-4. Let Codex inspect the target repository before it proposes any file writes.
-5. Approve the minimal copy/update plan only after Codex shows which files will
-   be installed.
-6. Start the first ticket from `tickets/templates/TEMPLATE.ticket.yaml`.
+This repository is the template source. The repository being initialized is the
+target. Source files in this template install into different paths in the target:
 
-Codex should ask before writing files or installing dependencies. The package's
-own initialization prompt also requires Codex to distinguish the package source
-from the target repository before copying anything.
-
-## Copy-Paste Codex Initialization Prompt
-
-```text
-You are Codex initializing this repository for Codex-managed software work.
-
-Workflow package source:
-<path-to-workflow-package>
-
-Target repository:
-<path-to-target-repository>
-
-Use the package prompt at:
-<workflow-package-source>/prompts/initialize-repo.md
-
-First confirm which directory is the workflow package and which directory is the
-target repository. Then inspect the target repository evidence before writing
-anything. Identify manifests, lockfiles, framework config, test config, build
-config, pipeline files, Docker files, environment examples, scripts, and existing
-docs.
-
-Propose the minimal package-to-target copy plan for AGENTS.md, agent/*.md,
-tickets/templates/*, and docs/reusable_feature_implementation_paths.md. Ask for
-approval before writing files or running dependency installation. Do not invent
-unknown values; mark unknowns explicitly.
-```
-
-For the full version, use [`prompts/initialize-repo.md`](prompts/initialize-repo.md).
-
-## Package vs Target Paths
-
-This repository is the package source. The repository being initialized is the
-target. Source files in this package install into different paths in the target:
-
-| Package source | Target repository path |
+| Template source | Target repository path |
 | --- | --- |
 | [`templates/AGENTS.md.template`](templates/AGENTS.md.template) | `AGENTS.md` |
 | [`agent/*.md`](agent/) | `agent/*.md` |
@@ -117,12 +132,13 @@ target. Source files in this package install into different paths in the target:
 | [`templates/TEMPLATE.execution-result.yaml`](templates/TEMPLATE.execution-result.yaml) | `tickets/templates/TEMPLATE.execution-result.yaml` |
 | [`templates/TEMPLATE.reusable-feature-path.md`](templates/TEMPLATE.reusable-feature-path.md) | `docs/reusable_feature_implementation_paths.md` |
 
-Prompts and checklists can remain in the package or be copied into the target if
+Prompts and checklists can remain in the template or be copied into the target if
 that makes the repository easier to operate.
 
 ## Target Layout
 
-After installation, a target repository should have this workflow layer:
+After Codex installs the workflow layer, a target repository should have this
+shape around its normal product code, tests, package files, docs, and scripts:
 
 ```text
 .
@@ -145,17 +161,14 @@ After installation, a target repository should have this workflow layer:
     └── reusable_feature_implementation_paths.md
 ```
 
-The target repository still owns its normal product code, tests, package files,
-docs, and scripts. This package adds the agent workflow layer around that work.
+## How The Workflow Runs
 
-## Workflow Roles
-
-- `manager-orchestrator`: keeps the ticket chain in view, creates child
-  tickets, assigns scoped work, reviews proof, and decides whether to advance,
-  retry, checkpoint, or stop.
-- `scoped worker`: a Codex worker that implements one bounded ticket inside explicit
-  `allowed_files`, reports changed files and proof, and stops if scope needs to
-  expand.
+- `manager-orchestrator`: a Codex 5.5 session that keeps the ticket chain in
+  view, creates child tickets, assigns scoped work, reviews proof, and decides
+  whether to advance, retry, checkpoint, or stop.
+- `scoped worker`: a Codex worker that implements one bounded ticket inside
+  explicit `allowed_files`, reports changed files and proof, and stops if scope
+  needs to expand.
 - `read-only reviewer`: a Codex subagent or role prompt that reviews plans,
   risks, code, tests, or architecture without editing files.
 - `final verifier`: a Codex reviewer that checks scope, proof gates, regression
@@ -172,14 +185,11 @@ The execution modes are defined in the templates and docs:
 
 ## Safety Model
 
-The package is built around narrow scope and explicit proof:
+The template is built around narrow scope and explicit proof:
 
 - Codex inspects repository evidence before writing initialization files.
 - Unknown values are marked as unknown instead of invented.
 - Dependencies are proposed before installation and require approval.
-- Secrets, credentials, local secret files, destructive commands, scope expansion,
-  pushes, releases, deployments, publishing, and remote modifications require
-  explicit approval for the exact action.
 - Tickets declare `allowed_files`, `forbidden_files`, in-scope work,
   out-of-scope work, proof gates, regression gates, stop conditions, and done
   definitions.
@@ -193,23 +203,27 @@ The package is built around narrow scope and explicit proof:
 agent memory checked: no update needed
 ```
 
+These are workflow guardrails, not a complete security policy. Add security
+rules only after reviewing the target repository's real context.
+
 ## Example Flow
 
-1. The manager creates a ticket from
+1. Codex 5.5 initializes the target repository from this template.
+2. The manager creates a small calibration ticket from
    [`templates/TEMPLATE.ticket.yaml`](templates/TEMPLATE.ticket.yaml).
-2. The ticket names the goal, allowed files, forbidden files, proof gates, and
+3. The ticket names the goal, allowed files, forbidden files, proof gates, and
    done definition.
-3. A scoped worker runs with
+4. A scoped worker runs with
    [`prompts/scoped-worker.md`](prompts/scoped-worker.md), edits only the ticket
    scope, and records proof.
-4. If the work is risky or blocked, the manager asks a read-only Codex reviewer using
-   [`prompts/read-only-expert.md`](prompts/read-only-expert.md).
-5. The worker or manager records closeout using
+5. If the work is risky or blocked, the manager asks a read-only Codex reviewer
+   using [`prompts/read-only-expert.md`](prompts/read-only-expert.md).
+6. The worker or manager records closeout using
    [`templates/TEMPLATE.execution-result.yaml`](templates/TEMPLATE.execution-result.yaml).
-6. A final verifier uses
+7. A final verifier uses
    [`prompts/final-verifier.md`](prompts/final-verifier.md) before the ticket is
    marked done.
-7. Durable state, decisions, known issues, follow-up work, paths, services, or
+8. Durable state, decisions, known issues, follow-up work, paths, services, or
    changelog notes are updated under `agent/`, or the no-update phrase is
    recorded.
 
@@ -217,14 +231,14 @@ For larger delivery, start from
 [`templates/TEMPLATE.orchestrator-ticket.yaml`](templates/TEMPLATE.orchestrator-ticket.yaml)
 and let the manager split the outcome into child tickets.
 
-## Docs, Prompts, Templates, And Checklists
+## Reference
 
 - [`docs/workflow.md`](docs/workflow.md) explains the workflow, roles, execution
   modes, ticket chains, and memory closeout.
 - [`docs/reusable_feature_implementation_paths.md`](docs/reusable_feature_implementation_paths.md)
-  is the package's reusable feature-path document.
+  is the template's reusable feature-path document.
 - [`prompts/initialize-repo.md`](prompts/initialize-repo.md) initializes a target
-  repository from this package.
+  repository from this template.
 - [`prompts/manager-orchestrator.md`](prompts/manager-orchestrator.md) runs a
   parent ticket chain.
 - [`prompts/scoped-worker.md`](prompts/scoped-worker.md) runs one bounded
