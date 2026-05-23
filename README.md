@@ -6,19 +6,28 @@ Current version: 0.3.0
 > Use Codex 5.5 as the setup and orchestration agent, let it inspect the target
 > repository, and let it implement the workflow layer with a scoped setup plan.
 
-`Agentic Engineering Workflow Template` is a workflow package for Codex-first
-software engineering. It is not an app, framework, service, or runtime. It gives
-an existing or new target repository a durable way to plan work, write scoped
-tickets, run scoped Codex work, verify results, and close out project memory.
+`Agentic Engineering Workflow Template` turns an existing or new repository into
+a governed agentic engineering workspace. It gives Codex 5.5 an automatic
+ticket, documentation, proof, and memory workflow so agent work stays scoped,
+traceable, and reviewable.
 
-**Use it when work needs more structure than one chat prompt:** multi-step
-delivery, risky refactors, UI changes that need proof, migrations, diagnosis
-tasks, or handoffs between planning, implementation, review, and final
-verification.
+The template is designed to reduce drift and hallucinations by forcing clear
+ownership, explicit handoffs, maximum available repository context, proof gates,
+and documentation checkpoints between every meaningful step. Tickets, notes, and
+agent memory files act as the working memory for the agent system, so humans can
+focus on engineering decisions instead of manually tracking what each agent did,
+why it did it, and what must happen next.
+
+It is not an app, framework, service, or runtime. Use it when work needs more
+structure than one chat prompt: multi-step delivery, risky refactors, UI changes
+that need proof, migrations, diagnosis tasks, or handoffs between planning,
+implementation, review, and final verification.
 
 | Signal | Meaning |
 | --- | --- |
 | Codex 5.5 first | Use Codex 5.5 to understand, initialize, calibrate, and orchestrate the workflow. |
+| Ticket-driven memory | Tickets, closeouts, and `agent/*.md` files preserve context between agent steps. |
+| Drift control | Scope, proof gates, role boundaries, and documentation checkpoints keep work reviewable. |
 | Target-repo installed | This template stays the source; the workflow files are installed into another repo. |
 | No runtime dependency | It does not add an app runtime, framework, service, or product code. |
 | No project security rules | Security constraints must be added after target-context review. |
@@ -36,7 +45,9 @@ the setup.
 > **Run calibration loops first:** before using this on important work, run 1-2
 > small test tickets. Let Codex 5.5 help tune ticket size, allowed files, proof
 > gates, stop conditions, review style, and memory closeout rules to match how
-> you want agents to operate.
+> you want agents to operate. As a best practice, remind Codex to document
+> decisions, ticket handoffs, extensions, skipped checks, and memory updates
+> between tickets until the workflow reliably does that in the form you expect.
 >
 > **Security note:** this template does not include project-specific security
 > rules. It includes workflow guardrails, but security constraints for secrets,
