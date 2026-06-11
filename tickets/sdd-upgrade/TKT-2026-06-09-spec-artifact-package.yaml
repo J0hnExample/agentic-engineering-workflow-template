@@ -132,16 +132,71 @@ execution:
   done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
     passed or justified skips are recorded, and execution_result is complete.
 execution_result:
-  status: pending
-  changed_files: []
-  commands_run: []
-  proof: []
-  skipped_checks: []
+  status: done
+  changed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-spec-artifact-package.yaml
+  - templates/specs/TEMPLATE.requirements.md
+  - templates/specs/TEMPLATE.design.md
+  - templates/specs/TEMPLATE.tasks.md
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+  - checklists/ticket-readiness.md
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+  - prompts/manager-orchestrator.md
+  - prompts/scoped-worker.md
+  commands_run:
+  - 'git status --short --branch'
+  - 'sed -n ''1,240p'' tickets/sdd-upgrade/TKT-2026-06-09-spec-artifact-package.yaml'
+  - 'rg --files templates checklists docs prompts | sort'
+  - 'sed -n ''1,260p'' templates/TEMPLATE.ticket.yaml'
+  - 'sed -n ''1,260p'' templates/TEMPLATE.orchestrator-ticket.yaml'
+  - 'sed -n ''1,260p'' checklists/ticket-readiness.md'
+  - 'sed -n ''1,280p'' docs/workflow.md'
+  - 'sed -n ''1,320p'' templates/AGENTS.md.template'
+  - 'sed -n ''1,320p'' prompts/manager-orchestrator.md'
+  - 'sed -n ''1,320p'' prompts/scoped-worker.md'
+  - 'find templates/specs -maxdepth 2 -type f -print 2>/dev/null | sort'
+  - 'git diff -- templates/TEMPLATE.ticket.yaml templates/TEMPLATE.orchestrator-ticket.yaml checklists/ticket-readiness.md docs/workflow.md templates/AGENTS.md.template prompts/manager-orchestrator.md prompts/scoped-worker.md templates/specs/TEMPLATE.requirements.md templates/specs/TEMPLATE.design.md templates/specs/TEMPLATE.tasks.md'
+  - 'rg -n "spec_refs|spec_contract|requirements\.md|design\.md|tasks\.md|quick-flow|quick flow|templates/specs" templates checklists docs prompts tickets/sdd-upgrade/TKT-2026-06-09-spec-artifact-package.yaml'
+  - 'find templates/specs -maxdepth 1 -type f -print | sort'
+  - 'python -c "import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path(''.'').rglob(''*.yaml'')]; print(''parsed yaml files'')"'
+  - 'git diff --check'
+  - 'rg -n "templates/specs/TEMPLATE\.(requirements|design|tasks)\.md|spec_refs|spec_contract|quick-flow exemption|requirements/design/tasks" templates checklists docs prompts tickets/sdd-upgrade/TKT-2026-06-09-spec-artifact-package.yaml'
+  - 'rg -n "ticket|workflow|template|spec|requirements|design|tasks|AGENTS|agent memory" README.md agent 2>/dev/null'
+  - 'git status --short'
+  - 'git diff --name-only'
+  - 'git diff -- tickets/sdd-upgrade/TKT-2026-06-09-spec-artifact-package.yaml | sed -n ''1,260p'''
+  - 'python -c "import yaml; p=''tickets/sdd-upgrade/TKT-2026-06-09-spec-artifact-package.yaml''; data=yaml.safe_load(open(p)); print(data[''execution_result''][''status'']); print(len(data[''execution_result''][''changed_files''])); print(data[''execution_result''][''agent_memory_updates''][''checked'']))"'
+  proof:
+  - Added concise generic requirements, design, and tasks templates under templates/specs with acceptance
+    criteria, Given-When-Then cases, constraints, invariants, ambiguity log, architecture, impacted files,
+    interfaces, data flow, failure modes, security/privacy notes, task ownership, allowed files, proof,
+    and requirement traceability.
+  - Added spec_refs and spec_contract fields to implementation and orchestrator ticket templates, including
+    quick-flow exemption support and traceability requirements.
+  - Updated readiness checklist so non-trivial implementation fails readiness without linked specs or a
+    justified quick-flow exemption.
+  - Updated workflow docs, AGENTS template, manager prompt, and scoped-worker prompt to treat linked specs
+    as source of truth while preserving existing scoped-worker and read-only expert routing boundaries.
+  - 'YAML validation passed: python parsed every *.yaml file in the repository.'
+  - 'Whitespace validation passed: git diff --check returned no output.'
+  - 'Reference check passed: rg found the new spec contract and quick-flow references in the scoped templates,
+    checklist, docs, prompts, and ticket.'
+  skipped_checks:
+  - README.md likely needs a follow-up installation-map mention for templates/specs, but README.md is outside
+    this ticket allowed_files and was not edited.
+  - No dependency, build, lint, or test command was run because this workflow/template change has no package
+    install or runtime code path in scope; YAML parse, reference inspection, and git diff --check were the
+    applicable proof gates.
   agent_memory_updates:
-    checked: false
+    checked: true
     updated_files: []
-    notes: null
+    notes: 'agent memory checked: no update needed; user explicitly forbade agent/*.md edits for this ticket,
+      and this template-scope change is recorded in the ticket result instead.'
   blockers: []
   risks:
   - 'Risk: over-specification can slow tiny work; mitigate with quick-flow exemption and escalation ticket.'
-  next_recommended_step: null
+  - 'README.md install-path documentation may lag the new spec templates until a separate docs-scoped ticket
+    allows README edits.'
+  next_recommended_step: 'Open a separate docs ticket for README.md if the install mapping should list templates/specs.'

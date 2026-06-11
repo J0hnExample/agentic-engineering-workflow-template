@@ -8,6 +8,11 @@ Use before product-code work starts.
 - [ ] Ticket has a single concrete `scope.goal`.
 - [ ] `allowed_files` and `forbidden_files` are explicit.
 - [ ] `in_scope` and `out_of_scope` are explicit.
+- [ ] Non-trivial implementation work has `spec_refs` for requirements, design,
+  and tasks, or `spec_contract.quick_flow_exemption.used: true` with a concrete
+  reason.
+- [ ] Linked spec artifacts include acceptance criteria, design boundaries,
+  task/proof traceability, and unresolved ambiguity handling.
 - [ ] `execution_intensity` is one of `standard_worker`, `expert_supported`,
   `bounded_expert_rounds`, or `research_only`.
 - [ ] `manager_role` is explicit.

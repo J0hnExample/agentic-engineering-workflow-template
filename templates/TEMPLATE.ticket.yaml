@@ -22,6 +22,25 @@ context:
   relevant_prior_work:
     - "Link or path to prior ticket/doc, or 'none'."
 
+spec_refs:
+  requirements: "specs/<feature>/requirements.md"
+  design: "specs/<feature>/design.md"
+  tasks: "specs/<feature>/tasks.md"
+  source_of_truth:
+    - "AGENTS.md"
+    - "agent/*.md"
+    - "this ticket"
+
+spec_contract:
+  required: true
+  quick_flow_exemption:
+    used: false
+    reason: null
+  requirements_format: "EARS/Given-When-Then acceptance criteria with non-goals and ambiguity log."
+  design_format: "Architecture, impacted files, interfaces, data flow, failure modes, security/privacy notes, and test strategy."
+  tasks_format: "Dependency-ordered tasks with owner role, allowed files, proof, and requirement traceability."
+  traceability_required: true
+
 scope:
   goal: >
     One concrete outcome for this ticket.
@@ -93,6 +112,7 @@ execution:
       - "Test output for failing checks."
     temporary_logging_policy: "Remove or gate temporary logs before done."
   test_plan:
+    - "Read linked spec artifacts, or verify a justified quick-flow exemption."
     - "Parse this ticket as YAML."
     - "Run formatter/lint command if present."
     - "Run typecheck command if present."
@@ -100,6 +120,7 @@ execution:
     - "Run build command if present."
     - "Check whether agent files need updates and record the result."
   proof_gates:
+    - "Non-trivial implementation work has linked requirements/design/tasks specs, or this ticket records a justified quick-flow exemption."
     - "Implementation matches desired behavior."
     - "Relevant automated checks pass or skipped checks are justified."
     - "Agent-memory update check is recorded."

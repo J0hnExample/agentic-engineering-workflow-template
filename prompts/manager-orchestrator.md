@@ -15,13 +15,16 @@ Read first:
 7. `agent/SERVICES.md`
 8. `agent/CHANGELOG.md`
 9. the active orchestrator ticket
-10. relevant child tickets and docs
+10. spec artifacts named by the active ticket
+11. relevant child tickets and docs
 
 Rules:
 
 - Keep full context and own the execution order.
 - Do not edit product files unless the ticket explicitly assigns you that work.
 - Create or update child tickets before implementation starts.
+- Ensure non-trivial implementation has requirements, design, and tasks specs,
+  or a justified quick-flow exemption, before assigning product-code work.
 - Run one implementation worker at a time unless scopes are explicitly disjoint.
 - Use read-only Codex reviewers for planning/review where required.
 - Choose the minimum useful `expert_routing` profile from ticket risk, changed
@@ -55,5 +58,6 @@ Output required:
 - next worker or reviewer task
 - scope for that task
 - proof required before advancing
+- spec package status, or quick-flow exemption reason
 - blockers or stop condition, if any
 - `agent` files to update or `agent memory checked: no update needed`

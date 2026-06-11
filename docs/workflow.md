@@ -6,18 +6,45 @@ memory closeout for a target repository.
 ## Basic Workflow
 
 1. Plan one bounded step from current repository evidence.
-2. Create a ticket from the installed target template
+2. For non-trivial work, create or update compact spec artifacts for
+   requirements, design, and tasks. For tiny quick-flow work, record the
+   exemption reason in the ticket.
+3. Create a ticket from the installed target template
    `tickets/templates/TEMPLATE.ticket.yaml`.
-3. Start a fresh context for ticket execution.
-4. Execute only the ticket scope.
-5. Run the ticket proof gates.
-6. Close out with the installed target template
+4. Start a fresh context for ticket execution.
+5. Execute only the ticket scope.
+6. Run the ticket proof gates.
+7. Close out with the installed target template
    `tickets/templates/TEMPLATE.execution-result.yaml`.
-7. Update `agent/*.md`, or record `agent memory checked: no update needed`.
+8. Update `agent/*.md`, or record `agent memory checked: no update needed`.
 
 Fresh-context execution is intentional. The ticket must carry enough context,
 scope, proof requirements, and stop conditions for a new Codex session to do the
 work without relying on unstated chat history.
+
+## Spec Artifacts
+
+Non-trivial implementation work starts from a compact spec package:
+
+- `requirements.md` captures user stories, EARS-style acceptance criteria,
+  Given-When-Then cases, constraints, preconditions, postconditions,
+  invariants, non-goals, ambiguity handling, and proof targets.
+- `design.md` captures the chosen approach, impacted files, interfaces, data
+  flow, failure modes, security/privacy notes, test strategy, and compatibility
+  concerns.
+- `tasks.md` captures dependency-ordered tasks with owner role, allowed files,
+  proof, and traceability to requirements.
+
+The source templates live in `templates/specs/` before installation. In a target
+repository, copy them to the project-local spec location named by the ticket.
+Implementation tickets link to the package with `spec_refs` and declare the
+contract with `spec_contract`.
+
+Tiny typo, formatting, or documentation-only changes may use quick flow instead
+of a full spec package. The ticket must set
+`spec_contract.quick_flow_exemption.used: true` and provide a concrete reason.
+Readiness fails when non-trivial implementation lacks both linked specs and a
+justified exemption.
 
 ## Ticket Chains
 
@@ -31,6 +58,8 @@ multi-stage delivery.
 - Create child tickets from the installed target template
   `tickets/templates/TEMPLATE.ticket.yaml`.
 - Ticket comments and execution results pass context into the next child ticket.
+- Child implementation tickets link to the parent spec package, a narrowed child
+  spec, or an explicit quick-flow exemption.
 - Record worker closeout with the installed target template
   `tickets/templates/TEMPLATE.execution-result.yaml`.
 - The manager looks back at recent child ticket results before planning the next

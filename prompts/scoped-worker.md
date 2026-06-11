@@ -12,9 +12,11 @@ Read first:
 
 1. `AGENTS.md`
 2. the assigned ticket
-3. relevant `agent/*` files when durable state, decisions, known issues,
+3. linked requirements, design, and tasks specs, unless the ticket records a
+   justified quick-flow exemption
+4. relevant `agent/*` files when durable state, decisions, known issues,
    follow-up work, important paths, services, or changelog notes are affected
-4. files inside your assigned scope
+5. files inside your assigned scope
 
 Your ownership:
 
@@ -37,6 +39,9 @@ Task:
 Rules:
 
 - Edit only your assigned scope.
+- Treat linked spec artifacts as source of truth with `AGENTS.md`, agent memory,
+  and the active ticket. If they conflict or are missing without exemption, stop
+  and report the blocker.
 - Follow existing project patterns.
 - Add or update focused tests when the ticket requires it.
 - Run the assigned proof commands when available.
@@ -56,6 +61,7 @@ Final response required:
 - changed files
 - commands run
 - proof result
+- spec package used, or quick-flow exemption reason
 - skipped checks and why
 - `agent` files updated or `agent memory checked: no update needed`
 - blockers

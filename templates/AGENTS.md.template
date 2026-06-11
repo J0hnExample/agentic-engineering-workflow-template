@@ -19,6 +19,8 @@ product-specific assumptions in this file.
 - `AGENTS.md` - durable Codex agent workflow rules.
 - `agent/` - repo-local state, decisions, known issues, and handoff notes.
 - `tickets/` - scoped workflow records for non-trivial work.
+- `specs/` - compact requirements, design, and task artifacts for non-trivial
+  feature or bugfix work.
 - `docs/` - reusable implementation paths, architecture notes, and proof
   records.
 - `src/`, `app/`, `pages/`, `components/`, `lib/`, `server/`, `tests/`, and
@@ -37,8 +39,9 @@ Before planning or implementation work, read:
 7. `agent/SERVICES.md`
 8. `agent/CHANGELOG.md`
 9. the newest relevant ticket in `tickets/`
-10. docs named by the ticket
-11. files in the ticket's allowed scope
+10. specs named by the ticket
+11. docs named by the ticket
+12. files in the ticket's allowed scope
 
 If a referenced file is missing, stale, or conflicts with the current user
 instruction, report that fact instead of silently filling the gap.
@@ -62,6 +65,9 @@ files.
 - Non-trivial planning and implementation work must be ticketed.
 - Planning work must create or update a scoped ticket before implementation
   starts.
+- Non-trivial implementation work must link requirements, design, and tasks
+  specs, or record a justified quick-flow exemption in the ticket before
+  product-code work starts.
 - Codex implementation workers must work from the active ticket scope and keep changes
   inside the ticket's declared files unless the user widens scope.
 - After each meaningful step, record the result as a ticket comment or result
@@ -117,6 +123,8 @@ ticket already grants that permission.
 
 Every implementation ticket must include these fields before product-code work:
 
+- `spec_refs`, or a justified `spec_contract.quick_flow_exemption`
+- `spec_contract`
 - `execution_intensity`
 - `manager_role`
 - `worker_sequence`
@@ -137,6 +145,13 @@ Every implementation ticket must include these fields before product-code work:
 The `test_plan` or closeout proof must include an agent-memory update check for
 `agent/` files whenever the ticket changes durable project state, decisions,
 known issues, setup paths, service assumptions, or follow-up work.
+
+For non-trivial work, the ticket's `spec_refs` point to the requirements,
+design, and tasks artifacts that act as source of truth with `AGENTS.md` and
+agent memory. The specs must keep acceptance criteria, design boundaries,
+allowed-file tasks, proof, and requirement traceability aligned. Tiny quick-flow
+changes may skip full specs only when the ticket records a concrete exemption
+reason.
 
 The `test_plan` must list concrete checks that decide whether the ticket may be
 marked done. For web applications, use relevant repo-local checks such as:
