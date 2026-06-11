@@ -21,6 +21,29 @@ context:
     Describe the target behavior and acceptance expectations.
   relevant_prior_work:
     - "Link or path to prior ticket/doc, or 'none'."
+  grey_areas:
+    status: none
+    items: []
+    resolution: "No unresolved implementation grey areas before planning."
+
+context_pack:
+  required_files:
+    - "Exact repository files the worker must read before editing."
+  required_specs:
+    - "Specs that must be read, or [] when a justified quick-flow exemption applies."
+  required_steering_files: []
+  excluded_context:
+    - "Relevant-looking context intentionally not loaded because it is noisy, stale, unsafe, or out of scope."
+  budget_notes: >
+    State the intended context budget for the worker, including what is omitted
+    and when the worker must stop instead of requesting or loading more context.
+
+locked_decisions:
+  - decision: "Concrete decision locked before implementation."
+    rationale: "Why this decision resolves an implementation grey area."
+    owner: "user|manager|ticket|spec"
+    source: "Ticket, spec, user instruction, or agent/DECISIONS.md path."
+    "expiry/change rule": "When this decision expires or what must happen before it changes."
 
 spec_refs:
   requirements: "specs/<feature>/requirements.md"
@@ -121,6 +144,9 @@ execution:
     - "Check whether agent files need updates and record the result."
   proof_gates:
     - "Non-trivial implementation work has linked requirements/design/tasks specs, or this ticket records a justified quick-flow exemption."
+    - "Grey-area status is `none`, `resolved`, or `blocked`; implementation starts only when there are no unresolved grey areas."
+    - "Required context pack items are present and fit the ticket budget, or the ticket records a blocker."
+    - "Required locked decisions are present before implementation, or the ticket records a blocker."
     - "Implementation matches desired behavior."
     - "Relevant automated checks pass or skipped checks are justified."
     - "Agent-memory update check is recorded."

@@ -25,6 +25,47 @@ context:
   - README.md
   - docs/workflow.md
   - templates/AGENTS.md.template
+  grey_areas:
+    status: resolved
+    items:
+    - Whether the context budget field should be named summary_budget or budget_notes.
+    resolution: User instruction for this execution uses budget_notes; update this ticket scope accordingly.
+context_pack:
+  required_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-decision-lock-context-budget.yaml
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+  - templates/AGENTS.md.template
+  - prompts/manager-orchestrator.md
+  - prompts/scoped-worker.md
+  - checklists/ticket-readiness.md
+  - agent/DECISIONS.md
+  - docs/workflow.md
+  required_specs: []
+  required_steering_files: []
+  excluded_context:
+  - README.md version and install docs are relevant to the broader v0.4.0 upgrade but outside this ticket scope.
+  - templates/TEMPLATE.quick-ticket.yaml has older compact context fields but is outside allowed_files for this ticket.
+  - Local machine desktop policies are not relevant to this generic template change.
+  budget_notes: Keep worker context to the active ticket plus scoped workflow/template files. Do not load
+    private local paths, credentials, chat dumps, broad repo history, or unrelated package docs. Stop and
+    record a blocker if required files or decisions are missing instead of expanding context outside
+    allowed_files.
+locked_decisions:
+- decision: Use budget_notes as the context-pack budget field name for this ticket.
+  rationale: The latest user instruction explicitly requested budget_notes, superseding the older in-ticket
+    summary_budget wording.
+  owner: user
+  source: Current task instruction for tickets/sdd-upgrade/TKT-2026-06-09-decision-lock-context-budget.yaml
+  "expiry/change rule": Change only through a new ticket or explicit user instruction that updates the
+    context-pack field contract.
+- decision: Keep agent/DECISIONS.md generic and do not record this SDD ticket as a durable local closeout.
+  rationale: This repository is a workflow template, and the user explicitly prohibited local/task-specific
+    notes in agent files.
+  owner: user
+  source: Current task instruction
+  "expiry/change rule": Change only if a future ticket intentionally changes the template's decision-memory
+    policy.
 scope:
   goal: Add locked decisions and context-budget fields to ticket/orchestrator templates and prompts.
   allowed_files:
@@ -47,7 +88,7 @@ scope:
   - coverage/**
   in_scope:
   - Add context_pack with required_files, required_specs, required_steering_files, excluded_context, and
-    summary_budget.
+    budget_notes.
   - Add locked_decisions with decision, rationale, owner, source, and expiry/change rule.
   - Update manager prompt to identify grey areas before planning and either resolve them or create a research_only
     decision ticket.
@@ -126,17 +167,48 @@ execution:
   done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
     passed or justified skips are recorded, and execution_result is complete.
 execution_result:
-  status: pending
-  changed_files: []
-  commands_run: []
-  proof: []
-  skipped_checks: []
+  status: done
+  changed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-decision-lock-context-budget.yaml
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+  - templates/AGENTS.md.template
+  - prompts/manager-orchestrator.md
+  - prompts/scoped-worker.md
+  - checklists/ticket-readiness.md
+  - agent/DECISIONS.md
+  - docs/workflow.md
+  commands_run:
+  - git status --short --branch
+  - rg -n "context_pack|locked_decisions|decision lock|grey|gray|research_only|required_files|required_specs|required_steering_files|excluded_context|budget_notes|expiry|change rule" templates prompts checklists agent docs tickets/sdd-upgrade/TKT-2026-06-09-decision-lock-context-budget.yaml
+  - python -c "import yaml, pathlib; files=[pathlib.Path('tickets/sdd-upgrade/TKT-2026-06-09-decision-lock-context-budget.yaml'), pathlib.Path('templates/TEMPLATE.ticket.yaml'), pathlib.Path('templates/TEMPLATE.orchestrator-ticket.yaml')]; [yaml.safe_load(p.read_text()) for p in files]; print('parsed', len(files), 'scoped yaml files')"
+  - rg -n "summary_budget|expiry_change_rule|context_pack\\.required_files|context_pack\\.required_specs|context_pack\\.budget_notes|locked_decisions|grey_areas|expiry/change rule|research_only" templates/TEMPLATE.ticket.yaml templates/TEMPLATE.orchestrator-ticket.yaml templates/AGENTS.md.template prompts/manager-orchestrator.md prompts/scoped-worker.md checklists/ticket-readiness.md agent/DECISIONS.md docs/workflow.md tickets/sdd-upgrade/TKT-2026-06-09-decision-lock-context-budget.yaml
+  - python -c "import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]; print('parsed all yaml files')"
+  - git diff --check
+  proof:
+  - All repository YAML files parsed successfully with PyYAML.
+  - git diff --check passed with no whitespace errors.
+  - Changed files are limited to the ticket allowed_files list.
+  - Manager prompt now requires grey-area identification, resolution through decisions, or a research_only
+    blocker ticket before implementation assignment.
+  - Worker prompt now stops when required decisions or context-pack items are missing.
+  - agent/DECISIONS.md remains a reusable durable decision-lock template and does not contain a specific
+    SDD ticket closeout note.
+  skipped_checks:
+  - No dedicated markdown link checker is defined in the repo; path and terminology consistency was checked
+    with targeted rg output instead.
   agent_memory_updates:
-    checked: false
-    updated_files: []
-    notes: null
+    checked: true
+    updated_files:
+    - agent/DECISIONS.md
+    notes: Updated only the reusable durable-decision template fields; no local, machine-specific, or
+      one-off task closeout note was added.
   blockers: []
   risks:
   - 'Risk: too much ceremony for obvious tickets; mitigate by allowing grey_areas: none with proof from
     discovery.'
-  next_recommended_step: null
+  - 'Risk: templates/TEMPLATE.quick-ticket.yaml still has the older compact context_pack shape because it
+    was outside this ticket allowed_files.'
+  next_recommended_step: Use the updated ticket readiness checklist for the next non-trivial SDD ticket and
+    decide in a separate scoped ticket whether the quick-ticket template should gain the same expanded
+    context_pack fields.

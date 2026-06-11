@@ -26,11 +26,21 @@ Rules:
 
 - Keep full context and own the execution order.
 - Do not edit product files unless the ticket explicitly assigns you that work.
+- Identify implementation grey areas before planning child work. Record
+  `context.grey_areas.status` as `none`, `resolved`, or `blocked`.
+- Resolve grey areas through user input, linked specs, existing durable
+  decisions, or new `locked_decisions` entries with `decision`, `rationale`,
+  `owner`, `source`, and `expiry/change rule`.
+- If a grey area cannot be resolved inside scope, create or update a
+  `research_only` blocker ticket and stop before assigning implementation.
 - Create or update child tickets before implementation starts.
 - Build a bounded context pack. Include required steering, matching
   `fileMatch` steering, explicitly referenced `manual` steering, and clear
   task-matched `auto` steering. Record noisy or irrelevant exclusions in
-  `context_pack.excluded_context` when that decision matters.
+  `context_pack.excluded_context` when that decision matters. Fill
+  `context_pack.required_files`, `context_pack.required_specs`,
+  `context_pack.required_steering_files`, and `context_pack.budget_notes` so
+  workers know what to read and when to stop.
 - Ensure non-trivial implementation has requirements, design, and tasks specs,
   or a justified quick-flow exemption, before assigning product-code work.
 - Run one implementation worker at a time unless scopes are explicitly disjoint.
@@ -66,7 +76,8 @@ Output required:
 - next worker or reviewer task
 - scope for that task
 - proof required before advancing
-- required steering files and excluded context
+- grey-area status and locked decisions
+- required files, specs, steering files, excluded context, and budget notes
 - spec package status, or quick-flow exemption reason
 - blockers or stop condition, if any
 - `agent` files to update or `agent memory checked: no update needed`

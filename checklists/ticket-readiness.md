@@ -8,11 +8,23 @@ Use before product-code work starts.
 - [ ] Ticket has a single concrete `scope.goal`.
 - [ ] `allowed_files` and `forbidden_files` are explicit.
 - [ ] `in_scope` and `out_of_scope` are explicit.
+- [ ] Grey-area status is explicit as `none`, `resolved`, or `blocked`.
+- [ ] Any grey-area items are resolved before implementation planning, or the
+  ticket is blocked and points to a `research_only` blocker ticket.
+- [ ] `locked_decisions` is present, either as an explicitly empty list or with
+  entries that include `decision`, `rationale`, `owner`, `source`, and
+  `expiry/change rule`.
+- [ ] `context_pack.required_files` lists files the worker must read before
+  editing, or is explicitly empty.
+- [ ] `context_pack.required_specs` lists specs the worker must read before
+  editing, or is explicitly empty because a quick-flow exemption applies.
 - [ ] `context_pack.required_steering_files` lists every specialized steering
   file required for the ticket, or is explicitly empty.
 - [ ] `context_pack.excluded_context` records noisy, stale, unsafe, or
   out-of-scope context that looked relevant but should not be loaded, or is
   explicitly empty.
+- [ ] `context_pack.budget_notes` states the intended context budget and when a
+  worker must stop instead of loading more context.
 - [ ] Required steering files use supported inclusion modes: `always`,
   `fileMatch`, `manual`, or `auto`.
 - [ ] Non-trivial implementation work has `spec_refs` for requirements, design,

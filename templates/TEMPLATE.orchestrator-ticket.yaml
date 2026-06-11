@@ -30,6 +30,30 @@ context:
     - "agent/PATHS.md"
     - "agent/SERVICES.md"
     - "agent/CHANGELOG.md"
+  grey_areas:
+    status: none
+    items: []
+    resolution: "No unresolved planning or implementation grey areas before child-ticket creation."
+
+context_pack:
+  required_files:
+    - "Exact repository files the manager or child worker must read before planning or editing."
+  required_specs:
+    - "Specs that must be read, or [] when a justified quick-flow exemption applies."
+  required_steering_files: []
+  excluded_context:
+    - "Relevant-looking context intentionally not loaded because it is noisy, stale, unsafe, or out of scope."
+  budget_notes: >
+    State the intended context budget for the manager and child workers,
+    including what is omitted and when work must stop instead of loading more
+    context.
+
+locked_decisions:
+  - decision: "Concrete decision locked before planning or implementation."
+    rationale: "Why this decision resolves a planning or implementation grey area."
+    owner: "user|manager|ticket|spec"
+    source: "Ticket, spec, user instruction, or agent/DECISIONS.md path."
+    "expiry/change rule": "When this decision expires or what must happen before it changes."
 
 spec_refs:
   requirements: "specs/<feature>/requirements.md"
@@ -161,6 +185,9 @@ test_plan:
 
 proof_gates:
   - "Non-trivial implementation work has linked requirements/design/tasks specs, or this orchestrator records a justified quick-flow exemption."
+  - "Grey-area status is `none`, `resolved`, or `blocked`; child implementation starts only when there are no unresolved grey areas."
+  - "Required context pack items are present and fit each worker budget, or the orchestrator records a blocker."
+  - "Required locked decisions are present before child implementation, or the orchestrator records a blocker."
   - "All required child tickets are done or explicitly deferred with blockers."
   - "Final verifier result is recorded."
   - "No unresolved blocker remains for the requested outcome."

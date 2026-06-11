@@ -59,11 +59,13 @@ Before planning or implementation work, read:
 16. docs named by the ticket
 17. files in the ticket's allowed scope
 
-Build a bounded context pack before implementation. Include only the steering
-files selected by the rules above, and record intentionally excluded noisy or
-irrelevant context in `context_pack.excluded_context` when the ticket needs that
-decision preserved. Do not load private/global machine paths, secrets, or
-product-specific assumptions into steering files.
+Build a bounded context pack before implementation. Include only the
+`context_pack.required_files`, `context_pack.required_specs`, selected steering
+files, linked docs, and allowed files needed for the task. Record intentionally
+excluded noisy or irrelevant context in `context_pack.excluded_context` when
+the ticket needs that decision preserved, and use `context_pack.budget_notes`
+to state the context budget and stop rule. Do not load private/global machine
+paths, secrets, or product-specific assumptions into steering files.
 
 If a referenced file is missing, stale, or conflicts with the current user
 instruction, report that fact instead of silently filling the gap.
@@ -87,6 +89,11 @@ files.
 - Non-trivial planning and implementation work must be ticketed.
 - Planning work must create or update a scoped ticket before implementation
   starts.
+- Before implementation planning, identify implementation grey areas. Resolve
+  them through user input, specs, or durable decision locks, or create a
+  `research_only` blocker ticket instead of assigning implementation.
+- Required durable decision locks live in `locked_decisions` and include
+  `decision`, `rationale`, `owner`, `source`, and `expiry/change rule`.
 - Non-trivial implementation work must link requirements, design, and tasks
   specs, or record a justified quick-flow exemption in the ticket before
   product-code work starts.
@@ -195,8 +202,16 @@ ticket already grants that permission.
 
 Every implementation ticket must include these fields before product-code work:
 
+- `context.grey_areas.status` with `none`, `resolved`, or `blocked`
+- `context.grey_areas.items`
+- `context.grey_areas.resolution`
+- `context_pack.required_files`
+- `context_pack.required_specs`
 - `context_pack.required_steering_files`
 - `context_pack.excluded_context`
+- `context_pack.budget_notes`
+- `locked_decisions`, or an explicitly empty list when no decision locks are
+  required
 - `spec_refs`, or a justified `spec_contract.quick_flow_exemption`
 - `spec_contract`
 - `execution_intensity`
@@ -215,6 +230,10 @@ Every implementation ticket must include these fields before product-code work:
 - `forbidden_files`
 - `handoff_requirements`
 - `done_definition`
+
+Workers must stop before editing when a required context-pack item is missing,
+when a required locked decision is absent, or when the task would require
+context beyond `context_pack.budget_notes`.
 
 The `test_plan` or closeout proof must include an agent-memory update check for
 `agent/` files whenever the ticket changes durable project state, decisions,
@@ -279,6 +298,8 @@ owner.
 - Independent read-only Codex reviewers may run in parallel only when the ticket
   allows it and their questions are distinct.
 - Codex workers receive a narrow file scope and must not edit outside it.
+- Codex workers must stop and report a blocker when required files, specs,
+  steering files, or locked decisions are missing from the assigned context.
 - Codex workers must report changed files, commands run, proof, blockers, and
   risks to the manager.
 - Codex subagents must not write logs, memory files, closeout reports, or review

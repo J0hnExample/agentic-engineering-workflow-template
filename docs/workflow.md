@@ -16,12 +16,15 @@ memory closeout for a target repository.
    `tickets/templates/TEMPLATE.quick-ticket.yaml`.
 4. Build the ticket context pack from `AGENTS.md`, selected steering files,
    linked specs, linked docs, and allowed files.
-5. Start a fresh context for ticket execution.
-6. Execute only the ticket scope.
-7. Run the ticket proof gates.
-8. Close out with the installed target template
+5. Identify implementation grey areas and resolve them through user input,
+   specs, or locked decisions before planning implementation. If they cannot be
+   resolved inside scope, create a `research_only` blocker ticket.
+6. Start a fresh context for ticket execution.
+7. Execute only the ticket scope.
+8. Run the ticket proof gates.
+9. Close out with the installed target template
    `tickets/templates/TEMPLATE.execution-result.yaml`.
-9. Update `agent/*.md`, or record `agent memory checked: no update needed`.
+10. Update `agent/*.md`, or record `agent memory checked: no update needed`.
 
 Fresh-context execution is intentional. The ticket must carry enough context,
 scope, proof requirements, and stop conditions for a new Codex session to do the
@@ -144,10 +147,15 @@ Supported inclusion modes are:
 
 Tickets can make selection explicit with:
 
+- `context_pack.required_files`: exact repository files the worker must read.
+- `context_pack.required_specs`: specs the worker must read, or an explicitly
+  empty list for a justified quick-flow exemption.
 - `context_pack.required_steering_files`: steering files that must be read for
   the ticket.
 - `context_pack.excluded_context`: relevant-looking context intentionally left
   out because it is noisy, stale, unsafe, or outside scope.
+- `context_pack.budget_notes`: the context budget and stop rule for loading
+  more context.
 
 Always-loaded steering is read before specialized steering. `fileMatch` steering
 is selected from the ticket's `allowed_files`. `manual` and `auto` steering must
@@ -155,6 +163,24 @@ stay bounded to explicit references or clear task-description matches. Do not
 put secrets, private local paths, machine-specific notes, or invented product
 facts into steering files. Unknowns should remain marked as unknown until
 confirmed by repository evidence or user input.
+
+## Grey Areas And Decision Locks
+
+Before implementation planning, the manager records `context.grey_areas.status`
+as `none`, `resolved`, or `blocked`. Grey areas are decisions that would make a
+worker guess about behavior, scope, ownership, safety boundaries, proof, or
+which context is authoritative.
+
+Resolved grey areas are captured in ticket-local `locked_decisions` entries.
+Each entry includes `decision`, `rationale`, `owner`, `source`, and
+`expiry/change rule`. Use `agent/DECISIONS.md` only for durable decisions that
+future tickets must inherit; do not use it for one-off closeout notes.
+
+If a grey area cannot be resolved from current repository evidence, specs,
+existing durable decisions, or user input, stop and create or update a
+`research_only` blocker ticket. Implementation workers stop when a required
+decision or context-pack item is missing, when `context.grey_areas.status` is
+`blocked`, or when the requested context exceeds `context_pack.budget_notes`.
 
 ## Ticket Chains
 
