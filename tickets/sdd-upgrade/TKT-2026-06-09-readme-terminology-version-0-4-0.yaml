@@ -131,17 +131,64 @@ execution:
   done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
     passed or justified skips are recorded, and execution_result is complete.
 execution_result:
-  status: pending
-  changed_files: []
-  commands_run: []
-  proof: []
-  skipped_checks: []
+  status: completed
+  changed_files:
+  - README.md
+  - VERSION
+  - CHANGELOG.md
+  - agent/CHANGELOG.md
+  - tickets/sdd-upgrade/TKT-2026-06-09-readme-terminology-version-0-4-0.yaml
+  commands_run:
+  - command: git status --short
+    result: Clean before edits; after docs edits, only allowed files were dirty.
+  - command: sed -n '1,240p' tickets/sdd-upgrade/TKT-2026-06-09-readme-terminology-version-0-4-0.yaml
+    result: Read active ticket scope, allowed_files, proof gates, and closeout requirements.
+  - command: sed -n '1,260p' README.md && sed -n '261,520p' README.md
+    result: Inspected README terminology, release status, workflow sections, and reference links.
+  - command: sed -n '1,220p' CHANGELOG.md && sed -n '1,220p' agent/CHANGELOG.md && cat VERSION
+    result: Inspected current release metadata before editing.
+  - command: rg -n "workflow|spec|delta|conditional|drift|decision|context|expert|quick" docs templates prompts agent README.md
+    result: Checked existing SDD terminology and related template artifacts for README consistency.
+  - command: python -c "import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]"
+    result: Passed in the final validation pass after fixing a quoted command string in this ticket closeout.
+  - command: 'grep -R "Current version: 0.3.0" README.md'
+    result: No matches.
+  - command: 'grep -R "0.4.0" README.md VERSION CHANGELOG.md'
+    result: Found expected 0.4.0 matches in README.md, VERSION, and CHANGELOG.md.
+  - command: cat VERSION
+    result: Printed 0.4.0.
+  - command: git diff --check
+    result: Passed in the final validation pass.
+  - command: 'rg -n "Spec-as-Source|spec-first|Spec-first|spec-anchored|Spec-anchored|context pack|conditional steering|quick-flow|spec drift|delta spec|delta-spec|locked decisions|context budget|expert_routing|expert routing|prompts/spec-drift-verifier.md|templates/specs|templates/steering" README.md'
+    result: Found required README terminology and artifact references; README explicitly says it does not claim Spec-as-Source maturity.
+  - command: python - <<'PY' ... README markdown path link check ... PY
+    result: README markdown path links exist.
+  - command: 'rg -n "private local path|password|secret|token|api[_-]?key" README.md CHANGELOG.md agent/CHANGELOG.md VERSION tickets/sdd-upgrade/TKT-2026-06-09-readme-terminology-version-0-4-0.yaml'
+    result: No private local paths or credentials were introduced; matches were generic no-secrets/security text and ticket regression-gate wording.
+  - command: git diff --name-only
+    result: Only allowed files were changed.
+  proof:
+  - VERSION now contains 0.4.0.
+  - README now says Current version: 0.4.0 and describes 0.4.0 as the first SDD/context-engineering upgrade.
+  - README explains SDD mode, Spec-first versus Spec-anchored, and how the workflow differs from Vibe Coding.
+  - README documents quick-flow versus full ticket/orchestrator criteria.
+  - README references spec artifacts, delta specs, context packs, conditional steering, locked decisions, context budget, expert routing profiles, and the spec drift verifier.
+  - README includes migration/upgrade notes for existing target repositories.
+  - CHANGELOG.md has a 0.4.0 section dated 2026-06-09 and preserves the 0.3.0 history.
+  - agent/CHANGELOG.md has a generic template release-history note for this SDD upgrade ticket.
+  - No local machine notes, secrets, credentials, private local paths, product runtime assumptions, release, publish, deploy, remote operation, dependency installation, or forbidden-file edits were introduced.
+  skipped_checks:
+  - Visual gate not run because this is a documentation/version metadata ticket and visual_gate.required is false.
+  - Product tests, dependency installation, release, tagging, publishing, and remote checks were not run because they are out of scope for this docs-only template ticket.
   agent_memory_updates:
-    checked: false
-    updated_files: []
-    notes: null
+    checked: true
+    updated_files:
+    - agent/CHANGELOG.md
+    notes: Updated only the allowed generic template workflow changelog; no local machine notes or chat-specific details were added.
   blockers: []
   risks:
-  - 'Risk: version bump before all SDD tickets are implemented; mitigate by running this ticket last in
-    the orchestrator sequence.'
-  next_recommended_step: null
+  - 'Risk: version bump before all SDD tickets are implemented; mitigated by keeping README language pre-1.0,
+    explicitly avoiding Spec-as-Source maturity claims, and recording that this is the 0.4.0 SDD/context-engineering
+    workflow upgrade.'
+  next_recommended_step: Final verifier should review this ticket result, confirm allowed-file scope, and decide whether
+    to checkpoint or mark the release-doc ticket done.

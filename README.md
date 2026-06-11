@@ -1,22 +1,22 @@
 # Agentic Engineering Workflow Template
 
-Current version: 0.3.0
+Current version: 0.4.0
 
 > **Codex 5.5-led setup:** do not install this workflow by hand first.
 > Use Codex 5.5 as the setup and orchestration agent, let it inspect the target
 > repository, and let it implement the workflow layer with a scoped setup plan.
 
 `Agentic Engineering Workflow Template` turns an existing or new repository into
-a governed agentic engineering workspace. It gives Codex 5.5 an automatic
-ticket, documentation, proof, and memory workflow so agent work stays scoped,
-traceable, and reviewable.
+a governed SDD/context-engineering workspace for Codex 5.5. It gives Codex an
+automatic spec, ticket, documentation, proof, and memory workflow so agent work
+stays scoped, traceable, and reviewable.
 
 The template is designed to reduce drift and hallucinations by forcing clear
-ownership, explicit handoffs, maximum available repository context, proof gates,
-and documentation checkpoints between every meaningful step. Tickets, notes, and
-agent memory files act as the working memory for the agent system, so humans can
-focus on engineering decisions instead of manually tracking what each agent did,
-why it did it, and what must happen next.
+ownership, explicit handoffs, bounded context packs, proof gates, spec drift
+checks, and documentation checkpoints between every meaningful step. Specs,
+tickets, notes, and agent memory files act as the working memory for the agent
+system, so humans can focus on engineering decisions instead of manually
+tracking what each agent did, why it did it, and what must happen next.
 
 It is not an app, framework, service, or runtime. Use it when work needs more
 structure than one chat prompt: multi-step delivery, risky refactors, UI changes
@@ -26,6 +26,7 @@ implementation, review, and final verification.
 | Signal | Meaning |
 | --- | --- |
 | Codex 5.5 first | Use Codex 5.5 to understand, initialize, calibrate, and orchestrate the workflow. |
+| SDD mode | Use specs, tickets, context packs, and proof gates to keep agent work anchored to explicit intent. |
 | Ticket-driven memory | Tickets, closeouts, and `agent/*.md` files preserve context between agent steps. |
 | Drift control | Scope, proof gates, role boundaries, and documentation checkpoints keep work reviewable. |
 | Target-repo installed | This template stays the source; the workflow files are installed into another repo. |
@@ -57,15 +58,85 @@ the setup.
 
 ## Public Release Status
 
-Version 0.3.0 is an early public template release for Codex-managed repository
-workflows. It is meant to be copied, reviewed, and adapted inside a target
-repository before relying on it for day-to-day work.
+Version 0.4.0 is the first SDD/context-engineering upgrade for Codex-managed
+repository workflows. It is meant to be copied, reviewed, and adapted inside a
+target repository before relying on it for day-to-day work.
 
 Maturity: early practical template / pre-1.0.
 
-The template is mature enough to describe repeatable Codex roles, scoped tickets,
-proof expectations, and closeout records. It is not a guarantee that a target
-repository is ready to ship.
+The template is mature enough to describe repeatable Codex roles, scoped
+tickets, spec artifacts, context packs, proof expectations, and closeout records.
+It is not a guarantee that a target repository is ready to ship, and it does not
+claim Spec-as-Source maturity.
+
+## SDD Mode
+
+SDD mode means Codex works from explicit intent before implementation. For
+non-trivial changes, the manager should establish requirements, design, tasks,
+and, when durable behavior changes, a delta spec before assigning scoped work.
+The worker then implements against the ticket, linked specs, selected steering,
+locked decisions, and bounded context pack instead of improvising from a single
+chat prompt.
+
+This template supports two levels of SDD practice:
+
+| Mode | Use when | Required anchor |
+| --- | --- | --- |
+| Spec-first | New behavior, API, data, workflow, UI, security, migration, or architecture work needs explicit agreement before implementation. | Requirements, design, tasks, ticket scope, and delta spec when durable specs must change. |
+| Spec-anchored | A smaller change can start from an existing ticket or current spec, but implementation still has to stay aligned with the recorded contract. | Existing current specs, ticket acceptance, context pack, locked decisions, and proof gates. |
+
+This is different from Vibe Coding. Codex can still move quickly, but the work
+is not accepted because it "looks right" in a chat. The workflow asks Codex to
+name the relevant files and specs, lock grey-area decisions, state what context
+is intentionally excluded, prove the result, and record whether any spec drift
+or follow-up remains.
+
+SDD artifacts in this template include:
+
+- `specs/current/**` for durable current behavior, contracts, workflows, and
+  important constraints after installation in a target repository.
+- `specs/changes/<change-id>/proposal.md`, `delta-spec.md`, `design.md`, and
+  `tasks.md` for proposed changes.
+- `templates/specs/TEMPLATE.*.md` for requirements, design, tasks, and delta
+  spec structure.
+- `context_pack.required_files`, `context_pack.required_specs`,
+  `context_pack.required_steering_files`, `context_pack.excluded_context`, and
+  `context_pack.budget_notes` in ticket templates.
+- `locked_decisions` for pre-implementation decisions that resolve grey areas.
+- `templates/steering/*.md` for conditional steering that loads specialized
+  guidance only when file patterns, task types, or manual selection require it.
+- `expert_routing` profiles for targeted read-only review by lens, such as
+  requirements, architecture, test, security/privacy, UX/visual,
+  performance/reliability, data migration, or docs/release.
+- `prompts/spec-drift-verifier.md` for read-only comparison of specs, tickets,
+  implementation, tests, docs, and closeout.
+
+## Quick-Flow vs Full Orchestrator
+
+Use quick-flow only for tiny, clear, low-risk work that already has repository
+discovery evidence, exact `allowed_files`, exact `forbidden_files`, concrete
+Given-When-Then acceptance, proof, closeout, no-secrets handling, approval
+boundaries, and a justified `spec_contract.quick_flow_exemption`.
+
+Use a full ticket or orchestrator when the change needs more than 3 non-ticket
+files, more than 1 behavior module, requirements/design/tasks specs, a delta
+spec lifecycle, conditional steering conflict resolution, expert routing,
+architecture decisions, dependency changes, data migration, auth, security,
+privacy, unclear acceptance, unavailable proof, visual/product ambiguity, files
+outside scope, or spec drift repair. For larger delivery, the orchestrator owns
+the context budget, creates child tickets, routes the minimum useful read-only
+experts, and keeps specs, tickets, implementation, and proof aligned.
+
+## Upgrade Notes For Existing Targets
+
+Existing repositories initialized from 0.3.0 should update the workflow files
+intentionally instead of blindly overwriting local rules. Ask Codex to compare
+the target `AGENTS.md`, `agent/*.md`, ticket templates, prompts, checklists,
+steering files, and specs against this template, preserve project-specific
+rules, and add the 0.4.0 concepts only where they fit the target repository.
+After updating, run one small calibration ticket and one quick-flow candidate to
+confirm context packs, quick-flow escalation, spec drift verification, and
+closeout records are working as expected.
 
 ## Codex Quickstart
 
