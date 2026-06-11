@@ -4,7 +4,7 @@ ticket:
   title: Add routing profiles for the existing read-only expert team
   repo: agentic-engineering-workflow-template
   branch: main
-  status: backlog
+  status: done
   created_at: '2026-06-09'
   owner_agent: manager
   ticket_class: implementation
