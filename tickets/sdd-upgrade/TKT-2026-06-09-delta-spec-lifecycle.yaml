@@ -124,17 +124,54 @@ execution:
   done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
     passed or justified skips are recorded, and execution_result is complete.
 execution_result:
-  status: pending
-  changed_files: []
-  commands_run: []
-  proof: []
-  skipped_checks: []
+  status: done
+  changed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml
+  - templates/specs/TEMPLATE.delta-spec.md
+  - docs/spec_lifecycle.md
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+  - checklists/closeout.md
+  - prompts/final-verifier.md
+  commands_run:
+  - "pwd && git status --short --branch"
+  - "rg --files -g 'AGENTS.md' -g 'tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml' -g 'docs/spec_lifecycle.md' -g 'docs/workflow.md' -g 'templates/AGENTS.md.template' -g 'checklists/closeout.md' -g 'prompts/final-verifier.md' -g 'templates/specs/**'"
+  - "sed -n '1,260p' tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml"
+  - "sed -n '1,260p' docs/workflow.md"
+  - "sed -n '1,260p' docs/spec_lifecycle.md"
+  - "sed -n '1,260p' templates/AGENTS.md.template"
+  - "sed -n '1,260p' checklists/closeout.md"
+  - "sed -n '1,260p' prompts/final-verifier.md"
+  - "sed -n '1,260p' templates/specs/TEMPLATE.requirements.md"
+  - "sed -n '1,260p' templates/specs/TEMPLATE.design.md"
+  - "sed -n '1,260p' templates/specs/TEMPLATE.tasks.md"
+  - "git diff -- docs/workflow.md templates/AGENTS.md.template checklists/closeout.md prompts/final-verifier.md docs/spec_lifecycle.md templates/specs/TEMPLATE.delta-spec.md"
+  - "rg -n \"delta-spec|specs/current|specs/changes|specs/archive|ADDED|MODIFIED|REMOVED|spec_contract|spec_refs|expert_routing|read-only|approval\" docs templates checklists prompts tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml"
+  - "python -c \"import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]\""
+  - "python -c \"import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]\""
+  - "git diff --check"
+  - "if rg -n \"[ \\t]+$\" docs/spec_lifecycle.md templates/specs/TEMPLATE.delta-spec.md; then exit 1; else echo \"no trailing whitespace\"; fi"
+  proof:
+  - "Added `templates/specs/TEMPLATE.delta-spec.md` with `ADDED`, `MODIFIED`, and `REMOVED` sections, current-spec references, conflict handling, proof mapping, and archive closeout."
+  - "Added `docs/spec_lifecycle.md` documenting propose, apply, and archive in repo-local terms without any CLI or dependency requirement."
+  - "Updated `docs/workflow.md` with the target `specs/current/**`, `specs/changes/<change-id>/{proposal.md,delta-spec.md,design.md,tasks.md}`, and `specs/archive/**` layout plus closeout and conflict rules."
+  - "Updated `templates/AGENTS.md.template` to preserve scoped-worker safety, `spec_refs`/`spec_contract`, and expert routing while adding delta-spec obligations for significant changes."
+  - "Updated `checklists/closeout.md` with lifecycle, merge/archive, and parallel-spec-conflict checks."
+  - "Updated `prompts/final-verifier.md` so verification checks implementation against delta-spec intent and current spec/archive handling or a deferred blocker."
+  - "Initial YAML parse failed on unquoted ticket proof entries containing backticks; the ticket formatting was corrected and the same YAML parse command passed on rerun."
+  - "YAML parse check passed for repository `*.yaml` files."
+  - "`git diff --check` passed."
+  - "Focused trailing-whitespace check for new untracked Markdown files passed with no matches."
+  skipped_checks:
+  - No formatter, lint, typecheck, unit test, build, or browser check was run because this ticket only changes Markdown/YAML workflow templates and no repo-local command for those checks is required by the ticket.
+  - No README or ticket-template edits were made because they are outside this ticket's allowed_files.
   agent_memory_updates:
-    checked: false
+    checked: true
     updated_files: []
-    notes: null
+    notes: "agent memory checked: no update needed; this template ticket explicitly forbids editing agent/*.md, and no target-repo runtime state was changed."
   blockers: []
   risks:
   - 'Risk: maintaining current specs creates overhead; mitigate by requiring it only for significant behavior/API/workflow
     changes.'
-  next_recommended_step: null
+  - 'Risk: target repositories must adopt the specs/current, specs/changes, and specs/archive layout consistently; mitigate through the updated workflow, AGENTS template, closeout checklist, and final verifier prompt.'
+  next_recommended_step: "Use the updated lifecycle on the next significant target-repository change and archive/merge the delta spec during closeout."

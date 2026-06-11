@@ -7,8 +7,10 @@ memory closeout for a target repository.
 
 1. Plan one bounded step from current repository evidence.
 2. For non-trivial work, create or update compact spec artifacts for
-   requirements, design, and tasks. For tiny quick-flow work, record the
-   exemption reason in the ticket.
+   requirements, design, and tasks. For significant behavior, API, data, or
+   workflow changes, also create a delta spec under `specs/changes/<change-id>/`
+   or record why the lifecycle does not apply. For tiny quick-flow work, record
+   the exemption reason in the ticket.
 3. Create a ticket from the installed target template
    `tickets/templates/TEMPLATE.ticket.yaml`.
 4. Start a fresh context for ticket execution.
@@ -34,11 +36,35 @@ Non-trivial implementation work starts from a compact spec package:
   concerns.
 - `tasks.md` captures dependency-ordered tasks with owner role, allowed files,
   proof, and traceability to requirements.
+- `delta-spec.md` captures durable spec changes in `ADDED`, `MODIFIED`, and
+  `REMOVED` sections so implementation can be checked against the intended
+  lifecycle update.
 
 The source templates live in `templates/specs/` before installation. In a target
 repository, copy them to the project-local spec location named by the ticket.
 Implementation tickets link to the package with `spec_refs` and declare the
 contract with `spec_contract`.
+
+For ongoing maintenance, use this target repository layout:
+
+- `specs/current/**` contains the durable current specs for implemented
+  behavior, contracts, workflows, and important constraints.
+- `specs/changes/<change-id>/proposal.md` explains the change intent and
+  scope.
+- `specs/changes/<change-id>/delta-spec.md` records `ADDED`, `MODIFIED`, and
+  `REMOVED` updates against `specs/current/**`.
+- `specs/changes/<change-id>/design.md` and `tasks.md` hold the implementation
+  plan when the change is non-trivial.
+- `specs/archive/<date>-<change-id>/**` stores accepted or closed delta-spec
+  packages after closeout.
+
+At closeout, significant changes must either merge the delta into
+`specs/current/**` and archive the change package, or record a deferred spec
+update blocker in the ticket result. Parallel tickets that touch the same
+current spec path or requirement ID must stop and reconcile before either ticket
+archives its delta.
+
+See `docs/spec_lifecycle.md` for the propose/apply/archive lifecycle.
 
 Tiny typo, formatting, or documentation-only changes may use quick flow instead
 of a full spec package. The ticket must set
@@ -60,6 +86,9 @@ multi-stage delivery.
 - Ticket comments and execution results pass context into the next child ticket.
 - Child implementation tickets link to the parent spec package, a narrowed child
   spec, or an explicit quick-flow exemption.
+- Child tickets that materially change durable behavior should link to the
+  relevant `specs/changes/<change-id>/delta-spec.md` and identify any
+  `specs/current/**` files they intend to update.
 - Record worker closeout with the installed target template
   `tickets/templates/TEMPLATE.execution-result.yaml`.
 - The manager looks back at recent child ticket results before planning the next

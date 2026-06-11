@@ -19,8 +19,11 @@ product-specific assumptions in this file.
 - `AGENTS.md` - durable Codex agent workflow rules.
 - `agent/` - repo-local state, decisions, known issues, and handoff notes.
 - `tickets/` - scoped workflow records for non-trivial work.
-- `specs/` - compact requirements, design, and task artifacts for non-trivial
-  feature or bugfix work.
+- `specs/current/` - durable current specs for implemented behavior, contracts,
+  workflows, and important constraints.
+- `specs/changes/<change-id>/` - proposed change specs, typically
+  `proposal.md`, `delta-spec.md`, `design.md`, and `tasks.md`.
+- `specs/archive/` - accepted or closed change specs kept for history.
 - `docs/` - reusable implementation paths, architecture notes, and proof
   records.
 - `src/`, `app/`, `pages/`, `components/`, `lib/`, `server/`, `tests/`, and
@@ -68,6 +71,9 @@ files.
 - Non-trivial implementation work must link requirements, design, and tasks
   specs, or record a justified quick-flow exemption in the ticket before
   product-code work starts.
+- Significant behavior, API, data, workflow, or durable documentation changes
+  must link a delta spec under `specs/changes/<change-id>/delta-spec.md` or
+  record why the delta-spec lifecycle does not apply.
 - Codex implementation workers must work from the active ticket scope and keep changes
   inside the ticket's declared files unless the user widens scope.
 - After each meaningful step, record the result as a ticket comment or result
@@ -82,6 +88,13 @@ files.
   update. If they do, update them inside the ticket scope or record why the
   update is deferred. If they do not, record `agent memory checked: no update
   needed` in the ticket result.
+- Before closing significant changes, merge accepted `ADDED`, `MODIFIED`, and
+  `REMOVED` delta-spec items into `specs/current/**` and archive the change
+  package under `specs/archive/<date>-<change-id>/`, or record a deferred spec
+  update blocker in the ticket result.
+- If parallel tickets touch the same `specs/current/**` file or requirement ID,
+  stop and reconcile the conflict before implementation continues or either
+  ticket archives its delta.
 - Stage only files in the ticket scope plus the ticket record. Do not use bulk
   staging such as `git add -A`.
 - Do not revert changes you did not make unless explicitly requested.
@@ -152,6 +165,12 @@ agent memory. The specs must keep acceptance criteria, design boundaries,
 allowed-file tasks, proof, and requirement traceability aligned. Tiny quick-flow
 changes may skip full specs only when the ticket records a concrete exemption
 reason.
+
+For significant changes, `spec_refs` should also include the delta spec. The
+delta spec uses `ADDED`, `MODIFIED`, and `REMOVED` sections to describe how
+`specs/current/**` must change. Final verification checks that implementation
+matches the delta intent and that the current spec update was merged, archived,
+or explicitly deferred with a blocker.
 
 The `test_plan` must list concrete checks that decide whether the ticket may be
 marked done. For web applications, use relevant repo-local checks such as:
