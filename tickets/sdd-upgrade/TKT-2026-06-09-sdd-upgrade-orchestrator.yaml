@@ -3,8 +3,8 @@ ticket:
   id: TKT-2026-06-09-sdd-upgrade-orchestrator
   title: Orchestrate SDD/context-engineering upgrade for workflow template
   repo: agentic-engineering-workflow-template
-  branch: main
-  status: backlog
+  branch: feature/sdd-workflow-v0.4.0
+  status: done
   created_at: '2026-06-09'
   owner_agent: manager
   ticket_class: orchestrator
@@ -212,16 +212,119 @@ done_definition: Done when the SDD upgrade is delivered through completed child 
   the agent memory update check is complete, and this orchestrator ticket contains a concise execution_result
   manager closeout.
 execution_result:
-  status: pending
-  child_ticket_status: []
-  changed_files: []
-  commands_run: []
-  proof: []
-  skipped_checks: []
+  status: done
+  child_ticket_status:
+  - id: TKT-2026-06-09-expert-routing-profiles
+    status: done
+    commit: af1104b
+  - id: TKT-2026-06-09-spec-artifact-package
+    status: done
+    commit: be296f9
+  - id: TKT-2026-06-09-delta-spec-lifecycle
+    status: done
+    commit: fd8856c
+  - id: TKT-2026-06-09-spec-drift-verifier
+    status: done
+    commit: 667d6f0
+  - id: TKT-2026-06-09-conditional-steering
+    status: done
+    commit: 1e1b41f
+  - id: TKT-2026-06-09-quick-flow-escalation
+    status: done
+    commit: 4d40100
+  - id: TKT-2026-06-09-decision-lock-context-budget
+    status: done
+    commit: df74f1b
+  - id: TKT-2026-06-09-readme-terminology-version-0-4-0
+    status: done
+    commit: d95d5eb
+  changed_files:
+  - README.md
+  - VERSION
+  - CHANGELOG.md
+  - agent/CHANGELOG.md
+  - agent/DECISIONS.md
+  - checklists/closeout.md
+  - checklists/spec-drift.md
+  - checklists/ticket-readiness.md
+  - docs/sdd_article_integration_evaluation.md
+  - docs/spec_lifecycle.md
+  - docs/workflow.md
+  - prompts/final-verifier.md
+  - prompts/initialize-repo.md
+  - prompts/manager-orchestrator.md
+  - prompts/quick-dev.md
+  - prompts/read-only-expert.md
+  - prompts/scoped-worker.md
+  - prompts/spec-drift-verifier.md
+  - templates/AGENTS.md.template
+  - templates/TEMPLATE.execution-result.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+  - templates/TEMPLATE.quick-ticket.yaml
+  - templates/TEMPLATE.ticket.yaml
+  - templates/specs/TEMPLATE.delta-spec.md
+  - templates/specs/TEMPLATE.design.md
+  - templates/specs/TEMPLATE.requirements.md
+  - templates/specs/TEMPLATE.tasks.md
+  - templates/steering/product.md
+  - templates/steering/security.md
+  - templates/steering/structure.md
+  - templates/steering/tech.md
+  - templates/steering/testing.md
+  - tickets/sdd-upgrade/README.md
+  - tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml
+  - tickets/sdd-upgrade/TKT-2026-06-09-decision-lock-context-budget.yaml
+  - tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml
+  - tickets/sdd-upgrade/TKT-2026-06-09-expert-routing-profiles.yaml
+  - tickets/sdd-upgrade/TKT-2026-06-09-quick-flow-escalation.yaml
+  - tickets/sdd-upgrade/TKT-2026-06-09-readme-terminology-version-0-4-0.yaml
+  - tickets/sdd-upgrade/TKT-2026-06-09-sdd-upgrade-orchestrator.yaml
+  - tickets/sdd-upgrade/TKT-2026-06-09-spec-artifact-package.yaml
+  - tickets/sdd-upgrade/TKT-2026-06-09-spec-drift-verifier.yaml
+  commands_run:
+  - git apply --check sdd_upgrade_tickets_v2.patch
+  - git apply -p5 sdd_upgrade_tickets_v2.patch
+  - python -c "import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]"
+  - git diff --check
+  - python markdown relative path link sanity check for README, docs, prompts, and checklists
+  - grep -R "Current version: 0.3.0" README.md
+  - grep -R "0.4.0" README.md VERSION CHANGELOG.md
+  - cat VERSION
+  - rg secret/private-local-path pattern scan across README, changelogs, docs, prompts, checklists, templates,
+    tickets, and agent files
+  - read-only final verifier subagent pass after ticket status fix
+  proof:
+  - Patch/ticket set applied from sdd_upgrade_tickets_v2.patch and committed before implementation.
+  - Eight child tickets were implemented serially with one subagent per ticket, then reviewed by the manager.
+  - All child implementation tickets now have ticket.status done and execution_result.status done or completed.
+  - VERSION is 0.4.0, README has Current version 0.4.0, and CHANGELOG.md preserves the 0.3.0 history.
+  - README explicitly avoids claiming Spec-as-Source maturity and documents SDD mode, Spec-first,
+    Spec-anchored, quick-flow versus full orchestrator criteria, and upgrade notes.
+  - Workflow now includes requirements/design/tasks specs, delta specs with ADDED/MODIFIED/REMOVED, spec
+    drift verification, conditional steering, quick-flow escalation, decision locks/context budget, and
+    expert routing profiles.
+  - YAML parse passed for all repository YAML files.
+  - git diff --check passed.
+  - Markdown relative path link sanity check passed; markdownlint was unavailable.
+  - Secret/private-local-path pattern scan produced no actionable matches after removing a local-path search
+    pattern from one ticket closeout.
+  - Read-only final verifier found an initial ticket-status blocker; it was fixed and rechecked with PASS.
+  skipped_checks:
+  - markdownlint was not installed in the environment; a repository-local Markdown path-link sanity check was
+    run instead.
+  - Product lint, typecheck, build, runtime tests, browser checks, deployment, release, and tagging were not
+    run because this repository is a workflow/template documentation package and no runtime product code
+    changed.
   agent_memory_updates:
-    checked: false
-    updated_files: []
-    notes: null
+    checked: true
+    updated_files:
+    - agent/CHANGELOG.md
+    - agent/DECISIONS.md
+    notes: Updated only generic template files in allowed scope. No local machine notes, private paths,
+      secrets, or chat-specific closeout notes were added to agent files.
   blockers: []
-  risks: []
-  next_recommended_step: null
+  risks:
+  - Existing target repositories must adopt the 0.4.0 workflow intentionally and preserve their project-specific
+    rules instead of blindly overwriting local AGENTS.md or agent memory.
+  - markdownlint was unavailable, so Markdown style beyond link existence was not automatically checked.
+  next_recommended_step: Push feature/sdd-workflow-v0.4.0 and open a pull request for review.
