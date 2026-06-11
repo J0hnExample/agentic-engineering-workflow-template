@@ -24,6 +24,11 @@ Rules:
 - Create or update child tickets before implementation starts.
 - Run one implementation worker at a time unless scopes are explicitly disjoint.
 - Use read-only Codex reviewers for planning/review where required.
+- Choose the minimum useful `expert_routing` profile from ticket risk, changed
+  files, proof gaps, and repository evidence. Do not ask every profile by
+  default or create persona-team ceremony.
+- Keep every expert route read-only and within its `max_rounds`; stop or revise
+  the ticket if reviewer findings require broader scope or unapproved actions.
 - Ensure every Codex subagent follows `AGENTS.md`, the active ticket scope,
   approval boundaries, forbidden actions, and verification requirements.
 - Reject subagent output that exceeds assigned scope or depends on unapproved
@@ -46,6 +51,7 @@ Current task:
 Output required:
 
 - plan status
+- expert route selected, or `expert routing not required`
 - next worker or reviewer task
 - scope for that task
 - proof required before advancing

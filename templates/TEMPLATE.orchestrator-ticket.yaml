@@ -44,6 +44,41 @@ orchestration:
     Read-only Codex reviewers may run in parallel only for independent
     questions. Implementation workers run serially unless child tickets declare
     disjoint write scopes.
+  expert_routing:
+    required_profiles:
+      - requirements
+    optional_profiles:
+      - architecture
+      - test
+      - security_privacy
+      - ux_visual
+      - performance_reliability
+      - data_migration
+      - docs_release
+    triggers:
+      - profile: requirements
+        when: "Acceptance criteria, child-ticket boundaries, or done behavior is ambiguous."
+      - profile: architecture
+        when: "The plan crosses module boundaries or changes shared contracts."
+      - profile: test
+        when: "The proof strategy, fixtures, or regression surface is unclear."
+      - profile: security_privacy
+        when: "Auth, secrets, permissions, user data, or privacy boundaries may change."
+      - profile: ux_visual
+        when: "User-facing UI, copy, layout, accessibility, or visual behavior changes."
+      - profile: performance_reliability
+        when: "Latency, concurrency, resource use, retries, or failure modes may change."
+      - profile: data_migration
+        when: "Schema, persistence, migrations, backfills, or data compatibility may change."
+      - profile: docs_release
+        when: "Operational docs, release notes, setup, or rollout behavior may change."
+    max_rounds: 2
+    escalation_rule: >
+      Use the minimum useful read-only expert route for the chain. Do not ask
+      every profile by default. Stop instead of widening scope if expert findings
+      require files, commands, or approvals outside the orchestrator or child
+      tickets.
+    record_location: "execution_result"
   worker_sequence:
     - stage: 0
       id: planning_review

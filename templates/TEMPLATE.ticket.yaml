@@ -58,6 +58,33 @@ execution:
     planning_reviewer: null
     reviewer: null
     record_location: "execution_result"
+  expert_routing:
+    required_profiles: []
+    optional_profiles: []
+    triggers:
+      - profile: requirements
+        when: "Acceptance criteria, scope, or user-visible behavior is ambiguous."
+      - profile: architecture
+        when: "The change crosses module boundaries or alters shared contracts."
+      - profile: test
+        when: "Coverage, fixtures, or proof strategy is unclear or high risk."
+      - profile: security_privacy
+        when: "Auth, secrets, permissions, user data, or privacy boundaries may change."
+      - profile: ux_visual
+        when: "User-facing UI, copy, layout, accessibility, or visual behavior changes."
+      - profile: performance_reliability
+        when: "Latency, concurrency, resource use, retries, or failure modes may change."
+      - profile: data_migration
+        when: "Schema, persistence, migrations, backfills, or data compatibility may change."
+      - profile: docs_release
+        when: "Operational docs, release notes, setup, or rollout behavior may change."
+    max_rounds: 0
+    escalation_rule: >
+      Use the minimum useful read-only expert route. Set max_rounds to 0 when
+      no expert review is required, 1 for a targeted review, or a small explicit
+      cap for risky tickets. Stop instead of widening scope if expert findings
+      require files, commands, or approvals outside this ticket.
+    record_location: "execution_result"
   debug_logging_plan:
     owner: scoped_worker
     surfaces:

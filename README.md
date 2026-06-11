@@ -181,7 +181,10 @@ shape around its normal product code, tests, package files, docs, and scripts:
   explicit `allowed_files`, reports changed files and proof, and stops if scope
   needs to expand.
 - `read-only reviewer`: a Codex subagent or role prompt that reviews plans,
-  risks, code, tests, or architecture without editing files.
+  risks, code, tests, or architecture without editing files. Reviewer routes can
+  use the `requirements`, `architecture`, `test`, `security_privacy`,
+  `ux_visual`, `performance_reliability`, `data_migration`, or `docs_release`
+  profile as a narrow review lens.
 - `final verifier`: a Codex reviewer that checks scope, proof gates, regression
   gates, skipped checks, and agent-memory closeout before a ticket or chain is
   marked done.
@@ -194,6 +197,12 @@ The execution modes are defined in the templates and docs:
 `standard_worker`, `expert_supported`, `bounded_expert_rounds`, and
 `research_only`.
 
+Tickets can add `expert_routing` to declare required profiles, optional
+profiles, trigger conditions, `max_rounds`, escalation behavior, and where
+reviewer output is recorded. The manager chooses the minimum useful read-only
+route from ticket risk and repository evidence; simple tickets can explicitly
+set no required profiles and `max_rounds: 0`.
+
 ## Safety Model
 
 The template is built around narrow scope and explicit proof:
@@ -205,7 +214,9 @@ The template is built around narrow scope and explicit proof:
   out-of-scope work, proof gates, regression gates, stop conditions, and done
   definitions.
 - Implementation workers edit only assigned scope and do not use bulk staging.
-- Read-only Codex reviewers may analyze but do not edit files.
+- Read-only Codex reviewers may analyze but do not edit files, run migrations,
+  install dependencies, deploy, release, use secrets, push, perform remote
+  operations, or widen scope.
 - Closeout records changed files, commands run, proof, skipped checks, blockers,
   risks, and whether `agent/*.md` needed updates.
 - If no durable agent-memory update is needed, closeout records:
@@ -228,7 +239,8 @@ rules only after reviewing the target repository's real context.
    [`prompts/scoped-worker.md`](prompts/scoped-worker.md), edits only the ticket
    scope, and records proof.
 5. If the work is risky or blocked, the manager asks a read-only Codex reviewer
-   using [`prompts/read-only-expert.md`](prompts/read-only-expert.md).
+   using [`prompts/read-only-expert.md`](prompts/read-only-expert.md) and the
+   smallest useful `expert_routing` profile.
 6. The worker or manager records closeout using
    [`templates/TEMPLATE.execution-result.yaml`](templates/TEMPLATE.execution-result.yaml).
 7. A final verifier uses

@@ -56,6 +56,21 @@ files, commands, proof, skipped checks, blockers, risks, and memory updates.
 risk, architecture, tests, or review questions without editing files. Reviewer
 output should become ticket context for the next worker.
 
+Read-only reviewers can be routed through small reusable expert profiles:
+`requirements`, `architecture`, `test`, `security_privacy`, `ux_visual`,
+`performance_reliability`, `data_migration`, and `docs_release`. These profiles
+are review lenses for the existing workflow, not a separate team model. The
+manager chooses the minimum useful route from ticket risk, changed files,
+unknowns, and proof gaps. Simple tickets can set no required profiles and
+`max_rounds: 0`.
+
+Every profile remains read-only. Expert reviewers may inspect files and report
+bounded findings, proof requirements, and the next worker task. They may not edit
+files, run migrations, install dependencies, deploy, release, use secrets, push,
+perform remote operations, or widen scope. If a finding requires broader files or
+unapproved actions, the manager stops, revises the ticket, or creates a new
+scoped ticket instead of letting the reviewer act.
+
 `final verifier` checks the result against scope, proof gates, regression gates,
 skipped checks, and memory closeout. It does not repair issues unless the
 manager creates or assigns a repair ticket.
@@ -72,11 +87,14 @@ active ticket and user approval allow the exact action.
 direct proof.
 
 `expert_supported` means a read-only Codex planning or review subagent runs
-before or after one scoped worker.
+before or after one scoped worker. Use `expert_routing` to declare required and
+optional review profiles, triggers, max rounds, escalation behavior, and where
+findings are recorded.
 
 `bounded_expert_rounds` means the manager runs a capped loop: collect proof,
 ask a read-only Codex reviewer, assign one bounded worker task, run proof, then
-checkpoint or record a blocker.
+checkpoint or record a blocker. The cap comes from `expert_routing.max_rounds`
+and should be the smallest number that matches the ticket risk.
 
 `research_only` means read-only Codex reviewers analyze and recommend. Product
 files do not change.

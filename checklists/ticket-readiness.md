@@ -13,6 +13,11 @@ Use before product-code work starts.
 - [ ] `manager_role` is explicit.
 - [ ] `worker_sequence` is ordered and each worker has a bounded task.
 - [ ] `expert_plan` says whether read-only Codex reviewer input is required.
+- [ ] `expert_routing` lists required profiles, optional profiles, triggers,
+  `max_rounds`, escalation rule, and record location, or explicitly sets no
+  required profiles and `max_rounds: 0`.
+- [ ] Expert routing uses the minimum useful read-only profile route and does
+  not require every profile by default.
 - [ ] Any Codex subagent role inherits `AGENTS.md`, ticket scope, approval
   boundaries, forbidden actions, and verification requirements.
 - [ ] `debug_logging_plan` names an owner and surfaces.
