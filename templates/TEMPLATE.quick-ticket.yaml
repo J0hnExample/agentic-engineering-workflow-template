@@ -1,0 +1,208 @@
+schema_version: 2
+
+ticket:
+  id: TKT-YYYY-MM-DD-short-name
+  title: "Short human-readable quick-flow title"
+  repo: "<repo-name>"
+  branch: "<target-branch>"
+  status: backlog
+  created_at: "YYYY-MM-DD"
+  owner_agent: "<manager-or-worker-name>"
+  ticket_class: quick_flow
+  work_kind: "<documentation|test|bugfix|small-feature|cleanup>"
+  phase: "<project-phase-or-milestone>"
+
+objective: >
+  One tiny, clear, bounded outcome. Quick-flow is allowed only when the task
+  can be understood from repository evidence, implemented in a few known files,
+  and verified with concrete proof.
+
+context:
+  problem: >
+    Describe the small problem. Mark unknowns explicitly.
+  current_behavior: >
+    Describe current evidence. Do not guess.
+  desired_behavior: >
+    Describe the target observable behavior.
+  quick_flow_reason: >
+    Explain why full requirements/design/tasks specs are not needed.
+
+context_pack:
+  required_steering_files: []
+  excluded_context: []
+
+spec_refs: null
+
+spec_contract:
+  required: true
+  quick_flow_exemption:
+    used: true
+    reason: "Tiny bounded change with concrete files, acceptance, and proof."
+  preserves_spec_contracts: true
+  delta_lifecycle: "Not required for tiny quick-flow; escalate if durable behavior, API, data, or workflow specs must change."
+  traceability_required: true
+
+discovery_evidence:
+  repo_scan:
+    - "Command or file inspected, with concise finding."
+  patterns_found:
+    - "Existing pattern this change follows."
+  unknowns:
+    - "Unknowns that do not block quick-flow, or 'none'."
+  escalation_check: "No escalation trigger found before implementation."
+
+scope:
+  allowed_files:
+    - "tickets/TKT-YYYY-MM-DD-short-name.yaml"
+    - "<one-or-more-exact-files>"
+  forbidden_files:
+    - ".env"
+    - ".env.*"
+    - "node_modules/**"
+    - "dist/**"
+    - "build/**"
+    - ".next/**"
+    - "coverage/**"
+  in_scope:
+    - "Specific small change allowed by this ticket."
+  out_of_scope:
+    - "Any adjacent work that requires full ticket or orchestrator flow."
+
+acceptance_given_when_then:
+  - id: AC-001
+    given: "A concrete precondition from repo evidence."
+    when: "The changed behavior or document is used."
+    then: "The observable result that proves the objective."
+
+proof:
+  commands:
+    - "Parse changed YAML files if any YAML changed."
+    - "Run targeted test, lint, docs check, or manual inspection relevant to this change."
+    - "git diff --check"
+  manual_checks:
+    - "Manual inspection needed, or 'none'."
+  required_before_done:
+    - "Acceptance criteria are satisfied."
+    - "Proof passed or skipped checks are justified."
+    - "execution_result is complete."
+
+escalation_conditions:
+  max_non_ticket_files: 3
+  max_behavior_modules: 1
+  triggers:
+    - "More than 3 non-ticket files need edits."
+    - "More than 1 package, service, app, or bounded module needs behavior changes."
+    - "Architecture decision or shared contract change is required."
+    - "Dependency add, remove, upgrade, or configuration change is required."
+    - "Schema, storage, data migration, backfill, or destructive cleanup is required."
+    - "Auth, security, permissions, secrets, privacy, payments, deployment, release, remotes, or external-service behavior may change."
+    - "Acceptance is unclear, contradictory, or missing observable outcomes."
+    - "Proof is unavailable, flaky, network-dependent without approval, or failing for unclear reasons."
+    - "User-facing UI, product copy, layout, accessibility, or visual behavior is ambiguous or needs unspecified visual proof."
+    - "Needed files are outside allowed_files or match forbidden_files."
+    - "Spec drift, conditional steering conflict, delta lifecycle work, or expert routing is discovered."
+    - "The change would bypass proof gates, no-secrets rules, approval boundaries, closeout, or no bulk staging."
+  escalation_action: >
+    Stop quick-flow implementation, record the trigger in execution_result, and
+    convert to a full ticket or parent orchestrator flow before continuing.
+
+execution:
+  execution_intensity: standard_worker
+  manager_role: >
+    Main Codex agent owns scope, verifies the work, and records proof in this
+    ticket. Any Codex subagent inherits AGENTS.md, the active ticket scope,
+    approval boundaries, forbidden actions, and verification requirements.
+  worker_sequence:
+    - role: scoped_worker
+      mode: quick_flow_implementation
+      task: "Implement only the quick-flow change described in this ticket."
+  expert_plan:
+    required: false
+    planning_reviewer: null
+    reviewer: null
+    record_location: "execution_result"
+  expert_routing:
+    required_profiles: []
+    optional_profiles: []
+    triggers:
+      - profile: requirements
+        when: "Acceptance, scope, or observable behavior is unclear."
+      - profile: architecture
+        when: "The change crosses module boundaries or alters shared contracts."
+      - profile: test
+        when: "Proof strategy is missing, flaky, or too broad."
+      - profile: security_privacy
+        when: "Auth, secrets, permissions, user data, or privacy boundaries may change."
+      - profile: ux_visual
+        when: "UI, copy, layout, accessibility, or visual behavior is ambiguous."
+      - profile: performance_reliability
+        when: "Latency, concurrency, resource use, retries, or failure modes may change."
+      - profile: data_migration
+        when: "Schema, persistence, migrations, backfills, or compatibility may change."
+      - profile: docs_release
+        when: "Operational docs, release, setup, or rollout behavior may change."
+    max_rounds: 0
+    escalation_rule: "Any expert routing trigger escalates quick-flow to full ticket or orchestrator review before implementation continues."
+    record_location: "execution_result"
+  debug_logging_plan:
+    owner: scoped_worker
+    surfaces:
+      - "Discovery commands and proof output."
+    temporary_logging_policy: "Do not add temporary logs; record command output only in execution_result."
+  test_plan:
+    - "Verify quick_flow_exemption is justified."
+    - "Review discovery evidence and escalation conditions before editing."
+    - "Run proof.commands that are available and relevant."
+    - "Run git diff --check."
+    - "Check whether agent files need updates and record the result."
+  proof_gates:
+    - "Quick-flow exemption is justified and recorded."
+    - "Discovery evidence names current files or commands inspected."
+    - "Acceptance criteria are concrete Given-When-Then cases."
+    - "No escalation condition is active."
+    - "No forbidden files changed."
+    - "No secrets or private local paths are introduced."
+    - "Relevant proof passes or skipped checks are justified."
+    - "execution_result records changed files, commands, proof, skipped checks, blockers, risks, and agent memory check."
+  regression_gates:
+    - "No unrelated files changed."
+    - "No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service action occurs without explicit approval."
+    - "No bulk staging is used."
+    - "Existing spec contracts, conditional steering, delta lifecycle, spec drift checks, and expert routing remain stricter or equivalent."
+  visual_gate:
+    required: false
+    required_views: []
+    pass_rule: "Escalate if user-facing visual proof is needed and not already specified."
+  checkpoint_policy: "Create a scoped checkpoint commit only after proof passes or after explicit user approval."
+  rollback_or_accept_policy: >
+    If the quick change fails proof and the fix is not obvious inside
+    allowed_files, keep the ticket non-done, record the blocker, and escalate.
+  stop_conditions:
+    - "Any escalation condition becomes true."
+    - "Required files or commands are missing and cannot be inferred safely."
+    - "The change requires editing forbidden files."
+    - "The work requires dependency installation, destructive commands, remote operations, deployment, release, secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit approval."
+  handoff_requirements:
+    - "Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates, and next action."
+  done_definition: >
+    Done when the quick-flow change is implemented within allowed_files,
+    acceptance and proof are satisfied, no escalation trigger remains active,
+    and execution_result is complete.
+
+execution_result:
+  status: pending
+  changed_files: []
+  commands_run: []
+  proof: []
+  skipped_checks: []
+  agent_memory_updates:
+    checked: false
+    updated_files: []
+    notes: null
+  blockers: []
+  risks: []
+  escalation:
+    triggered: false
+    conditions: []
+    converted_to_full_ticket: false
+  next_recommended_step: null

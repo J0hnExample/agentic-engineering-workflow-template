@@ -4,7 +4,7 @@ ticket:
   title: Add quick-flow path with automatic escalation rules
   repo: agentic-engineering-workflow-template
   branch: main
-  status: backlog
+  status: done
   created_at: '2026-06-09'
   owner_agent: manager
   ticket_class: implementation
@@ -127,17 +127,52 @@ execution:
   done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
     passed or justified skips are recorded, and execution_result is complete.
 execution_result:
-  status: pending
-  changed_files: []
-  commands_run: []
-  proof: []
-  skipped_checks: []
+  status: done
+  changed_files:
+  - prompts/quick-dev.md
+  - templates/TEMPLATE.quick-ticket.yaml
+  - docs/workflow.md
+  - README.md
+  - templates/AGENTS.md.template
+  - checklists/ticket-readiness.md
+  - tickets/sdd-upgrade/TKT-2026-06-09-quick-flow-escalation.yaml
+  commands_run:
+  - "sed -n '1,240p' tickets/sdd-upgrade/TKT-2026-06-09-quick-flow-escalation.yaml"
+  - "sed -n '1,240p' AGENTS.md"
+  - "sed -n '1,260p' README.md"
+  - "sed -n '1,320p' docs/workflow.md"
+  - "sed -n '1,260p' templates/AGENTS.md.template"
+  - "sed -n '1,260p' checklists/ticket-readiness.md"
+  - "sed -n '261,620p' templates/AGENTS.md.template"
+  - "rg -n \"quick|Quick|TEMPLATE\\.ticket|execution_result|spec_contract|expert_routing|allowed_files|forbidden_files|proof\" README.md docs/workflow.md templates/AGENTS.md.template checklists/ticket-readiness.md templates prompts tickets/sdd-upgrade/TKT-2026-06-09-quick-flow-escalation.yaml"
+  - "rg --files prompts templates docs checklists tickets/sdd-upgrade | sort"
+  - "sed -n '1,220p' prompts/scoped-worker.md"
+  - "sed -n '1,180p' prompts/manager-orchestrator.md"
+  - "sed -n '1,230p' templates/TEMPLATE.ticket.yaml"
+  - "git diff -- README.md docs/workflow.md templates/AGENTS.md.template checklists/ticket-readiness.md prompts/quick-dev.md templates/TEMPLATE.quick-ticket.yaml"
+  - "rg -n \"quick-flow|Quick-flow|quick_flow|TEMPLATE.quick-ticket|quick-dev|More than 3|more than 3|no bulk staging|forbidden files|proof gates|spec drift|delta lifecycle|expert routing\" README.md docs/workflow.md templates/AGENTS.md.template checklists/ticket-readiness.md prompts/quick-dev.md templates/TEMPLATE.quick-ticket.yaml"
+  - "git status --short"
+  - "python -c \"import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]; print('parsed yaml files:', len(list(pathlib.Path('.').rglob('*.yaml'))))\""
+  - "git diff --check"
+  - "for path in prompts/quick-dev.md templates/TEMPLATE.quick-ticket.yaml docs/workflow.md README.md templates/AGENTS.md.template checklists/ticket-readiness.md; do test -f \"$path\" || exit 1; done; rg -n \"TEMPLATE.quick-ticket.yaml|prompts/quick-dev.md|tickets/templates/TEMPLATE.quick-ticket.yaml|quick_flow_exemption|execution_result\" README.md docs/workflow.md templates/AGENTS.md.template checklists/ticket-readiness.md prompts/quick-dev.md templates/TEMPLATE.quick-ticket.yaml"
+  proof:
+  - "Read-only review completed before edits: quick-flow should remain ticketed, proof-bound, and subordinate to full SDD/orchestrator escalation when risk grows."
+  - "Created prompts/quick-dev.md with discovery, compact spec, implementation, proof, closeout, and escalation instructions."
+  - "Created templates/TEMPLATE.quick-ticket.yaml with objective, discovery_evidence, scoped allowed/forbidden files, Given-When-Then acceptance, proof, escalation_conditions, execution_result, spec exemption, and expert routing escalation."
+  - "Updated docs/workflow.md and README.md to describe when quick-flow is allowed and when full SDD/orchestrator flow is mandatory."
+  - "Updated templates/AGENTS.md.template and checklists/ticket-readiness.md so installed target repos inherit quick-flow safety and readiness checks."
+  - "Path/reference inspection found quick-flow template and prompt references across README, docs/workflow.md, AGENTS template, checklist, prompt, and template."
+  - "YAML parse passed for all 13 YAML files."
+  - "git diff --check passed."
+  skipped_checks:
+  - "Visual proof skipped: ticket visual_gate.required is false and this is a workflow/template documentation change."
+  - "Runtime tests skipped: repository has no product runtime surface for this workflow/template-only change."
   agent_memory_updates:
-    checked: false
+    checked: true
     updated_files: []
-    notes: null
+    notes: "agent memory checked: no update needed; ticket scope forbids editing agent/*.md and this template-source change is fully recorded in the ticket."
   blockers: []
   risks:
-  - 'Risk: quick-flow becomes vibe coding in disguise; mitigate with explicit discovery evidence, Given-When-Then
-    acceptance, and hard escalation triggers.'
-  next_recommended_step: null
+  - "Risk: quick-flow becomes vibe coding in disguise; mitigated with explicit discovery evidence, Given-When-Then acceptance, proof, closeout, and hard escalation triggers in the prompt, template, workflow docs, AGENTS template, and checklist."
+  - "Risk: future users may overuse quick-flow for risky work; mitigated by mandatory escalation for architecture, dependencies, data migration, auth/security/privacy, unclear acceptance, failing proof, visual/product ambiguity, scope expansion, spec drift, delta lifecycle work, and expert routing."
+  next_recommended_step: "Final verifier can review the diff and proof, then accept this ticket."

@@ -21,6 +21,8 @@ product-specific assumptions in this file.
   declares when specialized context should be loaded.
 - `agent/` - repo-local state, decisions, known issues, and handoff notes.
 - `tickets/` - scoped workflow records for non-trivial work.
+- `tickets/templates/TEMPLATE.quick-ticket.yaml` - compact quick-flow ticket
+  template for tiny bounded work.
 - `specs/current/` - durable current specs for implemented behavior, contracts,
   workflows, and important constraints.
 - `specs/changes/<change-id>/` - proposed change specs, typically
@@ -91,6 +93,11 @@ files.
 - Significant behavior, API, data, workflow, or durable documentation changes
   must link a delta spec under `specs/changes/<change-id>/delta-spec.md` or
   record why the delta-spec lifecycle does not apply.
+- Tiny quick-flow work may use `tickets/templates/TEMPLATE.quick-ticket.yaml`
+  and `prompts/quick-dev.md` only when it has discovery evidence, exact
+  `allowed_files`, `forbidden_files`, Given-When-Then acceptance, proof, hard
+  escalation conditions, and a justified
+  `spec_contract.quick_flow_exemption`.
 - Codex implementation workers must work from the active ticket scope and keep changes
   inside the ticket's declared files unless the user widens scope.
 - After each meaningful step, record the result as a ticket comment or result
@@ -115,6 +122,41 @@ files.
 - Stage only files in the ticket scope plus the ticket record. Do not use bulk
   staging such as `git add -A`.
 - Do not revert changes you did not make unless explicitly requested.
+
+## Quick-Flow Rules
+
+Quick-flow is for tiny, clear, low-risk work. It is still ticketed work and
+must not bypass proof gates, forbidden files, no-secrets rules, approval
+boundaries, conditional steering, delta lifecycle rules, spec drift checks,
+expert routing, no bulk staging, or closeout.
+
+Before editing in quick-flow, Codex must scan current repository evidence,
+record the discovered files and patterns, confirm concrete Given-When-Then
+acceptance, confirm proof, and verify that no escalation condition applies.
+
+Escalate to a full ticket or parent orchestrator flow when any condition is
+true:
+
+- More than 3 non-ticket files need edits.
+- More than 1 package, service, app, or bounded module needs behavior changes.
+- An architecture decision or shared contract change is required.
+- A dependency add, remove, upgrade, or configuration change is required.
+- A schema, storage, data migration, backfill, or destructive cleanup is
+  required.
+- Auth, security, permissions, secrets, privacy, payments, deployment, release,
+  remotes, or external-service behavior may change.
+- Acceptance is unclear, contradictory, or missing observable outcomes.
+- Proof is unavailable, flaky, network-dependent without approval, or failing
+  for unclear reasons.
+- UI, product copy, layout, accessibility, or visual behavior is ambiguous or
+  needs unspecified visual proof.
+- Needed files are outside `allowed_files` or match `forbidden_files`.
+- Spec drift, conditional steering conflicts, delta lifecycle work, or expert
+  routing is discovered.
+
+When escalation triggers, stop implementation, record the trigger in
+`execution_result.blockers`, and convert to the full SDD ticket or orchestrator
+flow before continuing.
 
 ## Safety And Approval Boundaries
 
@@ -184,6 +226,11 @@ agent memory. The specs must keep acceptance criteria, design boundaries,
 allowed-file tasks, proof, and requirement traceability aligned. Tiny quick-flow
 changes may skip full specs only when the ticket records a concrete exemption
 reason.
+
+Quick-flow tickets must also include `objective`, `discovery_evidence`,
+`acceptance_given_when_then`, `proof`, `escalation_conditions`, and
+`execution_result`. If those fields cannot be completed honestly before
+implementation, create a full ticket instead.
 
 For significant changes, `spec_refs` should also include the delta spec. The
 delta spec uses `ADDED`, `MODIFIED`, and `REMOVED` sections to describe how

@@ -18,6 +18,21 @@ Use before product-code work starts.
 - [ ] Non-trivial implementation work has `spec_refs` for requirements, design,
   and tasks, or `spec_contract.quick_flow_exemption.used: true` with a concrete
   reason.
+- [ ] Quick-flow tickets use `templates/TEMPLATE.quick-ticket.yaml` shape:
+  `objective`, `discovery_evidence`, `allowed_files`, `forbidden_files`,
+  `acceptance_given_when_then`, `proof`, `escalation_conditions`, and
+  `execution_result`.
+- [ ] Quick-flow discovery names current repository evidence and confirms no
+  escalation trigger is active before implementation.
+- [ ] Quick-flow escalation thresholds are explicit: more than 3 non-ticket
+  files, more than 1 behavior module, architecture decision, dependency change,
+  data migration, auth/security/privacy impact, unclear acceptance, failing or
+  unavailable proof, visual/product ambiguity, scope outside `allowed_files`,
+  forbidden files, spec drift, conditional steering conflict, delta lifecycle
+  work, or expert routing.
+- [ ] Quick-flow does not bypass proof gates, forbidden files, no-secrets rules,
+  approval boundaries, no bulk staging, conditional steering, delta lifecycle,
+  spec drift checks, expert routing, or closeout.
 - [ ] Linked spec artifacts include acceptance criteria, design boundaries,
   task/proof traceability, and unresolved ambiguity handling.
 - [ ] `execution_intensity` is one of `standard_worker`, `expert_supported`,

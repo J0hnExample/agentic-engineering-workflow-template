@@ -12,7 +12,8 @@ memory closeout for a target repository.
    or record why the lifecycle does not apply. For tiny quick-flow work, record
    the exemption reason in the ticket.
 3. Create a ticket from the installed target template
-   `tickets/templates/TEMPLATE.ticket.yaml`.
+   `tickets/templates/TEMPLATE.ticket.yaml`, or for tiny bounded work from
+   `tickets/templates/TEMPLATE.quick-ticket.yaml`.
 4. Build the ticket context pack from `AGENTS.md`, selected steering files,
    linked specs, linked docs, and allowed files.
 5. Start a fresh context for ticket execution.
@@ -68,11 +69,60 @@ archives its delta.
 
 See `docs/spec_lifecycle.md` for the propose/apply/archive lifecycle.
 
-Tiny typo, formatting, or documentation-only changes may use quick flow instead
-of a full spec package. The ticket must set
+Tiny typo, formatting, narrow tests, or documentation-only changes may use
+quick-flow instead of a full spec package. The quick ticket must set
 `spec_contract.quick_flow_exemption.used: true` and provide a concrete reason.
-Readiness fails when non-trivial implementation lacks both linked specs and a
-justified exemption.
+It must still include discovery evidence, concrete file paths, forbidden files,
+Given-When-Then acceptance, proof commands or manual proof, escalation
+conditions, and a complete `execution_result`. Readiness fails when non-trivial
+implementation lacks both linked specs and a justified exemption.
+
+## Quick-Flow
+
+Quick-flow is a ticketed path for tiny, clear, low-risk work. It exists to avoid
+full requirements/design/tasks ceremony when current repository evidence already
+shows the change is small and directly verifiable.
+
+Use quick-flow only when all of these are true:
+
+- The objective is one bounded outcome.
+- Discovery can name the exact current files and patterns involved.
+- The change stays within explicit `allowed_files` and avoids all
+  `forbidden_files`.
+- Acceptance can be written as concrete Given-When-Then cases.
+- Proof is available, local, and meaningful.
+- No durable spec, API, data, workflow, release, security, or architecture
+  decision is required.
+
+Quick-flow must not bypass proof gates, forbidden files, no-secrets rules,
+approval boundaries, no bulk staging, conditional steering, delta lifecycle
+rules, spec drift checks, expert routing, or ticket closeout. It still records
+changed files, commands run, proof, skipped checks, blockers, risks, and the
+agent-memory update check.
+
+Escalate from quick-flow to a full ticket or parent orchestrator flow before
+implementation continues when any threshold is met:
+
+- More than 3 non-ticket files need edits.
+- More than 1 package, service, app, or bounded module needs behavior changes.
+- The change requires an architecture decision or alters a shared contract.
+- Dependencies must be added, removed, upgraded, or reconfigured.
+- Schema, storage, data migration, backfill, or destructive cleanup is needed.
+- Auth, security, permissions, secrets, privacy, payments, deployment, release,
+  remotes, or external-service behavior may change.
+- Acceptance is unclear, contradictory, or lacks observable outcomes.
+- Proof is unavailable, flaky, network-dependent without approval, or fails for
+  unclear reasons.
+- User-facing UI, product copy, layout, accessibility, or visual behavior is
+  ambiguous or needs visual proof that is not already specified.
+- Required files are outside `allowed_files` or match `forbidden_files`.
+- Spec drift, conditional steering conflicts, delta lifecycle work, or expert
+  routing is discovered.
+
+When escalation triggers, stop implementation, record the trigger in
+`execution_result.blockers`, and convert to the full SDD ticket or orchestrator
+flow. The discovery evidence collected by quick-flow should become context for
+the new ticket.
 
 ## Conditional Steering
 
@@ -123,6 +173,9 @@ multi-stage delivery.
 - Child tickets that materially change durable behavior should link to the
   relevant `specs/changes/<change-id>/delta-spec.md` and identify any
   `specs/current/**` files they intend to update.
+- Child quick-flow tickets may use
+  `tickets/templates/TEMPLATE.quick-ticket.yaml` only when they satisfy the
+  quick-flow rules and escalation thresholds above.
 - Record worker closeout with the installed target template
   `tickets/templates/TEMPLATE.execution-result.yaml`.
 - The manager looks back at recent child ticket results before planning the next

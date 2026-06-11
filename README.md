@@ -139,6 +139,7 @@ target. Source files in this template install into different paths in the target
 | [`templates/AGENTS.md.template`](templates/AGENTS.md.template) | `AGENTS.md` |
 | [`agent/*.md`](agent/) | `agent/*.md` |
 | [`templates/TEMPLATE.ticket.yaml`](templates/TEMPLATE.ticket.yaml) | `tickets/templates/TEMPLATE.ticket.yaml` |
+| [`templates/TEMPLATE.quick-ticket.yaml`](templates/TEMPLATE.quick-ticket.yaml) | `tickets/templates/TEMPLATE.quick-ticket.yaml` |
 | [`templates/TEMPLATE.orchestrator-ticket.yaml`](templates/TEMPLATE.orchestrator-ticket.yaml) | `tickets/templates/TEMPLATE.orchestrator-ticket.yaml` |
 | [`templates/TEMPLATE.execution-result.yaml`](templates/TEMPLATE.execution-result.yaml) | `tickets/templates/TEMPLATE.execution-result.yaml` |
 | [`templates/TEMPLATE.reusable-feature-path.md`](templates/TEMPLATE.reusable-feature-path.md) | `docs/reusable_feature_implementation_paths.md` |
@@ -165,6 +166,7 @@ shape around its normal product code, tests, package files, docs, and scripts:
 ├── tickets/
 │   ├── templates/
 │   │   ├── TEMPLATE.ticket.yaml
+│   │   ├── TEMPLATE.quick-ticket.yaml
 │   │   ├── TEMPLATE.orchestrator-ticket.yaml
 │   │   └── TEMPLATE.execution-result.yaml
 │   └── TKT-YYYY-MM-DD-example.yaml
@@ -203,6 +205,18 @@ reviewer output is recorded. The manager chooses the minimum useful read-only
 route from ticket risk and repository evidence; simple tickets can explicitly
 set no required profiles and `max_rounds: 0`.
 
+Quick-flow is available for tiny, clear, low-risk work through
+[`templates/TEMPLATE.quick-ticket.yaml`](templates/TEMPLATE.quick-ticket.yaml)
+and [`prompts/quick-dev.md`](prompts/quick-dev.md). It still requires repository
+discovery evidence, exact `allowed_files`, `forbidden_files`, Given-When-Then
+acceptance, proof, closeout, no-secrets handling, approval boundaries, and no
+bulk staging. It must escalate to the full ticket or orchestrator flow if the
+change needs more than 3 non-ticket files, more than 1 behavior module, an
+architecture decision, dependency changes, data migration, auth/security/privacy
+work, unclear acceptance, failing or unavailable proof, ambiguous visual/product
+behavior, files outside scope, spec drift, delta lifecycle work, or expert
+routing.
+
 ## Safety Model
 
 The template is built around narrow scope and explicit proof:
@@ -213,6 +227,9 @@ The template is built around narrow scope and explicit proof:
 - Tickets declare `allowed_files`, `forbidden_files`, in-scope work,
   out-of-scope work, proof gates, regression gates, stop conditions, and done
   definitions.
+- Quick-flow tickets are allowed only for tiny bounded work and must escalate
+  when scope or risk grows; they cannot bypass proof gates, forbidden files,
+  no-secrets rules, approval boundaries, closeout, or no bulk staging.
 - Implementation workers edit only assigned scope and do not use bulk staging.
 - Read-only Codex reviewers may analyze but do not edit files, run migrations,
   install dependencies, deploy, release, use secrets, push, perform remote
@@ -253,6 +270,11 @@ rules only after reviewing the target repository's real context.
 For larger delivery, start from
 [`templates/TEMPLATE.orchestrator-ticket.yaml`](templates/TEMPLATE.orchestrator-ticket.yaml)
 and let the manager split the outcome into child tickets.
+
+For tiny bounded work, start from
+[`templates/TEMPLATE.quick-ticket.yaml`](templates/TEMPLATE.quick-ticket.yaml)
+and use [`prompts/quick-dev.md`](prompts/quick-dev.md). Convert to a full ticket
+as soon as any escalation condition is true.
 
 ## Reference
 
