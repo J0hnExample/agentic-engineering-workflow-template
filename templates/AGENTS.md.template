@@ -17,6 +17,8 @@ product-specific assumptions in this file.
 ## Target Repository Map
 
 - `AGENTS.md` - durable Codex agent workflow rules.
+- `steering/` - optional conditional guidance with YAML front matter that
+  declares when specialized context should be loaded.
 - `agent/` - repo-local state, decisions, known issues, and handoff notes.
 - `tickets/` - scoped workflow records for non-trivial work.
 - `specs/current/` - durable current specs for implemented behavior, contracts,
@@ -34,17 +36,32 @@ product-specific assumptions in this file.
 Before planning or implementation work, read:
 
 1. `AGENTS.md`
-2. `agent/STATE.md`
-3. `agent/DECISIONS.md`
-4. `agent/KNOWN_ISSUES.md`
-5. `agent/TODO.md`
-6. `agent/PATHS.md`
-7. `agent/SERVICES.md`
-8. `agent/CHANGELOG.md`
-9. the newest relevant ticket in `tickets/`
-10. specs named by the ticket
-11. docs named by the ticket
-12. files in the ticket's allowed scope
+2. `steering/*.md` files whose front matter uses `inclusion.mode: always`
+3. the newest relevant ticket in `tickets/`
+4. steering files listed by
+   `context_pack.required_steering_files`
+5. steering files whose `inclusion.mode: fileMatch` patterns match the
+   ticket's `allowed_files`
+6. steering files whose `inclusion.mode: manual` files are explicitly named by
+   the user, ticket, specs, or manager prompt
+7. steering files whose `inclusion.mode: auto` description clearly matches the
+   requested task, changed-file domain, or proof risk
+8. `agent/STATE.md`
+9. `agent/DECISIONS.md`
+10. `agent/KNOWN_ISSUES.md`
+11. `agent/TODO.md`
+12. `agent/PATHS.md`
+13. `agent/SERVICES.md`
+14. `agent/CHANGELOG.md`
+15. specs named by the ticket
+16. docs named by the ticket
+17. files in the ticket's allowed scope
+
+Build a bounded context pack before implementation. Include only the steering
+files selected by the rules above, and record intentionally excluded noisy or
+irrelevant context in `context_pack.excluded_context` when the ticket needs that
+decision preserved. Do not load private/global machine paths, secrets, or
+product-specific assumptions into steering files.
 
 If a referenced file is missing, stale, or conflicts with the current user
 instruction, report that fact instead of silently filling the gap.
@@ -136,6 +153,8 @@ ticket already grants that permission.
 
 Every implementation ticket must include these fields before product-code work:
 
+- `context_pack.required_steering_files`
+- `context_pack.excluded_context`
 - `spec_refs`, or a justified `spec_contract.quick_flow_exemption`
 - `spec_contract`
 - `execution_intensity`

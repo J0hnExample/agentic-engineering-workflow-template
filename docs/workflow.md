@@ -13,12 +13,14 @@ memory closeout for a target repository.
    the exemption reason in the ticket.
 3. Create a ticket from the installed target template
    `tickets/templates/TEMPLATE.ticket.yaml`.
-4. Start a fresh context for ticket execution.
-5. Execute only the ticket scope.
-6. Run the ticket proof gates.
-7. Close out with the installed target template
+4. Build the ticket context pack from `AGENTS.md`, selected steering files,
+   linked specs, linked docs, and allowed files.
+5. Start a fresh context for ticket execution.
+6. Execute only the ticket scope.
+7. Run the ticket proof gates.
+8. Close out with the installed target template
    `tickets/templates/TEMPLATE.execution-result.yaml`.
-8. Update `agent/*.md`, or record `agent memory checked: no update needed`.
+9. Update `agent/*.md`, or record `agent memory checked: no update needed`.
 
 Fresh-context execution is intentional. The ticket must carry enough context,
 scope, proof requirements, and stop conditions for a new Codex session to do the
@@ -71,6 +73,38 @@ of a full spec package. The ticket must set
 `spec_contract.quick_flow_exemption.used: true` and provide a concrete reason.
 Readiness fails when non-trivial implementation lacks both linked specs and a
 justified exemption.
+
+## Conditional Steering
+
+Steering files are optional Markdown files with YAML front matter under
+`steering/` in an installed target repository. The workflow package provides
+starter templates under `templates/steering/`. Steering keeps specialized rules
+available without loading every domain note into every worker context.
+
+Supported inclusion modes are:
+
+- `always`: load for every ticket. Use this sparingly for core safety,
+  security, privacy, or repository-wide rules.
+- `fileMatch`: load when the ticket's `allowed_files` match the steering
+  `inclusion.fileMatch` patterns.
+- `manual`: load only when the user, manager, ticket, spec, or prompt names the
+  steering file.
+- `auto`: load when the steering `inclusion.description` clearly matches the
+  requested task, changed-file domain, or proof risk.
+
+Tickets can make selection explicit with:
+
+- `context_pack.required_steering_files`: steering files that must be read for
+  the ticket.
+- `context_pack.excluded_context`: relevant-looking context intentionally left
+  out because it is noisy, stale, unsafe, or outside scope.
+
+Always-loaded steering is read before specialized steering. `fileMatch` steering
+is selected from the ticket's `allowed_files`. `manual` and `auto` steering must
+stay bounded to explicit references or clear task-description matches. Do not
+put secrets, private local paths, machine-specific notes, or invented product
+facts into steering files. Unknowns should remain marked as unknown until
+confirmed by repository evidence or user input.
 
 ## Ticket Chains
 

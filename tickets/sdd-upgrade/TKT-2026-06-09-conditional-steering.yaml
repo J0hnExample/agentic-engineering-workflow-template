@@ -3,8 +3,8 @@ ticket:
   id: TKT-2026-06-09-conditional-steering
   title: Add conditional steering files to reduce context noise
   repo: agentic-engineering-workflow-template
-  branch: main
-  status: backlog
+  branch: feature/sdd-workflow-v0.4.0
+  status: done
   created_at: '2026-06-09'
   owner_agent: manager
   ticket_class: implementation
@@ -26,6 +26,13 @@ context:
   - README.md
   - docs/workflow.md
   - templates/AGENTS.md.template
+context_pack:
+  required_steering_files:
+  - templates/steering/security.md
+  excluded_context:
+  - agent/*.md not edited or loaded into this template ticket because user instructions forbid agent file
+    edits and the ticket scope is limited to reusable template files.
+  - Private/global machine paths and secrets are excluded from steering examples by design.
 scope:
   goal: Introduce conditional steering templates and update read-order rules so only relevant specialized
     context is loaded.
@@ -127,17 +134,80 @@ execution:
   done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
     passed or justified skips are recorded, and execution_result is complete.
 execution_result:
-  status: pending
-  changed_files: []
-  commands_run: []
-  proof: []
-  skipped_checks: []
+  status: done
+  changed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml
+  - templates/steering/product.md
+  - templates/steering/tech.md
+  - templates/steering/structure.md
+  - templates/steering/testing.md
+  - templates/steering/security.md
+  - templates/AGENTS.md.template
+  - docs/workflow.md
+  - prompts/initialize-repo.md
+  - prompts/manager-orchestrator.md
+  - prompts/scoped-worker.md
+  - checklists/ticket-readiness.md
+  commands_run:
+  - git status --short --branch
+  - sed -n '1,240p' tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml
+  - rg -n "steering|context_pack|conditional|always|fileMatch|manual|auto|excluded_context|spec drift|expert routing|delta" templates docs prompts checklists tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml
+  - sed -n '1,260p' templates/AGENTS.md.template
+  - sed -n '1,180p' docs/workflow.md
+  - sed -n '1,220p' prompts/initialize-repo.md
+  - sed -n '1,220p' prompts/manager-orchestrator.md
+  - sed -n '1,220p' prompts/scoped-worker.md
+  - sed -n '1,180p' checklists/ticket-readiness.md
+  - find templates/steering -maxdepth 2 -type f -print | sort
+  - find templates -maxdepth 2 -type f | sort
+  - git diff -- templates/AGENTS.md.template docs/workflow.md prompts/initialize-repo.md prompts/manager-orchestrator.md prompts/scoped-worker.md checklists/ticket-readiness.md templates/steering/product.md templates/steering/tech.md templates/steering/structure.md templates/steering/testing.md templates/steering/security.md
+  - rg -n "context_pack|required_steering_files|excluded_context|inclusion.mode|fileMatch|manual|auto|always|steering" templates/AGENTS.md.template docs/workflow.md prompts/initialize-repo.md prompts/manager-orchestrator.md prompts/scoped-worker.md checklists/ticket-readiness.md templates/steering tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml
+  - python -c "import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]"
+  - |
+    python - <<'PY'
+    from pathlib import Path
+    import yaml
+    for path in sorted(Path('templates/steering').glob('*.md')):
+        text = path.read_text()
+        if not text.startswith('---\n'):
+            raise SystemExit(f'{path}: missing YAML front matter')
+        _, front, _ = text.split('---\n', 2)
+        data = yaml.safe_load(front)
+        mode = data.get('inclusion', {}).get('mode')
+        if mode not in {'always', 'fileMatch', 'manual', 'auto'}:
+            raise SystemExit(f'{path}: unsupported inclusion mode {mode!r}')
+    print('validated steering front matter')
+    PY
+  - rg -n "templates/steering/(product|tech|structure|testing|security).md|steering/" templates/AGENTS.md.template docs/workflow.md prompts/initialize-repo.md prompts/manager-orchestrator.md prompts/scoped-worker.md checklists/ticket-readiness.md tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml templates/steering
+  - git diff --check
+  proof:
+  - Read-only review completed in-session before edits; the scoped change was useful, minimal, and did not
+    require product assumptions.
+  - Added five generic steering templates with YAML front matter and supported inclusion modes only.
+  - AGENTS read order now loads always steering first, then required, fileMatch, manual, and auto steering
+    before specialized work.
+  - Manager and scoped-worker prompts now carry required steering files, excluded context, and conflict
+    handling while preserving approval boundaries, spec contracts, delta lifecycle, spec drift, and expert
+    routing constraints.
+  - Initialization prompt now requires starter steering docs to come from repository evidence or unknown
+    placeholders.
+  - Ticket readiness now requires explicit steering context pack fields when specialized rules apply.
+  - Initial YAML validation caught a ticket execution_result heredoc command that needed YAML-safe block
+    scalar formatting; fixed before final validation.
+  - YAML files and steering YAML front matter validated successfully.
+  - Markdown/path consistency checked with rg for new steering references.
+  - git diff --check passed.
+  skipped_checks:
+  - Visual checks not run; visual_gate.required is false and this is a workflow/template documentation change.
+  - Dependency, lint, build, and test commands not run; the ticket requested YAML validation, path inspection,
+    and diff whitespace proof only, and no runtime code changed.
   agent_memory_updates:
-    checked: false
+    checked: true
     updated_files: []
-    notes: null
+    notes: 'agent memory checked: no update needed; user explicitly forbade editing agent/*.md for this template ticket.'
   blockers: []
   risks:
   - 'Risk: auto-like steering could hide important rules; mitigate by keeping security/core standards
     always loaded.'
-  next_recommended_step: null
+  - 'Residual risk: target repositories must tune fileMatch globs from repository evidence during initialization.'
+  next_recommended_step: Commit the scoped ticket changes after review if desired.
