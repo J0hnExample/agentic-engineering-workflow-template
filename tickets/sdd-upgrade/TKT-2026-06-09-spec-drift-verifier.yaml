@@ -1,0 +1,139 @@
+schema_version: 2
+ticket:
+  id: TKT-2026-06-09-spec-drift-verifier
+  title: Add read-only spec drift verifier and cross-artifact proof gate
+  repo: agentic-engineering-workflow-template
+  branch: main
+  status: backlog
+  created_at: '2026-06-09'
+  owner_agent: manager
+  ticket_class: implementation
+  work_kind: test
+  phase: sdd-upgrade-v0.4.0
+  target_version: 0.4.0
+context:
+  problem: SDD only works if spec, code, tests, docs, and ticket results stay aligned. The current final
+    verifier checks scope and proof, but it does not explicitly compare requirements/design/tasks against
+    the implemented diff and tests.
+  current_behavior: final-verifier.md validates ticket scope, changed files, proof gates, skipped checks,
+    and agent memory. It may catch drift indirectly, but no dedicated spec-alignment verdict exists.
+  desired_behavior: A read-only spec drift verifier compares spec artifacts, changed files, tests, docs,
+    and execution_result. It returns pass, pass_with_risk, or fail and blocks closing when drift is material.
+  relevant_prior_work:
+  - 'User-provided iX article: Fünf Tools für Spec-driven Development im Überblick, 2026-06-08'
+  - README.md
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+scope:
+  goal: Create a spec drift verification prompt/checklist and wire it into final verification and execution_result.
+  allowed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-spec-drift-verifier.yaml
+  - prompts/spec-drift-verifier.md
+  - prompts/final-verifier.md
+  - checklists/spec-drift.md
+  - checklists/closeout.md
+  - templates/TEMPLATE.execution-result.yaml
+  - templates/TEMPLATE.ticket.yaml
+  forbidden_files:
+  - .env
+  - .env.*
+  - node_modules/**
+  - dist/**
+  - build/**
+  - .next/**
+  - coverage/**
+  in_scope:
+  - Add prompts/spec-drift-verifier.md for read-only comparison of requirements, design, tasks, code diff,
+    tests, docs, and ticket result.
+  - 'Add checklists/spec-drift.md with required questions: implemented-but-unspecified, specified-but-unimplemented,
+    tests-missing-for-acceptance, docs-outdated, changed behavior not approved.'
+  - Add execution_result.spec_alignment with verdict, checked_specs, drift_findings, required_followups.
+  - Update final-verifier.md to require spec_alignment for non-trivial tickets.
+  - Update closeout checklist to require drift result or quick-flow exemption.
+  out_of_scope:
+  - Do not auto-rewrite product code in the verifier.
+  - Do not treat every docs-only ticket as requiring full drift verification.
+  - Do not create a remote CI integration in this ticket.
+execution:
+  execution_intensity: expert_supported
+  manager_role: Main Codex agent owns scope, verifies the work, and records proof in this ticket. Any
+    Codex subagent inherits AGENTS.md, the active ticket scope, approval boundaries, forbidden actions,
+    and verification requirements.
+  worker_sequence:
+  - role: read_only_reviewer
+    mode: read_only
+    task: Review the planned workflow/template changes for SDD usefulness, risk, and minimality before
+      edits.
+  - role: scoped_worker
+    mode: implementation
+    task: Implement only the scoped workflow/template change described in this ticket.
+  expert_plan:
+    required: true
+    planning_reviewer: read-only Codex reviewer
+    reviewer: final verifier
+    record_location: execution_result
+  debug_logging_plan:
+    owner: scoped_worker
+    surfaces:
+    - YAML parse output
+    - Markdown link/path inspection
+    - grep output for version and old terminology
+    temporary_logging_policy: Do not add temporary logs to template files; record command output only
+      in ticket execution_result.
+  test_plan:
+  - Parse every changed YAML file with python -c "import yaml, pathlib; [yaml.safe_load(p.read_text())
+    for p in pathlib.Path('.').rglob('*.yaml')]".
+  - Run markdown/path consistency checks manually or with grep for all newly referenced template paths.
+  - Check whether README, docs/workflow.md, AGENTS template, prompts, checklists, ticket templates, and
+    agent memory files need updates and record the result.
+  proof_gates:
+  - Changed templates and tickets are internally consistent and parseable where applicable.
+  - The workflow change is bounded to SDD/context-engineering support and does not alter product runtime
+    assumptions.
+  - Agent-memory update check is recorded.
+  - Ticket result records changed files, commands, proof, skipped checks, blockers, and risks.
+  - A non-trivial ticket cannot be marked done without spec_alignment or a documented exemption.
+  - Spec drift verifier is read-only and cannot repair issues without a separate scoped repair ticket.
+  - Execution result template has a machine-readable spec_alignment block.
+  regression_gates:
+  - No unrelated files changed.
+  - No secrets, credentials, or private local paths are introduced.
+  - No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service
+    action occurs without explicit approval.
+  - Existing Codex scoped-worker/orchestrator safety boundaries remain stricter or equivalent after the
+    change.
+  visual_gate:
+    required: false
+    required_views: []
+    pass_rule: Not required; this is a workflow/template change.
+  checkpoint_policy: Create a scoped checkpoint commit only after proof passes or after explicit user
+    approval.
+  rollback_or_accept_policy: If the scoped change makes the workflow ambiguous or less safe, keep the
+    ticket non-done, record the blocker, and propose a smaller follow-up ticket.
+  stop_conditions:
+  - The change would require product-repository assumptions that are not available in the template source.
+  - The change requires editing forbidden files.
+  - The design would weaken approval boundaries, proof gates, or scoped file ownership.
+  - The work requires dependency installation, destructive commands, remote operations, deployment, release,
+    secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit
+    approval.
+  handoff_requirements:
+  - Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates,
+    and next action.
+  done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
+    passed or justified skips are recorded, and execution_result is complete.
+execution_result:
+  status: pending
+  changed_files: []
+  commands_run: []
+  proof: []
+  skipped_checks: []
+  agent_memory_updates:
+    checked: false
+    updated_files: []
+    notes: null
+  blockers: []
+  risks:
+  - 'Risk: false positives on intentionally changed scope; mitigate by allowing pass_with_risk plus explicit
+    decision record.'
+  next_recommended_step: null

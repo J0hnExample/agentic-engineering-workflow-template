@@ -1,0 +1,143 @@
+schema_version: 2
+ticket:
+  id: TKT-2026-06-09-quick-flow-escalation
+  title: Add quick-flow path with automatic escalation rules
+  repo: agentic-engineering-workflow-template
+  branch: main
+  status: backlog
+  created_at: '2026-06-09'
+  owner_agent: manager
+  ticket_class: implementation
+  work_kind: feature
+  phase: sdd-upgrade-v0.4.0
+  target_version: 0.4.0
+context:
+  problem: The full ticket/orchestrator process is safe but can be too heavy for tiny, clear tasks. The
+    article points at BMAD Quick-Flow/Kiro Quick Plan style shortcuts that still perform discovery and
+    self-checks.
+  current_behavior: Every non-trivial task uses a full ticket. There is no separate minimal path for small,
+    clear changes and no explicit threshold for escalating to full spec/orchestrator flow.
+  desired_behavior: A quick-flow ticket/prompt handles small bounded changes with a discovery scan, concrete
+    file paths, Given-When-Then acceptance, proof commands, self-check, and automatic escalation when
+    scope/risk grows.
+  relevant_prior_work:
+  - 'User-provided iX article: Fünf Tools für Spec-driven Development im Überblick, 2026-06-08'
+  - README.md
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+scope:
+  goal: Create a quick-flow prompt/template and escalation policy for small safe tasks.
+  allowed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-quick-flow-escalation.yaml
+  - prompts/quick-dev.md
+  - templates/TEMPLATE.quick-ticket.yaml
+  - docs/workflow.md
+  - README.md
+  - templates/AGENTS.md.template
+  - checklists/ticket-readiness.md
+  forbidden_files:
+  - .env
+  - .env.*
+  - node_modules/**
+  - dist/**
+  - build/**
+  - .next/**
+  - coverage/**
+  in_scope:
+  - 'Add TEMPLATE.quick-ticket.yaml with compact fields: objective, discovery_evidence, allowed_files,
+    forbidden_files, acceptance_given_when_then, proof, escalation_conditions, execution_result.'
+  - Add prompts/quick-dev.md that scans repo evidence, identifies patterns, creates a compact spec, implements,
+    then self-checks against acceptance.
+  - 'Define escalation thresholds: more than N files, architectural decision, dependency change, data
+    migration, auth/security impact, flaky/unknown proof, unclear requirements, UI flows needing visual
+    proof, or scope outside allowed_files.'
+  - Update docs/workflow.md and README to explain when quick-flow is allowed and when full SDD/orchestrator
+    flow is mandatory.
+  out_of_scope:
+  - Do not bypass proof gates.
+  - Do not permit quick-flow for secrets, auth, migrations, releases, dependency changes, or broad refactors.
+  - Do not make quick-flow the default for risky work.
+execution:
+  execution_intensity: expert_supported
+  manager_role: Main Codex agent owns scope, verifies the work, and records proof in this ticket. Any
+    Codex subagent inherits AGENTS.md, the active ticket scope, approval boundaries, forbidden actions,
+    and verification requirements.
+  worker_sequence:
+  - role: read_only_reviewer
+    mode: read_only
+    task: Review the planned workflow/template changes for SDD usefulness, risk, and minimality before
+      edits.
+  - role: scoped_worker
+    mode: implementation
+    task: Implement only the scoped workflow/template change described in this ticket.
+  expert_plan:
+    required: true
+    planning_reviewer: read-only Codex reviewer
+    reviewer: final verifier
+    record_location: execution_result
+  debug_logging_plan:
+    owner: scoped_worker
+    surfaces:
+    - YAML parse output
+    - Markdown link/path inspection
+    - grep output for version and old terminology
+    temporary_logging_policy: Do not add temporary logs to template files; record command output only
+      in ticket execution_result.
+  test_plan:
+  - Parse every changed YAML file with python -c "import yaml, pathlib; [yaml.safe_load(p.read_text())
+    for p in pathlib.Path('.').rglob('*.yaml')]".
+  - Run markdown/path consistency checks manually or with grep for all newly referenced template paths.
+  - Check whether README, docs/workflow.md, AGENTS template, prompts, checklists, ticket templates, and
+    agent memory files need updates and record the result.
+  proof_gates:
+  - Changed templates and tickets are internally consistent and parseable where applicable.
+  - The workflow change is bounded to SDD/context-engineering support and does not alter product runtime
+    assumptions.
+  - Agent-memory update check is recorded.
+  - Ticket result records changed files, commands, proof, skipped checks, blockers, and risks.
+  - Quick-flow still records execution_result, proof, skipped checks, blockers, risks, and agent memory
+    check.
+  - Escalation conditions are explicit in prompt, template, and workflow docs.
+  - Quick-flow cannot modify forbidden files or expand scope without approval.
+  regression_gates:
+  - No unrelated files changed.
+  - No secrets, credentials, or private local paths are introduced.
+  - No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service
+    action occurs without explicit approval.
+  - Existing Codex scoped-worker/orchestrator safety boundaries remain stricter or equivalent after the
+    change.
+  visual_gate:
+    required: false
+    required_views: []
+    pass_rule: Not required; this is a workflow/template change.
+  checkpoint_policy: Create a scoped checkpoint commit only after proof passes or after explicit user
+    approval.
+  rollback_or_accept_policy: If the scoped change makes the workflow ambiguous or less safe, keep the
+    ticket non-done, record the blocker, and propose a smaller follow-up ticket.
+  stop_conditions:
+  - The change would require product-repository assumptions that are not available in the template source.
+  - The change requires editing forbidden files.
+  - The design would weaken approval boundaries, proof gates, or scoped file ownership.
+  - The work requires dependency installation, destructive commands, remote operations, deployment, release,
+    secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit
+    approval.
+  handoff_requirements:
+  - Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates,
+    and next action.
+  done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
+    passed or justified skips are recorded, and execution_result is complete.
+execution_result:
+  status: pending
+  changed_files: []
+  commands_run: []
+  proof: []
+  skipped_checks: []
+  agent_memory_updates:
+    checked: false
+    updated_files: []
+    notes: null
+  blockers: []
+  risks:
+  - 'Risk: quick-flow becomes vibe coding in disguise; mitigate with explicit discovery evidence, Given-When-Then
+    acceptance, and hard escalation triggers.'
+  next_recommended_step: null

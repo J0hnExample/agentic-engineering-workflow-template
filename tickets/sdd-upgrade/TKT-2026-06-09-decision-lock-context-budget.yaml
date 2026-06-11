@@ -1,0 +1,142 @@
+schema_version: 2
+ticket:
+  id: TKT-2026-06-09-decision-lock-context-budget
+  title: Add grey-area decision locks and context-budget controls
+  repo: agentic-engineering-workflow-template
+  branch: main
+  status: backlog
+  created_at: '2026-06-09'
+  owner_agent: manager
+  ticket_class: implementation
+  work_kind: refactor
+  phase: sdd-upgrade-v0.4.0
+  target_version: 0.4.0
+context:
+  problem: The workflow already uses fresh worker contexts, but it does not explicitly force unresolved
+    implementation grey areas to be locked before planning, nor does it track how much context a worker
+    is allowed to receive.
+  current_behavior: Tickets can include context and stop conditions. agent/DECISIONS.md records durable
+    decisions, but there is no required locked_decisions block or context_budget/context_pack contract.
+  desired_behavior: Before implementation, the manager identifies grey areas, asks for or records decisions,
+    and gives each worker a bounded context pack. Workers stop if decisions are missing or context requirements
+    exceed budget.
+  relevant_prior_work:
+  - 'User-provided iX article: Fünf Tools für Spec-driven Development im Überblick, 2026-06-08'
+  - README.md
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+scope:
+  goal: Add locked decisions and context-budget fields to ticket/orchestrator templates and prompts.
+  allowed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-decision-lock-context-budget.yaml
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+  - templates/AGENTS.md.template
+  - prompts/manager-orchestrator.md
+  - prompts/scoped-worker.md
+  - checklists/ticket-readiness.md
+  - agent/DECISIONS.md
+  - docs/workflow.md
+  forbidden_files:
+  - .env
+  - .env.*
+  - node_modules/**
+  - dist/**
+  - build/**
+  - .next/**
+  - coverage/**
+  in_scope:
+  - Add context_pack with required_files, required_specs, required_steering_files, excluded_context, and
+    summary_budget.
+  - Add locked_decisions with decision, rationale, owner, source, and expiry/change rule.
+  - Update manager prompt to identify grey areas before planning and either resolve them or create a research_only
+    decision ticket.
+  - Update scoped-worker prompt to stop when a required decision or context pack item is missing.
+  - Update DECISIONS.md template to support durable decision locks without storing one-off noise.
+  out_of_scope:
+  - Do not implement parallel wave execution in this ticket.
+  - Do not require atomic commits for every task; keep commits controlled by existing commit policy.
+  - Do not store private local paths, credentials, or chat dumps in context packs.
+execution:
+  execution_intensity: expert_supported
+  manager_role: Main Codex agent owns scope, verifies the work, and records proof in this ticket. Any
+    Codex subagent inherits AGENTS.md, the active ticket scope, approval boundaries, forbidden actions,
+    and verification requirements.
+  worker_sequence:
+  - role: read_only_reviewer
+    mode: read_only
+    task: Review the planned workflow/template changes for SDD usefulness, risk, and minimality before
+      edits.
+  - role: scoped_worker
+    mode: implementation
+    task: Implement only the scoped workflow/template change described in this ticket.
+  expert_plan:
+    required: true
+    planning_reviewer: read-only Codex reviewer
+    reviewer: final verifier
+    record_location: execution_result
+  debug_logging_plan:
+    owner: scoped_worker
+    surfaces:
+    - YAML parse output
+    - Markdown link/path inspection
+    - grep output for version and old terminology
+    temporary_logging_policy: Do not add temporary logs to template files; record command output only
+      in ticket execution_result.
+  test_plan:
+  - Parse every changed YAML file with python -c "import yaml, pathlib; [yaml.safe_load(p.read_text())
+    for p in pathlib.Path('.').rglob('*.yaml')]".
+  - Run markdown/path consistency checks manually or with grep for all newly referenced template paths.
+  - Check whether README, docs/workflow.md, AGENTS template, prompts, checklists, ticket templates, and
+    agent memory files need updates and record the result.
+  proof_gates:
+  - Changed templates and tickets are internally consistent and parseable where applicable.
+  - The workflow change is bounded to SDD/context-engineering support and does not alter product runtime
+    assumptions.
+  - Agent-memory update check is recorded.
+  - Ticket result records changed files, commands, proof, skipped checks, blockers, and risks.
+  - 'Ticket readiness requires grey-area status: none, resolved, or blocked.'
+  - Worker prompt has a clear stop rule for missing decisions/context.
+  - Context pack avoids dumping the whole repo into every worker context.
+  regression_gates:
+  - No unrelated files changed.
+  - No secrets, credentials, or private local paths are introduced.
+  - No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service
+    action occurs without explicit approval.
+  - Existing Codex scoped-worker/orchestrator safety boundaries remain stricter or equivalent after the
+    change.
+  visual_gate:
+    required: false
+    required_views: []
+    pass_rule: Not required; this is a workflow/template change.
+  checkpoint_policy: Create a scoped checkpoint commit only after proof passes or after explicit user
+    approval.
+  rollback_or_accept_policy: If the scoped change makes the workflow ambiguous or less safe, keep the
+    ticket non-done, record the blocker, and propose a smaller follow-up ticket.
+  stop_conditions:
+  - The change would require product-repository assumptions that are not available in the template source.
+  - The change requires editing forbidden files.
+  - The design would weaken approval boundaries, proof gates, or scoped file ownership.
+  - The work requires dependency installation, destructive commands, remote operations, deployment, release,
+    secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit
+    approval.
+  handoff_requirements:
+  - Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates,
+    and next action.
+  done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
+    passed or justified skips are recorded, and execution_result is complete.
+execution_result:
+  status: pending
+  changed_files: []
+  commands_run: []
+  proof: []
+  skipped_checks: []
+  agent_memory_updates:
+    checked: false
+    updated_files: []
+    notes: null
+  blockers: []
+  risks:
+  - 'Risk: too much ceremony for obvious tickets; mitigate by allowing grey_areas: none with proof from
+    discovery.'
+  next_recommended_step: null

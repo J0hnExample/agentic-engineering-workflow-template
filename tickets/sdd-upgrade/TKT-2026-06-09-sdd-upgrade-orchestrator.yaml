@@ -1,0 +1,227 @@
+schema_version: 2
+ticket:
+  id: TKT-2026-06-09-sdd-upgrade-orchestrator
+  title: Orchestrate SDD/context-engineering upgrade for workflow template
+  repo: agentic-engineering-workflow-template
+  branch: main
+  status: backlog
+  created_at: '2026-06-09'
+  owner_agent: manager
+  ticket_class: orchestrator
+  work_kind: codex_subagent_execution
+  phase: sdd-upgrade-v0.4.0
+  target_version: 0.4.0
+context:
+  objective: Upgrade the workflow template from ticket-driven agentic engineering to an explicit Spec-driven
+    Development capable workflow for release 0.4.0. Keep the template Codex-first, tool-agnostic where
+    possible, and safer than vibe coding.
+  constraints:
+  - Use existing project conventions and file layout unless a child ticket deliberately introduces a new
+    template folder.
+  - Do not weaken approval boundaries, allowed_files enforcement, proof gates, no-secrets rules, or no-bulk-staging
+    rules.
+  - Keep full BMAD-style agile ceremony out of the default path; extend the existing expert-team pattern with routing profiles only where useful.
+  - No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service
+    action without explicit approval.
+  source_of_truth:
+  - README.md
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+  - prompts/*.md
+  - checklists/*.md
+  - User-provided iX SDD article from 2026-06-08
+  target_version: 0.4.0
+orchestration:
+  execution_intensity: bounded_expert_rounds
+  manager_role: The manager keeps full context, decomposes work into scoped child tickets, runs one implementation
+    worker at a time, reviews proof, and decides whether to advance, retry, checkpoint, or stop.
+  max_iterations: 10
+  parallelism_policy: Read-only reviewers may run in parallel for independent questions. Implementation
+    workers run serially unless child tickets declare disjoint write scopes.
+  worker_sequence:
+  - stage: 0
+    id: planning_review
+    role: read_only_reviewer
+    mode: read_only
+    owns_files: []
+    task: Review all child tickets for overlap, risk, release coherence, and unnecessary ceremony before
+      implementation.
+    exit_gate: Reviewer findings are recorded and manager accepts or revises child tickets.
+  - stage: 1
+    id: expert_routing
+    role: scoped_worker
+    mode: implementation
+    owns_files:
+    - prompts/read-only-expert.md
+    - prompts/manager-orchestrator.md
+    - templates/TEMPLATE.ticket.yaml
+    - templates/TEMPLATE.orchestrator-ticket.yaml
+    - checklists/ticket-readiness.md
+    - docs/workflow.md
+    task: Add routing profiles for the existing read-only expert-team workflow.
+    exit_gate: Tickets can declare minimum useful expert profiles without creating a second BMAD-style team.
+  - stage: 2
+    id: spec_artifacts
+    role: scoped_worker
+    mode: implementation
+    owns_files:
+    - templates/specs/**
+    - templates/TEMPLATE.ticket.yaml
+    - templates/TEMPLATE.orchestrator-ticket.yaml
+    - docs/workflow.md
+    - templates/AGENTS.md.template
+    task: Add requirements/design/tasks spec artifacts and wire them into ticket readiness.
+    exit_gate: Spec templates exist and tickets can reference them.
+  - stage: 3
+    id: delta_specs
+    role: scoped_worker
+    mode: implementation
+    owns_files:
+    - templates/specs/**
+    - docs/spec_lifecycle.md
+    - docs/workflow.md
+    - templates/AGENTS.md.template
+    task: Add spec-anchored delta-spec lifecycle.
+    exit_gate: ADDED/MODIFIED/REMOVED change flow is documented and checkable.
+  - stage: 4
+    id: drift_verification
+    role: scoped_worker
+    mode: implementation
+    owns_files:
+    - prompts/spec-drift-verifier.md
+    - checklists/spec-drift.md
+    - prompts/final-verifier.md
+    - checklists/closeout.md
+    - templates/TEMPLATE.execution-result.yaml
+    task: Add cross-artifact spec drift verification.
+    exit_gate: Closeout and final verification require spec alignment proof.
+  - stage: 5
+    id: conditional_steering
+    role: scoped_worker
+    mode: implementation
+    owns_files:
+    - templates/steering/**
+    - templates/AGENTS.md.template
+    - docs/workflow.md
+    - prompts/initialize-repo.md
+    task: Add conditional steering documents to reduce context noise.
+    exit_gate: Rules explain always, fileMatch, manual, and auto-like loading without requiring Kiro.
+  - stage: 6
+    id: quick_flow
+    role: scoped_worker
+    mode: implementation
+    owns_files:
+    - prompts/quick-dev.md
+    - templates/TEMPLATE.quick-ticket.yaml
+    - docs/workflow.md
+    - README.md
+    task: Add quick-flow path with automatic escalation thresholds.
+    exit_gate: Small tasks can use quick flow and larger/risky tasks escalate.
+  - stage: 7
+    id: decision_context_budget
+    role: scoped_worker
+    mode: implementation
+    owns_files:
+    - templates/TEMPLATE.ticket.yaml
+    - templates/TEMPLATE.orchestrator-ticket.yaml
+    - agent/DECISIONS.md
+    - docs/workflow.md
+    - prompts/manager-orchestrator.md
+    task: Add locked decisions and context-budget controls.
+    exit_gate: Grey areas must be resolved before implementation and fresh contexts receive bounded context
+      packs.
+  - stage: 8
+    id: readme_version
+    role: scoped_worker
+    mode: documentation
+    owns_files:
+    - README.md
+    - VERSION
+    - CHANGELOG.md
+    - agent/CHANGELOG.md
+    task: Update README terminology and version metadata to 0.4.0.
+    exit_gate: README and VERSION agree on 0.4.0 and changelog describes SDD upgrade.
+  - stage: 9
+    id: final_verification
+    role: final_verifier
+    mode: read_only
+    owns_files: []
+    task: Verify child tickets, version coherence, spec alignment gates, expert-routing boundaries, and no
+      safety regressions.
+    exit_gate: Verifier result is recorded.
+child_ticket_policy:
+  required: true
+  template: tickets/templates/TEMPLATE.ticket.yaml
+  naming: TKT-2026-06-09-sdd-<stage>.yaml
+  requirements:
+  - Each child ticket has one owner, one scope, one done definition, explicit allowed_files/forbidden_files,
+    proof gates, expert-routing status, and execution_result.
+test_plan:
+- Parse all YAML tickets/templates.
+- Check all referenced new template paths exist after implementation.
+- Check expert-routing fields and read-only expert boundaries are internally consistent.
+- Check README.md, VERSION, and CHANGELOG.md agree on 0.4.0.
+- Run grep for old terminology/version references and justify any remaining historical references.
+- Final verifier checks that no SDD addition weakens safety or scope controls.
+proof_gates:
+- All child tickets done or deferred with explicit blockers.
+- Final verifier result is recorded.
+- No unresolved blocker remains for v0.4.0 release metadata.
+- Agent-memory update check is recorded.
+regression_gates:
+- No child worker edits outside declared scope.
+- No safety boundary is weakened.
+- No secrets/local paths/generated caches/dependency folders are introduced.
+- No external-service action occurs.
+visual_gate:
+  required: false
+  required_views: []
+  pass_rule: Not required.
+checkpoint_policy: Checkpoint only after completed child tickets when user/repo policy allows commits.
+rollback_or_accept_policy: If a stage fails, stop and record a blocker; do not merge partial workflow
+  semantics that conflict with existing ticket rules.
+stop_conditions:
+- A child ticket needs files outside scope.
+- The implementation would require a specific proprietary IDE/runtime as a hard dependency.
+- The plan weakens safety boundaries.
+- Final proof cannot be collected.
+allowed_files:
+- tickets/**
+- templates/**
+- prompts/**
+- checklists/**
+- docs/**
+- agent/**
+- README.md
+- VERSION
+- CHANGELOG.md
+forbidden_files:
+- .env
+- .env.*
+- node_modules/**
+- dist/**
+- build/**
+- .next/**
+- coverage/**
+handoff_requirements:
+- List each child ticket status, changed files, commands, proof artifacts, agent updates, blockers, risks,
+  skipped checks, and exact next action.
+done_definition: Done when the SDD upgrade is delivered through completed child tickets, final proof passes,
+  the agent memory update check is complete, and this orchestrator ticket contains a concise execution_result
+  manager closeout.
+execution_result:
+  status: pending
+  child_ticket_status: []
+  changed_files: []
+  commands_run: []
+  proof: []
+  skipped_checks: []
+  agent_memory_updates:
+    checked: false
+    updated_files: []
+    notes: null
+  blockers: []
+  risks: []
+  next_recommended_step: null
