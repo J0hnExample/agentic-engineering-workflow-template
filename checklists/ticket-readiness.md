@@ -8,11 +8,55 @@ Use before product-code work starts.
 - [ ] Ticket has a single concrete `scope.goal`.
 - [ ] `allowed_files` and `forbidden_files` are explicit.
 - [ ] `in_scope` and `out_of_scope` are explicit.
+- [ ] Grey-area status is explicit as `none`, `resolved`, or `blocked`.
+- [ ] Any grey-area items are resolved before implementation planning, or the
+  ticket is blocked and points to a `research_only` blocker ticket.
+- [ ] `locked_decisions` is present, either as an explicitly empty list or with
+  entries that include `decision`, `rationale`, `owner`, `source`, and
+  `expiry/change rule`.
+- [ ] `context_pack.required_files` lists files the worker must read before
+  editing, or is explicitly empty.
+- [ ] `context_pack.required_specs` lists specs the worker must read before
+  editing, or is explicitly empty because a quick-flow exemption applies.
+- [ ] `context_pack.required_steering_files` lists every specialized steering
+  file required for the ticket, or is explicitly empty.
+- [ ] `context_pack.excluded_context` records noisy, stale, unsafe, or
+  out-of-scope context that looked relevant but should not be loaded, or is
+  explicitly empty.
+- [ ] `context_pack.budget_notes` states the intended context budget and when a
+  worker must stop instead of loading more context.
+- [ ] Required steering files use supported inclusion modes: `always`,
+  `fileMatch`, `manual`, or `auto`.
+- [ ] Non-trivial implementation work has `spec_refs` for requirements, design,
+  and tasks, or `spec_contract.quick_flow_exemption.used: true` with a concrete
+  reason.
+- [ ] Quick-flow tickets use `templates/TEMPLATE.quick-ticket.yaml` shape:
+  `objective`, `discovery_evidence`, `allowed_files`, `forbidden_files`,
+  `acceptance_given_when_then`, `proof`, `escalation_conditions`, and
+  `execution_result`.
+- [ ] Quick-flow discovery names current repository evidence and confirms no
+  escalation trigger is active before implementation.
+- [ ] Quick-flow escalation thresholds are explicit: more than 3 non-ticket
+  files, more than 1 behavior module, architecture decision, dependency change,
+  data migration, auth/security/privacy impact, unclear acceptance, failing or
+  unavailable proof, visual/product ambiguity, scope outside `allowed_files`,
+  forbidden files, spec drift, conditional steering conflict, delta lifecycle
+  work, or expert routing.
+- [ ] Quick-flow does not bypass proof gates, forbidden files, no-secrets rules,
+  approval boundaries, no bulk staging, conditional steering, delta lifecycle,
+  spec drift checks, expert routing, or closeout.
+- [ ] Linked spec artifacts include acceptance criteria, design boundaries,
+  task/proof traceability, and unresolved ambiguity handling.
 - [ ] `execution_intensity` is one of `standard_worker`, `expert_supported`,
   `bounded_expert_rounds`, or `research_only`.
 - [ ] `manager_role` is explicit.
 - [ ] `worker_sequence` is ordered and each worker has a bounded task.
 - [ ] `expert_plan` says whether read-only Codex reviewer input is required.
+- [ ] `expert_routing` lists required profiles, optional profiles, triggers,
+  `max_rounds`, escalation rule, and record location, or explicitly sets no
+  required profiles and `max_rounds: 0`.
+- [ ] Expert routing uses the minimum useful read-only profile route and does
+  not require every profile by default.
 - [ ] Any Codex subagent role inherits `AGENTS.md`, ticket scope, approval
   boundaries, forbidden actions, and verification requirements.
 - [ ] `debug_logging_plan` names an owner and surfaces.

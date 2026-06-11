@@ -16,6 +16,14 @@ Use before marking a ticket `done`.
 - [ ] Browser/UI proof was collected when user-facing UI changed.
 - [ ] Screenshots/recordings were captured when visual gate required them.
 - [ ] Temporary logs, debug UI, fixtures, and probes were removed or gated.
+- [ ] Significant behavior/API/data/workflow changes checked the delta-spec lifecycle.
+- [ ] Accepted delta-spec `ADDED`, `MODIFIED`, and `REMOVED` items were merged into `specs/current/**`, or a deferred spec update blocker is recorded.
+- [ ] Closed delta-spec change package was archived under `specs/archive/<date>-<change-id>/`, or the archive deferral is recorded.
+- [ ] Parallel spec conflicts for the same `specs/current/**` path or requirement ID were checked and reconciled or recorded as blockers.
+- [ ] Spec drift verification ran for non-trivial tickets, or a justified `spec_contract.quick_flow_exemption` is recorded.
+- [ ] Spec drift verifier stayed read-only and any material findings were left for separate scoped repair/spec/test/doc tickets.
+- [ ] `execution_result.spec_alignment` records `verdict`, `checked_specs`, `drift_findings`, and `required_followups`, or the quick-flow exemption reason.
+- [ ] Implemented-but-unspecified, specified-but-unimplemented, tests-missing-for-acceptance, docs-outdated, and changed-behavior-not-approved questions were checked.
 - [ ] `agent/STATE.md` was checked and updated if current state changed.
 - [ ] `agent/DECISIONS.md` was checked and updated if a durable decision was made.
 - [ ] `agent/KNOWN_ISSUES.md` was checked and updated if a repeatable hazard remains.

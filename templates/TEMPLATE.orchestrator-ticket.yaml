@@ -30,6 +30,50 @@ context:
     - "agent/PATHS.md"
     - "agent/SERVICES.md"
     - "agent/CHANGELOG.md"
+  grey_areas:
+    status: none
+    items: []
+    resolution: "No unresolved planning or implementation grey areas before child-ticket creation."
+
+context_pack:
+  required_files:
+    - "Exact repository files the manager or child worker must read before planning or editing."
+  required_specs:
+    - "Specs that must be read, or [] when a justified quick-flow exemption applies."
+  required_steering_files: []
+  excluded_context:
+    - "Relevant-looking context intentionally not loaded because it is noisy, stale, unsafe, or out of scope."
+  budget_notes: >
+    State the intended context budget for the manager and child workers,
+    including what is omitted and when work must stop instead of loading more
+    context.
+
+locked_decisions:
+  - decision: "Concrete decision locked before planning or implementation."
+    rationale: "Why this decision resolves a planning or implementation grey area."
+    owner: "user|manager|ticket|spec"
+    source: "Ticket, spec, user instruction, or agent/DECISIONS.md path."
+    "expiry/change rule": "When this decision expires or what must happen before it changes."
+
+spec_refs:
+  requirements: "specs/<feature>/requirements.md"
+  design: "specs/<feature>/design.md"
+  tasks: "specs/<feature>/tasks.md"
+  source_of_truth:
+    - "AGENTS.md"
+    - "agent/*.md"
+    - "this orchestrator ticket"
+
+spec_contract:
+  required: true
+  quick_flow_exemption:
+    used: false
+    reason: null
+  requirements_format: "EARS/Given-When-Then acceptance criteria with non-goals and ambiguity log."
+  design_format: "Architecture, impacted files, interfaces, data flow, failure modes, security/privacy notes, and test strategy."
+  tasks_format: "Dependency-ordered tasks with owner role, allowed files, proof, and requirement traceability."
+  child_ticket_rule: "Child implementation tickets link to these specs, a narrowed derived spec, or record a justified quick-flow exemption."
+  traceability_required: true
 
 orchestration:
   execution_intensity: bounded_expert_rounds
@@ -44,6 +88,41 @@ orchestration:
     Read-only Codex reviewers may run in parallel only for independent
     questions. Implementation workers run serially unless child tickets declare
     disjoint write scopes.
+  expert_routing:
+    required_profiles:
+      - requirements
+    optional_profiles:
+      - architecture
+      - test
+      - security_privacy
+      - ux_visual
+      - performance_reliability
+      - data_migration
+      - docs_release
+    triggers:
+      - profile: requirements
+        when: "Acceptance criteria, child-ticket boundaries, or done behavior is ambiguous."
+      - profile: architecture
+        when: "The plan crosses module boundaries or changes shared contracts."
+      - profile: test
+        when: "The proof strategy, fixtures, or regression surface is unclear."
+      - profile: security_privacy
+        when: "Auth, secrets, permissions, user data, or privacy boundaries may change."
+      - profile: ux_visual
+        when: "User-facing UI, copy, layout, accessibility, or visual behavior changes."
+      - profile: performance_reliability
+        when: "Latency, concurrency, resource use, retries, or failure modes may change."
+      - profile: data_migration
+        when: "Schema, persistence, migrations, backfills, or data compatibility may change."
+      - profile: docs_release
+        when: "Operational docs, release notes, setup, or rollout behavior may change."
+    max_rounds: 2
+    escalation_rule: >
+      Use the minimum useful read-only expert route for the chain. Do not ask
+      every profile by default. Stop instead of widening scope if expert findings
+      require files, commands, or approvals outside the orchestrator or child
+      tickets.
+    record_location: "execution_result"
   worker_sequence:
     - stage: 0
       id: planning_review
@@ -83,6 +162,7 @@ child_ticket_policy:
   requirements:
     - "Each child ticket has one owner, one scope, and one done definition."
     - "Each child ticket declares allowed_files and forbidden_files."
+    - "Each non-trivial child ticket links to spec artifacts or records a justified quick-flow exemption."
     - "Each child ticket records execution_result before it can close."
     - "The manager reconciles child results into this orchestrator ticket."
 
@@ -96,6 +176,7 @@ debug_logging_plan:
   correlation_policy: "Use ticket id, route, test name, or request id in proof notes."
 
 test_plan:
+  - "Read linked spec artifacts, or verify a justified quick-flow exemption."
   - "Parse this ticket and all child tickets as YAML."
   - "Run repo-local lint/typecheck/build checks before final closeout."
   - "Run targeted tests for each child ticket."
@@ -103,6 +184,10 @@ test_plan:
   - "Check whether agent memory files need updates and record updated files or `agent memory checked: no update needed`."
 
 proof_gates:
+  - "Non-trivial implementation work has linked requirements/design/tasks specs, or this orchestrator records a justified quick-flow exemption."
+  - "Grey-area status is `none`, `resolved`, or `blocked`; child implementation starts only when there are no unresolved grey areas."
+  - "Required context pack items are present and fit each worker budget, or the orchestrator records a blocker."
+  - "Required locked decisions are present before child implementation, or the orchestrator records a blocker."
   - "All required child tickets are done or explicitly deferred with blockers."
   - "Final verifier result is recorded."
   - "No unresolved blocker remains for the requested outcome."

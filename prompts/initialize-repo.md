@@ -24,6 +24,9 @@ Rules:
 - Use manifests, lockfiles, framework config, test config, build config, CI
   files, Docker files, environment examples, scripts, and existing docs.
 - Do not invent unknown values. Mark unknowns explicitly.
+- Generate starter `steering/*.md` files only from repository evidence and
+  template-neutral placeholders. Do not use product-specific fake values,
+  private paths, secret names with values, or machine-local notes.
 - Do not install dependencies automatically. Propose the commands first, explain
   why they are needed, and ask for approval.
 - Use Codex-only planning, execution, review, verification, and closeout.
@@ -47,16 +50,19 @@ Initialization work:
    repository before proposing writes.
 4. Check whether `templates/AGENTS.md.template` has been installed as
    `AGENTS.md`.
-5. Check whether `agent/*.md` exists and contains repo-specific evidence rather
+5. Check whether starter steering templates are installed under `steering/` and
+   whether their YAML front matter uses only supported inclusion modes:
+   `always`, `fileMatch`, `manual`, and `auto`.
+6. Check whether `agent/*.md` exists and contains repo-specific evidence rather
    than placeholders.
-6. Check whether ticket templates are available under `tickets/templates/*`.
-7. Check whether reusable workflow docs exist under `docs/`.
-8. If files are missing, propose the minimal package-to-target copy plan before
+7. Check whether ticket templates are available under `tickets/templates/*`.
+8. Check whether reusable workflow docs exist under `docs/`.
+9. If files are missing, propose the minimal package-to-target copy plan before
    writing anything.
-9. Propose the minimal files to create or update.
-10. Propose dependency, lint, test, build, and dev-server commands from repo
+10. Propose the minimal files to create or update.
+11. Propose dependency, lint, test, build, and dev-server commands from repo
    evidence.
-11. Ask for approval before writing files or running dependency installation.
+12. Ask for approval before writing files or running dependency installation.
 
 Closeout:
 

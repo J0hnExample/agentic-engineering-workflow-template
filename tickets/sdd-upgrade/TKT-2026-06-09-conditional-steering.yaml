@@ -1,0 +1,213 @@
+schema_version: 2
+ticket:
+  id: TKT-2026-06-09-conditional-steering
+  title: Add conditional steering files to reduce context noise
+  repo: agentic-engineering-workflow-template
+  branch: feature/sdd-workflow-v0.4.0
+  status: done
+  created_at: '2026-06-09'
+  owner_agent: manager
+  ticket_class: implementation
+  work_kind: feature
+  phase: sdd-upgrade-v0.4.0
+  target_version: 0.4.0
+context:
+  problem: AGENTS.md and agent/*.md are always loaded. As repos grow, always-on context can become noisy.
+    The article highlights Kiro-style steering modes; the workflow can adopt the useful idea without depending
+    on Kiro.
+  current_behavior: Required read order loads AGENTS.md and all agent memory files before planning/implementation.
+    There is no first-class way to load specialized rules only for matching files, technologies, security
+    domains, or manual references.
+  desired_behavior: 'The template supports optional steering documents with inclusion metadata: always,
+    fileMatch, manual, and auto-like description matching. The manager builds a bounded context pack from
+    ticket allowed_files and requested task.'
+  relevant_prior_work:
+  - 'User-provided iX article: Fünf Tools für Spec-driven Development im Überblick, 2026-06-08'
+  - README.md
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+context_pack:
+  required_steering_files:
+  - templates/steering/security.md
+  excluded_context:
+  - agent/*.md not edited or loaded into this template ticket because user instructions forbid agent file
+    edits and the ticket scope is limited to reusable template files.
+  - Private/global machine paths and secrets are excluded from steering examples by design.
+scope:
+  goal: Introduce conditional steering templates and update read-order rules so only relevant specialized
+    context is loaded.
+  allowed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml
+  - templates/steering/**
+  - templates/AGENTS.md.template
+  - docs/workflow.md
+  - prompts/initialize-repo.md
+  - prompts/manager-orchestrator.md
+  - prompts/scoped-worker.md
+  - checklists/ticket-readiness.md
+  forbidden_files:
+  - .env
+  - .env.*
+  - node_modules/**
+  - dist/**
+  - build/**
+  - .next/**
+  - coverage/**
+  in_scope:
+  - Add templates/steering/product.md, tech.md, structure.md, testing.md, security.md examples with YAML
+    front matter.
+  - 'Define inclusion modes in template-neutral language: always, fileMatch, manual, auto.'
+  - 'Update AGENTS read order: always steering first; fileMatch steering based on allowed_files; manual/auto
+    steering only when referenced or matched by task description.'
+  - Add ticket field context_pack.required_steering_files and context_pack.excluded_context.
+  - Update initialization prompt to generate starter steering docs only from repo evidence and mark unknowns.
+  out_of_scope:
+  - Do not require Kiro IDE.
+  - Do not remove AGENTS.md.
+  - Do not load private/global machine paths or secrets into steering files.
+execution:
+  execution_intensity: expert_supported
+  manager_role: Main Codex agent owns scope, verifies the work, and records proof in this ticket. Any
+    Codex subagent inherits AGENTS.md, the active ticket scope, approval boundaries, forbidden actions,
+    and verification requirements.
+  worker_sequence:
+  - role: read_only_reviewer
+    mode: read_only
+    task: Review the planned workflow/template changes for SDD usefulness, risk, and minimality before
+      edits.
+  - role: scoped_worker
+    mode: implementation
+    task: Implement only the scoped workflow/template change described in this ticket.
+  expert_plan:
+    required: true
+    planning_reviewer: read-only Codex reviewer
+    reviewer: final verifier
+    record_location: execution_result
+  debug_logging_plan:
+    owner: scoped_worker
+    surfaces:
+    - YAML parse output
+    - Markdown link/path inspection
+    - grep output for version and old terminology
+    temporary_logging_policy: Do not add temporary logs to template files; record command output only
+      in ticket execution_result.
+  test_plan:
+  - Parse every changed YAML file with python -c "import yaml, pathlib; [yaml.safe_load(p.read_text())
+    for p in pathlib.Path('.').rglob('*.yaml')]".
+  - Run markdown/path consistency checks manually or with grep for all newly referenced template paths.
+  - Check whether README, docs/workflow.md, AGENTS template, prompts, checklists, ticket templates, and
+    agent memory files need updates and record the result.
+  proof_gates:
+  - Changed templates and tickets are internally consistent and parseable where applicable.
+  - The workflow change is bounded to SDD/context-engineering support and does not alter product runtime
+    assumptions.
+  - Agent-memory update check is recorded.
+  - Ticket result records changed files, commands, proof, skipped checks, blockers, and risks.
+  - Specialized guidance can be included without bloating every worker context.
+  - Steering templates contain no product-specific fake values and use unknown placeholders.
+  - Ticket readiness confirms required steering files are explicit when specialized rules apply.
+  regression_gates:
+  - No unrelated files changed.
+  - No secrets, credentials, or private local paths are introduced.
+  - No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service
+    action occurs without explicit approval.
+  - Existing Codex scoped-worker/orchestrator safety boundaries remain stricter or equivalent after the
+    change.
+  visual_gate:
+    required: false
+    required_views: []
+    pass_rule: Not required; this is a workflow/template change.
+  checkpoint_policy: Create a scoped checkpoint commit only after proof passes or after explicit user
+    approval.
+  rollback_or_accept_policy: If the scoped change makes the workflow ambiguous or less safe, keep the
+    ticket non-done, record the blocker, and propose a smaller follow-up ticket.
+  stop_conditions:
+  - The change would require product-repository assumptions that are not available in the template source.
+  - The change requires editing forbidden files.
+  - The design would weaken approval boundaries, proof gates, or scoped file ownership.
+  - The work requires dependency installation, destructive commands, remote operations, deployment, release,
+    secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit
+    approval.
+  handoff_requirements:
+  - Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates,
+    and next action.
+  done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
+    passed or justified skips are recorded, and execution_result is complete.
+execution_result:
+  status: done
+  changed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml
+  - templates/steering/product.md
+  - templates/steering/tech.md
+  - templates/steering/structure.md
+  - templates/steering/testing.md
+  - templates/steering/security.md
+  - templates/AGENTS.md.template
+  - docs/workflow.md
+  - prompts/initialize-repo.md
+  - prompts/manager-orchestrator.md
+  - prompts/scoped-worker.md
+  - checklists/ticket-readiness.md
+  commands_run:
+  - git status --short --branch
+  - sed -n '1,240p' tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml
+  - rg -n "steering|context_pack|conditional|always|fileMatch|manual|auto|excluded_context|spec drift|expert routing|delta" templates docs prompts checklists tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml
+  - sed -n '1,260p' templates/AGENTS.md.template
+  - sed -n '1,180p' docs/workflow.md
+  - sed -n '1,220p' prompts/initialize-repo.md
+  - sed -n '1,220p' prompts/manager-orchestrator.md
+  - sed -n '1,220p' prompts/scoped-worker.md
+  - sed -n '1,180p' checklists/ticket-readiness.md
+  - find templates/steering -maxdepth 2 -type f -print | sort
+  - find templates -maxdepth 2 -type f | sort
+  - git diff -- templates/AGENTS.md.template docs/workflow.md prompts/initialize-repo.md prompts/manager-orchestrator.md prompts/scoped-worker.md checklists/ticket-readiness.md templates/steering/product.md templates/steering/tech.md templates/steering/structure.md templates/steering/testing.md templates/steering/security.md
+  - rg -n "context_pack|required_steering_files|excluded_context|inclusion.mode|fileMatch|manual|auto|always|steering" templates/AGENTS.md.template docs/workflow.md prompts/initialize-repo.md prompts/manager-orchestrator.md prompts/scoped-worker.md checklists/ticket-readiness.md templates/steering tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml
+  - python -c "import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]"
+  - |
+    python - <<'PY'
+    from pathlib import Path
+    import yaml
+    for path in sorted(Path('templates/steering').glob('*.md')):
+        text = path.read_text()
+        if not text.startswith('---\n'):
+            raise SystemExit(f'{path}: missing YAML front matter')
+        _, front, _ = text.split('---\n', 2)
+        data = yaml.safe_load(front)
+        mode = data.get('inclusion', {}).get('mode')
+        if mode not in {'always', 'fileMatch', 'manual', 'auto'}:
+            raise SystemExit(f'{path}: unsupported inclusion mode {mode!r}')
+    print('validated steering front matter')
+    PY
+  - rg -n "templates/steering/(product|tech|structure|testing|security).md|steering/" templates/AGENTS.md.template docs/workflow.md prompts/initialize-repo.md prompts/manager-orchestrator.md prompts/scoped-worker.md checklists/ticket-readiness.md tickets/sdd-upgrade/TKT-2026-06-09-conditional-steering.yaml templates/steering
+  - git diff --check
+  proof:
+  - Read-only review completed in-session before edits; the scoped change was useful, minimal, and did not
+    require product assumptions.
+  - Added five generic steering templates with YAML front matter and supported inclusion modes only.
+  - AGENTS read order now loads always steering first, then required, fileMatch, manual, and auto steering
+    before specialized work.
+  - Manager and scoped-worker prompts now carry required steering files, excluded context, and conflict
+    handling while preserving approval boundaries, spec contracts, delta lifecycle, spec drift, and expert
+    routing constraints.
+  - Initialization prompt now requires starter steering docs to come from repository evidence or unknown
+    placeholders.
+  - Ticket readiness now requires explicit steering context pack fields when specialized rules apply.
+  - Initial YAML validation caught a ticket execution_result heredoc command that needed YAML-safe block
+    scalar formatting; fixed before final validation.
+  - YAML files and steering YAML front matter validated successfully.
+  - Markdown/path consistency checked with rg for new steering references.
+  - git diff --check passed.
+  skipped_checks:
+  - Visual checks not run; visual_gate.required is false and this is a workflow/template documentation change.
+  - Dependency, lint, build, and test commands not run; the ticket requested YAML validation, path inspection,
+    and diff whitespace proof only, and no runtime code changed.
+  agent_memory_updates:
+    checked: true
+    updated_files: []
+    notes: 'agent memory checked: no update needed; user explicitly forbade editing agent/*.md for this template ticket.'
+  blockers: []
+  risks:
+  - 'Risk: auto-like steering could hide important rules; mitigate by keeping security/core standards
+    always loaded.'
+  - 'Residual risk: target repositories must tune fileMatch globs from repository evidence during initialization.'
+  next_recommended_step: Commit the scoped ticket changes after review if desired.

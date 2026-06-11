@@ -21,6 +21,48 @@ context:
     Describe the target behavior and acceptance expectations.
   relevant_prior_work:
     - "Link or path to prior ticket/doc, or 'none'."
+  grey_areas:
+    status: none
+    items: []
+    resolution: "No unresolved implementation grey areas before planning."
+
+context_pack:
+  required_files:
+    - "Exact repository files the worker must read before editing."
+  required_specs:
+    - "Specs that must be read, or [] when a justified quick-flow exemption applies."
+  required_steering_files: []
+  excluded_context:
+    - "Relevant-looking context intentionally not loaded because it is noisy, stale, unsafe, or out of scope."
+  budget_notes: >
+    State the intended context budget for the worker, including what is omitted
+    and when the worker must stop instead of requesting or loading more context.
+
+locked_decisions:
+  - decision: "Concrete decision locked before implementation."
+    rationale: "Why this decision resolves an implementation grey area."
+    owner: "user|manager|ticket|spec"
+    source: "Ticket, spec, user instruction, or agent/DECISIONS.md path."
+    "expiry/change rule": "When this decision expires or what must happen before it changes."
+
+spec_refs:
+  requirements: "specs/<feature>/requirements.md"
+  design: "specs/<feature>/design.md"
+  tasks: "specs/<feature>/tasks.md"
+  source_of_truth:
+    - "AGENTS.md"
+    - "agent/*.md"
+    - "this ticket"
+
+spec_contract:
+  required: true
+  quick_flow_exemption:
+    used: false
+    reason: null
+  requirements_format: "EARS/Given-When-Then acceptance criteria with non-goals and ambiguity log."
+  design_format: "Architecture, impacted files, interfaces, data flow, failure modes, security/privacy notes, and test strategy."
+  tasks_format: "Dependency-ordered tasks with owner role, allowed files, proof, and requirement traceability."
+  traceability_required: true
 
 scope:
   goal: >
@@ -58,6 +100,33 @@ execution:
     planning_reviewer: null
     reviewer: null
     record_location: "execution_result"
+  expert_routing:
+    required_profiles: []
+    optional_profiles: []
+    triggers:
+      - profile: requirements
+        when: "Acceptance criteria, scope, or user-visible behavior is ambiguous."
+      - profile: architecture
+        when: "The change crosses module boundaries or alters shared contracts."
+      - profile: test
+        when: "Coverage, fixtures, or proof strategy is unclear or high risk."
+      - profile: security_privacy
+        when: "Auth, secrets, permissions, user data, or privacy boundaries may change."
+      - profile: ux_visual
+        when: "User-facing UI, copy, layout, accessibility, or visual behavior changes."
+      - profile: performance_reliability
+        when: "Latency, concurrency, resource use, retries, or failure modes may change."
+      - profile: data_migration
+        when: "Schema, persistence, migrations, backfills, or data compatibility may change."
+      - profile: docs_release
+        when: "Operational docs, release notes, setup, or rollout behavior may change."
+    max_rounds: 0
+    escalation_rule: >
+      Use the minimum useful read-only expert route. Set max_rounds to 0 when
+      no expert review is required, 1 for a targeted review, or a small explicit
+      cap for risky tickets. Stop instead of widening scope if expert findings
+      require files, commands, or approvals outside this ticket.
+    record_location: "execution_result"
   debug_logging_plan:
     owner: scoped_worker
     surfaces:
@@ -66,6 +135,7 @@ execution:
       - "Test output for failing checks."
     temporary_logging_policy: "Remove or gate temporary logs before done."
   test_plan:
+    - "Read linked spec artifacts, or verify a justified quick-flow exemption."
     - "Parse this ticket as YAML."
     - "Run formatter/lint command if present."
     - "Run typecheck command if present."
@@ -73,10 +143,15 @@ execution:
     - "Run build command if present."
     - "Check whether agent files need updates and record the result."
   proof_gates:
+    - "Non-trivial implementation work has linked requirements/design/tasks specs, or this ticket records a justified quick-flow exemption."
+    - "Grey-area status is `none`, `resolved`, or `blocked`; implementation starts only when there are no unresolved grey areas."
+    - "Required context pack items are present and fit the ticket budget, or the ticket records a blocker."
+    - "Required locked decisions are present before implementation, or the ticket records a blocker."
     - "Implementation matches desired behavior."
     - "Relevant automated checks pass or skipped checks are justified."
     - "Agent-memory update check is recorded."
     - "Ticket result records changed files, commands, proof, and blockers."
+    - "Non-trivial tickets record execution_result.spec_alignment with verdict, checked_specs, drift_findings, and required_followups, or a justified quick-flow exemption."
   regression_gates:
     - "No unrelated files changed."
     - "No secrets or local machine paths are committed."
@@ -108,6 +183,11 @@ execution_result:
   changed_files: []
   commands_run: []
   proof: []
+  spec_alignment:
+    verdict: null
+    checked_specs: []
+    drift_findings: []
+    required_followups: []
   skipped_checks: []
   agent_memory_updates:
     checked: false

@@ -1,0 +1,192 @@
+schema_version: 2
+ticket:
+  id: TKT-2026-06-09-expert-routing-profiles
+  title: Add routing profiles for the existing read-only expert team
+  repo: agentic-engineering-workflow-template
+  branch: main
+  status: done
+  created_at: '2026-06-09'
+  owner_agent: manager
+  ticket_class: implementation
+  work_kind: refactor
+  phase: sdd-upgrade-v0.4.0
+  target_version: 0.4.0
+context:
+  problem: The workflow already has an expert-team pattern through manager-orchestrator, scoped worker,
+    read-only reviewer, final verifier, and the expert_supported/bounded_expert_rounds execution modes.
+    However, the current reviewer role is generic, so the manager must manually decide which expert lens
+    is needed for architecture, tests, security, UX, performance, data, or release documentation.
+  current_behavior: Tickets can request a read-only reviewer through expert_plan, but there is no structured
+    routing contract for reviewer profile, trigger, maximum review rounds, expected output, or escalation.
+  desired_behavior: The existing read-only expert mechanism gains explicit routing profiles without adding
+    a second BMAD-style persona team. Tickets can declare required/optional expert profiles, trigger
+    conditions, and max rounds. Reviewers remain read-only and produce bounded findings, proof requirements,
+    and the next worker task.
+  relevant_prior_work:
+  - 'User-provided iX article: Fünf Tools für Spec-driven Development im Überblick, 2026-06-08'
+  - README.md
+  - docs/workflow.md
+  - prompts/read-only-expert.md
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+scope:
+  goal: Specialize the existing expert-team workflow with explicit read-only expert routing metadata and
+    profile guidance.
+  allowed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-expert-routing-profiles.yaml
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+  - prompts/read-only-expert.md
+  - prompts/manager-orchestrator.md
+  - checklists/ticket-readiness.md
+  - docs/workflow.md
+  - README.md
+  forbidden_files:
+  - .env
+  - .env.*
+  - node_modules/**
+  - dist/**
+  - build/**
+  - .next/**
+  - coverage/**
+  in_scope:
+  - Add an expert_routing block to ticket templates with required_profiles, optional_profiles, triggers,
+    max_rounds, escalation_rule, and record_location.
+  - Define small reusable reviewer profiles such as requirements, architecture, test, security/privacy,
+    UX/visual, performance/reliability, data/migration, and docs/release.
+  - Update read-only expert prompt so the reviewer declares which profile was used and avoids persona theater.
+  - Update manager prompt so it chooses the minimum useful expert route from ticket risk and file/context
+    evidence.
+  - Update ticket readiness so expert routing is either explicit or intentionally not required.
+  out_of_scope:
+  - Do not add a separate agile team or BMAD clone.
+  - Do not make every ticket require every expert profile.
+  - Do not permit read-only experts to edit files, run migrations, install dependencies, deploy, release,
+    push, or widen scope.
+  - Do not require proprietary IDE features or a specific vendor workflow.
+execution:
+  execution_intensity: expert_supported
+  manager_role: Main Codex agent owns scope, verifies the work, and records proof in this ticket. Any
+    Codex subagent inherits AGENTS.md, the active ticket scope, approval boundaries, forbidden actions,
+    and verification requirements.
+  worker_sequence:
+  - role: read_only_reviewer
+    mode: read_only
+    task: Review whether the proposed expert routing block improves the existing expert-team workflow without
+      adding excessive ceremony.
+  - role: scoped_worker
+    mode: implementation
+    task: Implement only the expert-routing template, prompt, checklist, and documentation changes described
+      in this ticket.
+  expert_plan:
+    required: true
+    planning_reviewer: read-only Codex reviewer using the workflow/architecture profile
+    reviewer: final verifier
+    record_location: execution_result
+  debug_logging_plan:
+    owner: scoped_worker
+    surfaces:
+    - YAML parse output
+    - Markdown link/path inspection
+    - grep output for expert_routing and read-only reviewer terminology
+    temporary_logging_policy: Do not add temporary logs to template files; record command output only
+      in ticket execution_result.
+  test_plan:
+  - Parse every changed YAML file with python -c "import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]".
+  - Grep changed docs/prompts/templates for expert_routing and read-only boundaries.
+  - Check README, docs/workflow.md, ticket templates, prompt files, and readiness checklist for consistent
+    terminology.
+  - Check whether agent memory files need updates and record the result.
+  proof_gates:
+  - Expert routing extends the existing expert-team pattern instead of duplicating it.
+  - Every expert profile is read-only by default and has a bounded output contract.
+  - Ticket templates allow the manager to select zero, one, or multiple expert profiles based on risk.
+  - Manager prompt has a rule to choose the minimum useful expert route and avoid ceremony for simple tickets.
+  - Ticket readiness requires expert routing to be explicit or explicitly not required.
+  - Agent-memory update check is recorded.
+  - Ticket result records changed files, commands, proof, skipped checks, blockers, and risks.
+  regression_gates:
+  - No unrelated files changed.
+  - No secrets, credentials, or private local paths are introduced.
+  - No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service
+    action occurs without explicit approval.
+  - Existing scoped-worker, orchestrator, and final-verifier safety boundaries remain stricter or equivalent
+    after the change.
+  visual_gate:
+    required: false
+    required_views: []
+    pass_rule: Not required; this is a workflow/template change.
+  checkpoint_policy: Create a scoped checkpoint commit only after proof passes or after explicit user
+    approval.
+  rollback_or_accept_policy: If expert routing makes the workflow more ambiguous or pushes every ticket
+    toward ceremony, keep this ticket non-done and propose a smaller routing-only follow-up.
+  stop_conditions:
+  - The change would require product-repository assumptions that are not available in the template source.
+  - The change requires editing forbidden files.
+  - The design would weaken approval boundaries, proof gates, or scoped file ownership.
+  - The work requires dependency installation, destructive commands, remote operations, deployment, release,
+    secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit
+    approval.
+  handoff_requirements:
+  - Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates,
+    and next action.
+  done_definition: Done when the existing expert-team workflow supports explicit profile routing, required
+    proof has passed or justified skips are recorded, and execution_result is complete.
+execution_result:
+  status: done
+  changed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-expert-routing-profiles.yaml
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+  - prompts/read-only-expert.md
+  - prompts/manager-orchestrator.md
+  - checklists/ticket-readiness.md
+  - docs/workflow.md
+  - README.md
+  commands_run:
+  - git status --short --branch
+  - sed -n '1,240p' tickets/sdd-upgrade/TKT-2026-06-09-expert-routing-profiles.yaml
+  - rg -n "expert|routing|read-only|orchestrator|profile|persona|BMAD|execution_result|allowed_files" README.md docs/workflow.md prompts/read-only-expert.md prompts/manager-orchestrator.md checklists/ticket-readiness.md templates/TEMPLATE.ticket.yaml templates/TEMPLATE.orchestrator-ticket.yaml
+  - sed -n '1,180p' templates/TEMPLATE.ticket.yaml
+  - sed -n '1,230p' templates/TEMPLATE.orchestrator-ticket.yaml
+  - sed -n '1,220p' prompts/read-only-expert.md
+  - sed -n '1,220p' prompts/manager-orchestrator.md
+  - sed -n '1,220p' checklists/ticket-readiness.md
+  - sed -n '1,180p' docs/workflow.md
+  - sed -n '130,280p' README.md
+  - rg -n "expert_routing|required_profiles|optional_profiles|max_rounds|security_privacy|profile_used|persona|BMAD|read-only|run migrations|install dependencies|deploy|release|use secrets|widen scope" templates/TEMPLATE.ticket.yaml templates/TEMPLATE.orchestrator-ticket.yaml prompts/read-only-expert.md prompts/manager-orchestrator.md checklists/ticket-readiness.md docs/workflow.md README.md
+  - python -c "import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in [pathlib.Path('templates/TEMPLATE.ticket.yaml'), pathlib.Path('templates/TEMPLATE.orchestrator-ticket.yaml'), pathlib.Path('tickets/sdd-upgrade/TKT-2026-06-09-expert-routing-profiles.yaml')]]; print('yaml ok')"
+  - git diff -- README.md docs/workflow.md prompts/read-only-expert.md prompts/manager-orchestrator.md checklists/ticket-readiness.md templates/TEMPLATE.ticket.yaml templates/TEMPLATE.orchestrator-ticket.yaml
+  - python -c "import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]; print('all yaml ok')"
+  - git diff --check
+  - git status --short
+  proof:
+  - Added expert_routing metadata to both ticket templates with required_profiles, optional_profiles,
+    triggers, max_rounds, escalation_rule, and record_location.
+  - Defined the reusable reviewer profile set as requirements, architecture, test, security_privacy,
+    ux_visual, performance_reliability, data_migration, and docs_release.
+  - Updated read-only expert prompt to require profile_used, keep profiles as review lenses,
+    reject persona-team ceremony, and preserve read-only safety boundaries.
+  - Updated manager prompt to choose the minimum useful expert route from risk and evidence,
+    avoid asking every profile by default, and stay within max_rounds.
+  - Updated ticket readiness, workflow docs, and README to require explicit expert routing
+    or an explicit not-required route with max_rounds 0.
+  - Repository YAML parse passed with output "all yaml ok".
+  - Markdown/path terminology inspection passed via rg for expert_routing, profile names,
+    no persona-team ceremony, and read-only safety boundary terms.
+  - git diff --check passed with no whitespace errors.
+  skipped_checks:
+  - Visual checks skipped because visual_gate.required is false and this ticket only changes
+    workflow templates, prompts, checklist, and documentation.
+  - Dependency install, deploy, release, migration, remote operation, and secret checks skipped
+    because this ticket requires none of those actions and safety boundaries forbid them.
+  agent_memory_updates:
+    checked: true
+    updated_files: []
+    notes: "No agent/*.md files were edited; user and ticket scope exclude agent file updates for this template change."
+  blockers: []
+  risks:
+  - 'Risk: too many profiles could become ceremony; mitigate by requiring minimum useful expert route and
+    max_rounds.'
+  - 'Residual risk: downstream repositories must update existing tickets manually if they want expert_routing metadata.'
+  next_recommended_step: "Review the diff, then commit the scoped ticket changes if acceptable."

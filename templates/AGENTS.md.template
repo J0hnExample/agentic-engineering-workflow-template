@@ -17,8 +17,17 @@ product-specific assumptions in this file.
 ## Target Repository Map
 
 - `AGENTS.md` - durable Codex agent workflow rules.
+- `steering/` - optional conditional guidance with YAML front matter that
+  declares when specialized context should be loaded.
 - `agent/` - repo-local state, decisions, known issues, and handoff notes.
 - `tickets/` - scoped workflow records for non-trivial work.
+- `tickets/templates/TEMPLATE.quick-ticket.yaml` - compact quick-flow ticket
+  template for tiny bounded work.
+- `specs/current/` - durable current specs for implemented behavior, contracts,
+  workflows, and important constraints.
+- `specs/changes/<change-id>/` - proposed change specs, typically
+  `proposal.md`, `delta-spec.md`, `design.md`, and `tasks.md`.
+- `specs/archive/` - accepted or closed change specs kept for history.
 - `docs/` - reusable implementation paths, architecture notes, and proof
   records.
 - `src/`, `app/`, `pages/`, `components/`, `lib/`, `server/`, `tests/`, and
@@ -29,16 +38,34 @@ product-specific assumptions in this file.
 Before planning or implementation work, read:
 
 1. `AGENTS.md`
-2. `agent/STATE.md`
-3. `agent/DECISIONS.md`
-4. `agent/KNOWN_ISSUES.md`
-5. `agent/TODO.md`
-6. `agent/PATHS.md`
-7. `agent/SERVICES.md`
-8. `agent/CHANGELOG.md`
-9. the newest relevant ticket in `tickets/`
-10. docs named by the ticket
-11. files in the ticket's allowed scope
+2. `steering/*.md` files whose front matter uses `inclusion.mode: always`
+3. the newest relevant ticket in `tickets/`
+4. steering files listed by
+   `context_pack.required_steering_files`
+5. steering files whose `inclusion.mode: fileMatch` patterns match the
+   ticket's `allowed_files`
+6. steering files whose `inclusion.mode: manual` files are explicitly named by
+   the user, ticket, specs, or manager prompt
+7. steering files whose `inclusion.mode: auto` description clearly matches the
+   requested task, changed-file domain, or proof risk
+8. `agent/STATE.md`
+9. `agent/DECISIONS.md`
+10. `agent/KNOWN_ISSUES.md`
+11. `agent/TODO.md`
+12. `agent/PATHS.md`
+13. `agent/SERVICES.md`
+14. `agent/CHANGELOG.md`
+15. specs named by the ticket
+16. docs named by the ticket
+17. files in the ticket's allowed scope
+
+Build a bounded context pack before implementation. Include only the
+`context_pack.required_files`, `context_pack.required_specs`, selected steering
+files, linked docs, and allowed files needed for the task. Record intentionally
+excluded noisy or irrelevant context in `context_pack.excluded_context` when
+the ticket needs that decision preserved, and use `context_pack.budget_notes`
+to state the context budget and stop rule. Do not load private/global machine
+paths, secrets, or product-specific assumptions into steering files.
 
 If a referenced file is missing, stale, or conflicts with the current user
 instruction, report that fact instead of silently filling the gap.
@@ -62,6 +89,22 @@ files.
 - Non-trivial planning and implementation work must be ticketed.
 - Planning work must create or update a scoped ticket before implementation
   starts.
+- Before implementation planning, identify implementation grey areas. Resolve
+  them through user input, specs, or durable decision locks, or create a
+  `research_only` blocker ticket instead of assigning implementation.
+- Required durable decision locks live in `locked_decisions` and include
+  `decision`, `rationale`, `owner`, `source`, and `expiry/change rule`.
+- Non-trivial implementation work must link requirements, design, and tasks
+  specs, or record a justified quick-flow exemption in the ticket before
+  product-code work starts.
+- Significant behavior, API, data, workflow, or durable documentation changes
+  must link a delta spec under `specs/changes/<change-id>/delta-spec.md` or
+  record why the delta-spec lifecycle does not apply.
+- Tiny quick-flow work may use `tickets/templates/TEMPLATE.quick-ticket.yaml`
+  and `prompts/quick-dev.md` only when it has discovery evidence, exact
+  `allowed_files`, `forbidden_files`, Given-When-Then acceptance, proof, hard
+  escalation conditions, and a justified
+  `spec_contract.quick_flow_exemption`.
 - Codex implementation workers must work from the active ticket scope and keep changes
   inside the ticket's declared files unless the user widens scope.
 - After each meaningful step, record the result as a ticket comment or result
@@ -76,9 +119,51 @@ files.
   update. If they do, update them inside the ticket scope or record why the
   update is deferred. If they do not, record `agent memory checked: no update
   needed` in the ticket result.
+- Before closing significant changes, merge accepted `ADDED`, `MODIFIED`, and
+  `REMOVED` delta-spec items into `specs/current/**` and archive the change
+  package under `specs/archive/<date>-<change-id>/`, or record a deferred spec
+  update blocker in the ticket result.
+- If parallel tickets touch the same `specs/current/**` file or requirement ID,
+  stop and reconcile the conflict before implementation continues or either
+  ticket archives its delta.
 - Stage only files in the ticket scope plus the ticket record. Do not use bulk
   staging such as `git add -A`.
 - Do not revert changes you did not make unless explicitly requested.
+
+## Quick-Flow Rules
+
+Quick-flow is for tiny, clear, low-risk work. It is still ticketed work and
+must not bypass proof gates, forbidden files, no-secrets rules, approval
+boundaries, conditional steering, delta lifecycle rules, spec drift checks,
+expert routing, no bulk staging, or closeout.
+
+Before editing in quick-flow, Codex must scan current repository evidence,
+record the discovered files and patterns, confirm concrete Given-When-Then
+acceptance, confirm proof, and verify that no escalation condition applies.
+
+Escalate to a full ticket or parent orchestrator flow when any condition is
+true:
+
+- More than 3 non-ticket files need edits.
+- More than 1 package, service, app, or bounded module needs behavior changes.
+- An architecture decision or shared contract change is required.
+- A dependency add, remove, upgrade, or configuration change is required.
+- A schema, storage, data migration, backfill, or destructive cleanup is
+  required.
+- Auth, security, permissions, secrets, privacy, payments, deployment, release,
+  remotes, or external-service behavior may change.
+- Acceptance is unclear, contradictory, or missing observable outcomes.
+- Proof is unavailable, flaky, network-dependent without approval, or failing
+  for unclear reasons.
+- UI, product copy, layout, accessibility, or visual behavior is ambiguous or
+  needs unspecified visual proof.
+- Needed files are outside `allowed_files` or match `forbidden_files`.
+- Spec drift, conditional steering conflicts, delta lifecycle work, or expert
+  routing is discovered.
+
+When escalation triggers, stop implementation, record the trigger in
+`execution_result.blockers`, and convert to the full SDD ticket or orchestrator
+flow before continuing.
 
 ## Safety And Approval Boundaries
 
@@ -117,6 +202,18 @@ ticket already grants that permission.
 
 Every implementation ticket must include these fields before product-code work:
 
+- `context.grey_areas.status` with `none`, `resolved`, or `blocked`
+- `context.grey_areas.items`
+- `context.grey_areas.resolution`
+- `context_pack.required_files`
+- `context_pack.required_specs`
+- `context_pack.required_steering_files`
+- `context_pack.excluded_context`
+- `context_pack.budget_notes`
+- `locked_decisions`, or an explicitly empty list when no decision locks are
+  required
+- `spec_refs`, or a justified `spec_contract.quick_flow_exemption`
+- `spec_contract`
 - `execution_intensity`
 - `manager_role`
 - `worker_sequence`
@@ -134,9 +231,31 @@ Every implementation ticket must include these fields before product-code work:
 - `handoff_requirements`
 - `done_definition`
 
+Workers must stop before editing when a required context-pack item is missing,
+when a required locked decision is absent, or when the task would require
+context beyond `context_pack.budget_notes`.
+
 The `test_plan` or closeout proof must include an agent-memory update check for
 `agent/` files whenever the ticket changes durable project state, decisions,
 known issues, setup paths, service assumptions, or follow-up work.
+
+For non-trivial work, the ticket's `spec_refs` point to the requirements,
+design, and tasks artifacts that act as source of truth with `AGENTS.md` and
+agent memory. The specs must keep acceptance criteria, design boundaries,
+allowed-file tasks, proof, and requirement traceability aligned. Tiny quick-flow
+changes may skip full specs only when the ticket records a concrete exemption
+reason.
+
+Quick-flow tickets must also include `objective`, `discovery_evidence`,
+`acceptance_given_when_then`, `proof`, `escalation_conditions`, and
+`execution_result`. If those fields cannot be completed honestly before
+implementation, create a full ticket instead.
+
+For significant changes, `spec_refs` should also include the delta spec. The
+delta spec uses `ADDED`, `MODIFIED`, and `REMOVED` sections to describe how
+`specs/current/**` must change. Final verification checks that implementation
+matches the delta intent and that the current spec update was merged, archived,
+or explicitly deferred with a blocker.
 
 The `test_plan` must list concrete checks that decide whether the ticket may be
 marked done. For web applications, use relevant repo-local checks such as:
@@ -179,6 +298,8 @@ owner.
 - Independent read-only Codex reviewers may run in parallel only when the ticket
   allows it and their questions are distinct.
 - Codex workers receive a narrow file scope and must not edit outside it.
+- Codex workers must stop and report a blocker when required files, specs,
+  steering files, or locked decisions are missing from the assigned context.
 - Codex workers must report changed files, commands run, proof, blockers, and
   risks to the manager.
 - Codex subagents must not write logs, memory files, closeout reports, or review

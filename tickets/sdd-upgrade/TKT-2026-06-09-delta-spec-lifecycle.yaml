@@ -1,0 +1,177 @@
+schema_version: 2
+ticket:
+  id: TKT-2026-06-09-delta-spec-lifecycle
+  title: Add OpenSpec-style delta-spec lifecycle for ongoing changes
+  repo: agentic-engineering-workflow-template
+  branch: main
+  status: done
+  created_at: '2026-06-09'
+  owner_agent: manager
+  ticket_class: implementation
+  work_kind: feature
+  phase: sdd-upgrade-v0.4.0
+  target_version: 0.4.0
+context:
+  problem: 'The workflow is currently closer to Spec-first: tickets and docs can be created up front,
+    but there is no formal mechanism to keep durable specs current after implementation. That invites
+    Spec Drift on long-lived projects.'
+  current_behavior: agent/*.md and tickets preserve memory, but no current spec tree, change folder, archive
+    step, or ADDED/MODIFIED/REMOVED format exists.
+  desired_behavior: 'The template supports Spec-anchored maintenance: each significant change gets a delta-spec
+    folder, and closeout either merges/archives that delta into durable specs or records why it is deferred.'
+  relevant_prior_work:
+  - 'User-provided iX article: Fünf Tools für Spec-driven Development im Überblick, 2026-06-08'
+  - README.md
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+scope:
+  goal: Introduce a lightweight delta-spec lifecycle with current specs, change specs, and archive rules.
+  allowed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml
+  - templates/specs/**
+  - docs/spec_lifecycle.md
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+  - checklists/closeout.md
+  - prompts/final-verifier.md
+  forbidden_files:
+  - .env
+  - .env.*
+  - node_modules/**
+  - dist/**
+  - build/**
+  - .next/**
+  - coverage/**
+  in_scope:
+  - Add templates/specs/TEMPLATE.delta-spec.md or .yaml using ADDED, MODIFIED, REMOVED sections.
+  - 'Document suggested target layout: specs/current/**, specs/changes/<change-id>/{proposal.md,delta-spec.md,design.md,tasks.md},
+    specs/archive/**.'
+  - Update closeout so significant behavior changes must archive/merge the delta spec or record a deferred
+    spec update blocker.
+  - Add conflict rule for parallel changes touching the same current spec.
+  - Add proof gate that the final verifier checks implementation against the delta-spec intent and current
+    spec update.
+  out_of_scope:
+  - Do not build a CLI.
+  - Do not require Node/OpenSpec installation.
+  - Do not turn all work into Spec-as-Source where humans never edit code.
+execution:
+  execution_intensity: expert_supported
+  manager_role: Main Codex agent owns scope, verifies the work, and records proof in this ticket. Any
+    Codex subagent inherits AGENTS.md, the active ticket scope, approval boundaries, forbidden actions,
+    and verification requirements.
+  worker_sequence:
+  - role: read_only_reviewer
+    mode: read_only
+    task: Review the planned workflow/template changes for SDD usefulness, risk, and minimality before
+      edits.
+  - role: scoped_worker
+    mode: implementation
+    task: Implement only the scoped workflow/template change described in this ticket.
+  expert_plan:
+    required: true
+    planning_reviewer: read-only Codex reviewer
+    reviewer: final verifier
+    record_location: execution_result
+  debug_logging_plan:
+    owner: scoped_worker
+    surfaces:
+    - YAML parse output
+    - Markdown link/path inspection
+    - grep output for version and old terminology
+    temporary_logging_policy: Do not add temporary logs to template files; record command output only
+      in ticket execution_result.
+  test_plan:
+  - Parse every changed YAML file with python -c "import yaml, pathlib; [yaml.safe_load(p.read_text())
+    for p in pathlib.Path('.').rglob('*.yaml')]".
+  - Run markdown/path consistency checks manually or with grep for all newly referenced template paths.
+  - Check whether README, docs/workflow.md, AGENTS template, prompts, checklists, ticket templates, and
+    agent memory files need updates and record the result.
+  proof_gates:
+  - Changed templates and tickets are internally consistent and parseable where applicable.
+  - The workflow change is bounded to SDD/context-engineering support and does not alter product runtime
+    assumptions.
+  - Agent-memory update check is recorded.
+  - Ticket result records changed files, commands, proof, skipped checks, blockers, and risks.
+  - docs/spec_lifecycle.md explains propose/apply/archive in repo-local terms.
+  - Closeout checklist contains a spec archive/update check.
+  - Final verifier checks current spec alignment or deferred blocker.
+  regression_gates:
+  - No unrelated files changed.
+  - No secrets, credentials, or private local paths are introduced.
+  - No dependency installation, destructive cleanup, remote operation, release, deploy, or external-service
+    action occurs without explicit approval.
+  - Existing Codex scoped-worker/orchestrator safety boundaries remain stricter or equivalent after the
+    change.
+  visual_gate:
+    required: false
+    required_views: []
+    pass_rule: Not required; this is a workflow/template change.
+  checkpoint_policy: Create a scoped checkpoint commit only after proof passes or after explicit user
+    approval.
+  rollback_or_accept_policy: If the scoped change makes the workflow ambiguous or less safe, keep the
+    ticket non-done, record the blocker, and propose a smaller follow-up ticket.
+  stop_conditions:
+  - The change would require product-repository assumptions that are not available in the template source.
+  - The change requires editing forbidden files.
+  - The design would weaken approval boundaries, proof gates, or scoped file ownership.
+  - The work requires dependency installation, destructive commands, remote operations, deployment, release,
+    secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit
+    approval.
+  handoff_requirements:
+  - Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates,
+    and next action.
+  done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
+    passed or justified skips are recorded, and execution_result is complete.
+execution_result:
+  status: done
+  changed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml
+  - templates/specs/TEMPLATE.delta-spec.md
+  - docs/spec_lifecycle.md
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+  - checklists/closeout.md
+  - prompts/final-verifier.md
+  commands_run:
+  - "pwd && git status --short --branch"
+  - "rg --files -g 'AGENTS.md' -g 'tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml' -g 'docs/spec_lifecycle.md' -g 'docs/workflow.md' -g 'templates/AGENTS.md.template' -g 'checklists/closeout.md' -g 'prompts/final-verifier.md' -g 'templates/specs/**'"
+  - "sed -n '1,260p' tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml"
+  - "sed -n '1,260p' docs/workflow.md"
+  - "sed -n '1,260p' docs/spec_lifecycle.md"
+  - "sed -n '1,260p' templates/AGENTS.md.template"
+  - "sed -n '1,260p' checklists/closeout.md"
+  - "sed -n '1,260p' prompts/final-verifier.md"
+  - "sed -n '1,260p' templates/specs/TEMPLATE.requirements.md"
+  - "sed -n '1,260p' templates/specs/TEMPLATE.design.md"
+  - "sed -n '1,260p' templates/specs/TEMPLATE.tasks.md"
+  - "git diff -- docs/workflow.md templates/AGENTS.md.template checklists/closeout.md prompts/final-verifier.md docs/spec_lifecycle.md templates/specs/TEMPLATE.delta-spec.md"
+  - "rg -n \"delta-spec|specs/current|specs/changes|specs/archive|ADDED|MODIFIED|REMOVED|spec_contract|spec_refs|expert_routing|read-only|approval\" docs templates checklists prompts tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml"
+  - "python -c \"import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]\""
+  - "python -c \"import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]\""
+  - "git diff --check"
+  - "if rg -n \"[ \\t]+$\" docs/spec_lifecycle.md templates/specs/TEMPLATE.delta-spec.md; then exit 1; else echo \"no trailing whitespace\"; fi"
+  proof:
+  - "Added `templates/specs/TEMPLATE.delta-spec.md` with `ADDED`, `MODIFIED`, and `REMOVED` sections, current-spec references, conflict handling, proof mapping, and archive closeout."
+  - "Added `docs/spec_lifecycle.md` documenting propose, apply, and archive in repo-local terms without any CLI or dependency requirement."
+  - "Updated `docs/workflow.md` with the target `specs/current/**`, `specs/changes/<change-id>/{proposal.md,delta-spec.md,design.md,tasks.md}`, and `specs/archive/**` layout plus closeout and conflict rules."
+  - "Updated `templates/AGENTS.md.template` to preserve scoped-worker safety, `spec_refs`/`spec_contract`, and expert routing while adding delta-spec obligations for significant changes."
+  - "Updated `checklists/closeout.md` with lifecycle, merge/archive, and parallel-spec-conflict checks."
+  - "Updated `prompts/final-verifier.md` so verification checks implementation against delta-spec intent and current spec/archive handling or a deferred blocker."
+  - "Initial YAML parse failed on unquoted ticket proof entries containing backticks; the ticket formatting was corrected and the same YAML parse command passed on rerun."
+  - "YAML parse check passed for repository `*.yaml` files."
+  - "`git diff --check` passed."
+  - "Focused trailing-whitespace check for new untracked Markdown files passed with no matches."
+  skipped_checks:
+  - No formatter, lint, typecheck, unit test, build, or browser check was run because this ticket only changes Markdown/YAML workflow templates and no repo-local command for those checks is required by the ticket.
+  - No README or ticket-template edits were made because they are outside this ticket's allowed_files.
+  agent_memory_updates:
+    checked: true
+    updated_files: []
+    notes: "agent memory checked: no update needed; this template ticket explicitly forbids editing agent/*.md, and no target-repo runtime state was changed."
+  blockers: []
+  risks:
+  - 'Risk: maintaining current specs creates overhead; mitigate by requiring it only for significant behavior/API/workflow
+    changes.'
+  - 'Risk: target repositories must adopt the specs/current, specs/changes, and specs/archive layout consistently; mitigate through the updated workflow, AGENTS template, closeout checklist, and final verifier prompt.'
+  next_recommended_step: "Use the updated lifecycle on the next significant target-repository change and archive/merge the delta spec during closeout."
