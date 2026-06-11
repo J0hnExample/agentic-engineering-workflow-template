@@ -125,6 +125,7 @@ execution:
     - "Relevant automated checks pass or skipped checks are justified."
     - "Agent-memory update check is recorded."
     - "Ticket result records changed files, commands, proof, and blockers."
+    - "Non-trivial tickets record execution_result.spec_alignment with verdict, checked_specs, drift_findings, and required_followups, or a justified quick-flow exemption."
   regression_gates:
     - "No unrelated files changed."
     - "No secrets or local machine paths are committed."
@@ -156,6 +157,11 @@ execution_result:
   changed_files: []
   commands_run: []
   proof: []
+  spec_alignment:
+    verdict: null
+    checked_specs: []
+    drift_findings: []
+    required_followups: []
   skipped_checks: []
   agent_memory_updates:
     checked: false

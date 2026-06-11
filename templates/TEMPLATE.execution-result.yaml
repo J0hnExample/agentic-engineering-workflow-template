@@ -12,6 +12,15 @@ execution_result:
     - "command exactly as run"
   proof:
     - "Observed passing result or artifact path."
+  spec_alignment:
+    verdict: pass
+    checked_specs:
+      - "specs/<feature>/requirements.md"
+      - "specs/<feature>/design.md"
+      - "specs/<feature>/tasks.md"
+      - "specs/changes/<change-id>/delta-spec.md, or quick-flow exemption reason"
+    drift_findings: []
+    required_followups: []
   skipped_checks:
     - check: "command or proof not run"
       reason: "Concrete reason."

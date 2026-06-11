@@ -123,17 +123,88 @@ execution:
   done_definition: Done when the scoped workflow/template improvement is implemented, required proof has
     passed or justified skips are recorded, and execution_result is complete.
 execution_result:
-  status: pending
-  changed_files: []
-  commands_run: []
-  proof: []
-  skipped_checks: []
+  status: done
+  changed_files:
+  - tickets/sdd-upgrade/TKT-2026-06-09-spec-drift-verifier.yaml
+  - prompts/spec-drift-verifier.md
+  - prompts/final-verifier.md
+  - checklists/spec-drift.md
+  - checklists/closeout.md
+  - templates/TEMPLATE.execution-result.yaml
+  - templates/TEMPLATE.ticket.yaml
+  commands_run:
+  - pwd && git status --short --branch
+  - rg --files
+  - sed -n '1,240p' tickets/sdd-upgrade/TKT-2026-06-09-spec-drift-verifier.yaml
+  - find .. -name AGENTS.md -print
+  - sed -n '1,260p' prompts/final-verifier.md
+  - test -f prompts/spec-drift-verifier.md && sed -n '1,260p' prompts/spec-drift-verifier.md
+    || true
+  - test -f checklists/spec-drift.md && sed -n '1,240p' checklists/spec-drift.md
+    || true
+  - sed -n '1,260p' checklists/closeout.md
+  - sed -n '1,260p' templates/TEMPLATE.execution-result.yaml
+  - sed -n '1,320p' templates/TEMPLATE.ticket.yaml
+  - rg -n "spec_alignment|quick_flow|delta-spec|expert_routing|execution_result:"
+    tickets/sdd-upgrade templates prompts checklists
+  - sed -n '1,260p' tickets/sdd-upgrade/TKT-2026-06-09-delta-spec-lifecycle.yaml
+  - sed -n '1,260p' prompts/scoped-worker.md
+  - sed -n '1,260p' prompts/manager-orchestrator.md
+  - git diff -- prompts/spec-drift-verifier.md prompts/final-verifier.md checklists/spec-drift.md
+    checklists/closeout.md templates/TEMPLATE.execution-result.yaml templates/TEMPLATE.ticket.yaml
+  - rg -n "spec-drift|spec_alignment|implemented-but-unspecified|specified-but-unimplemented|tests-missing-for-acceptance|docs-outdated|changed-behavior-not-approved|read-only|quick_flow_exemption|delta-spec|expert_routing|spec_contract|spec_refs"
+    prompts checklists templates tickets/sdd-upgrade/TKT-2026-06-09-spec-drift-verifier.yaml
+  - python -c "import yaml, pathlib; [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*.yaml')]"
+  - git diff --name-only
+  - git diff --check
+  - git status --short
+  - if rg -n "[ \t]+$" prompts/spec-drift-verifier.md checklists/spec-drift.md; then exit 1; else
+    echo "no trailing whitespace in new markdown files"; fi
+  proof:
+  - Added prompts/spec-drift-verifier.md with a read-only verifier prompt that compares requirements,
+    design, tasks, delta specs, current/archive specs, changed files, tests, docs, and execution_result.
+  - Added checklists/spec-drift.md with required implemented-but-unspecified, specified-but-unimplemented,
+    tests-missing-for-acceptance, docs-outdated, and changed-behavior-not-approved checks.
+  - Updated prompts/final-verifier.md to require execution_result.spec_alignment for non-trivial tickets
+    unless a justified quick-flow exemption is recorded.
+  - Updated checklists/closeout.md to require a drift result or quick-flow exemption and to preserve the
+    read-only/no-auto-repair boundary.
+  - Updated templates/TEMPLATE.execution-result.yaml and templates/TEMPLATE.ticket.yaml with a
+    machine-readable spec_alignment block containing verdict, checked_specs, drift_findings, and
+    required_followups.
+  - Verified the scoped change preserves spec_refs/spec_contract, delta lifecycle wording, expert routing,
+    and separate scoped repair-ticket boundaries.
+  - YAML parse passed for repository *.yaml files.
+  - git diff --check passed.
+  - New untracked Markdown files were checked directly for trailing whitespace and passed.
+  spec_alignment:
+    verdict: pass
+    checked_specs:
+    - tickets/sdd-upgrade/TKT-2026-06-09-spec-drift-verifier.yaml
+    - prompts/spec-drift-verifier.md
+    - prompts/final-verifier.md
+    - checklists/spec-drift.md
+    - checklists/closeout.md
+    - templates/TEMPLATE.execution-result.yaml
+    - templates/TEMPLATE.ticket.yaml
+    drift_findings: []
+    required_followups: []
+  skipped_checks:
+  - check: formatter/lint/typecheck/unit tests/build/browser proof
+    reason: This ticket only changes Markdown and YAML workflow templates; no repo-local formatter,
+      typecheck, unit test, build, or browser check is required by the ticket.
+  - check: README.md, docs/workflow.md, templates/AGENTS.md.template, and agent/*.md edits
+    reason: Checked for need during scope review; no update was required for this narrow workflow hook,
+      and these paths are outside this ticket's allowed_files or explicitly forbidden by user instruction.
   agent_memory_updates:
-    checked: false
+    checked: true
     updated_files: []
-    notes: null
+    notes: "agent memory checked: no update needed; this template ticket does not change target-repo runtime state, and agent/*.md edits are explicitly out of scope."
   blockers: []
   risks:
   - 'Risk: false positives on intentionally changed scope; mitigate by allowing pass_with_risk plus explicit
-    decision record.'
-  next_recommended_step: null
+    decision record and required follow-up tickets.'
+  - 'Risk: existing target repositories must add spec_alignment to active tickets manually when adopting this
+    template update.'
+  next_recommended_step: Use the spec drift verifier during closeout of the next non-trivial ticket and
+    record execution_result.spec_alignment before final verification.
