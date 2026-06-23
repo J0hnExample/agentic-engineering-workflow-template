@@ -26,6 +26,13 @@ note.
 - Autonomous run-state validator: `tools/validate_run_state.py`
 - Autonomous runtime schema and example: `templates/runtime/RUN_STATE.schema.json`, `templates/runtime/RUN_STATE.example.json`
 - Autonomous run templates: `templates/TEMPLATE.autonomous-run.yaml`, `templates/TEMPLATE.ticket-plan.md`, `templates/TEMPLATE.ticket-handoff.md`, `templates/TEMPLATE.next-agent-capsule.md`
+- Review/repair prompts: `prompts/independent-reviewer.md`,
+  `prompts/blocker-resolver.md`, `prompts/context-curator.md`
+- Review/repair templates: `templates/TEMPLATE.ticket-review.md`,
+  `templates/TEMPLATE.blocker-capsule.md`,
+  `templates/TEMPLATE.blocker-decision.md`,
+  `templates/TEMPLATE.context-ledger.md`
+- Review/repair checklist: `checklists/review-repair-context.md`
 
 ## Tests And Proof
 
@@ -41,6 +48,7 @@ note.
   plus explicit build/validate fixtures in `/tmp`.
 - Autonomous run-state proof: `python -m unittest tests.test_run_state`
   and direct `python tools/validate_run_state.py tests/fixtures/run_state/<fixture>/RUN_STATE.json`
+- Review/repair/context proof: `python -m unittest tests.test_review_repair_context`
 - E2E/browser: `<command>`
 
 ## Artifacts

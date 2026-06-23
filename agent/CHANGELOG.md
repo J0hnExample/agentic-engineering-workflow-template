@@ -16,3 +16,4 @@ release notes.
 - `TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket`: added quick-flow classification thresholds, single-ticket runner state records, and delivery-proof closeout fields.
 - `TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder`: added generic autonomous package prompts, skeleton templates, dependency-free builder/validator tools, and tempdir-based package validation tests.
 - `TKT-2026-06-22-aew-v05-07-serial-controller-resume`: added deterministic autonomous run-state validator, runtime schema/example, resume fixtures, autonomous controller docs, orchestrator prompt, and run/handoff templates.
+- `TKT-2026-06-22-aew-v05-08-review-repair-blocker-context`: added review/repair, blocker-resolution, and context-curation prompt/template/checklist paths and proof fixtures; independent review passed with 0 repair rounds and context was curated after PASS.

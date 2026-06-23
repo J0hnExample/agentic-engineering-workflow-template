@@ -1,0 +1,92 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-08-review-repair-blocker-context
+order: 8
+title: Add independent review, bounded repair, isolated blocker resolution and context curation
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-07-serial-controller-resume
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-08-review-repair-blocker-context/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Provide the reliable feedback loops that keep implementation quality high without polluting or escaping
+  the main context.
+source_requirements:
+- User-requested subagent review/repair and White-Hat blocker evaluation
+- Official review-repair-validate guidance
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-08-review-repair-blocker-context.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-08-review-repair-blocker-context/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - prompts/independent-reviewer.md
+  - prompts/context-curator.md
+  - prompts/blocker-resolver.md
+  - templates/TEMPLATE.ticket-review.md
+  - templates/TEMPLATE.blocker-capsule.md
+  - templates/TEMPLATE.blocker-decision.md
+  - templates/TEMPLATE.context-ledger.md
+  - checklists/**
+  - docs/autonomous_execution.md
+  - templates/AGENTS.md.template
+  - tests/**
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Independent reviewer must inspect actual diff, tests, evidence and spec alignment.
+- FAIL produces bounded, reproducible repair findings; repair uses a fresh writer and re-review.
+- Add a repair cap and escalate only after materially different attempts are exhausted.
+- Blocker resolver receives a minimal facts capsule and returns classification, action, validation and rollback.
+- Encode preapproved versus user-required actions for dependencies, migrations, cleanup, commit/push, secrets and
+  external side effects.
+- Context curator updates only durable ticket/handoff/memory facts after review passes.
+acceptance_criteria:
+- A reviewer failure cannot be marked done without a later PASS.
+- Repair loop cannot weaken acceptance criteria or tests.
+- Blocker resolver does not receive full transcript by default.
+- User is asked only for irreducible policy/product decisions.
+- Next-ticket capsule excludes raw logs and unrelated context.
+required_tests:
+- Run pass/fail/repair-cap fixtures.
+- Test blocker policy matrix.
+- Test context capsule allowlist and secret/path redaction.
+- Validate no write permissions on reviewer/blocker profiles.
+required_evidence:
+- Structured review/repair fixture.
+- Blocker decision matrix.
+- Compact handoff example.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-08-review-repair-blocker-context/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-08-review-repair-blocker-context
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.

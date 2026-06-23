@@ -68,6 +68,8 @@ files.
   note. Include proof, changed files, blockers, and next action.
 - A ticket may be marked `done` only after required proof has been collected and
   recorded.
+- A ticket cannot be marked done after an independent review `FAIL` unless a
+  later independent review of the repaired diff returns `PASS`.
 - If proof is missing, leave the ticket non-done and report the missing proof.
 - Completed tickets must include a human-readable `execution_result` block.
 - Quick-flow is still ticketed work. It may reduce spec overhead only after the
@@ -187,6 +189,22 @@ context budget. Blocking unresolved decisions stop implementation. Context
 handoffs should contain compact verified facts, not raw transcripts or unrelated
 logs.
 
+Independent reviewers inspect the actual diff, changed files, tests, evidence,
+ticket scope, and spec/workflow alignment. Review `FAIL` findings must be
+bounded and reproducible. Include expected behavior, actual behavior, failed
+criterion, reproduction or evidence, and the required repair.
+
+Repair loops cannot weaken acceptance criteria, proof gates, or tests. Stop
+after three materially different repair attempts and create a minimal blocker
+capsule. Blocker resolvers receive only minimal blocker capsules, not raw
+transcripts or full logs. They return classification, authorization, action,
+validation, rollback, and one user question only when required.
+
+Context curation runs only after independent review `PASS` and stores durable
+ticket, handoff, decision, proof, risk, follow-up, and next-action facts.
+Exclude raw logs, raw transcripts, secrets, `.env*`, forbidden paths, unrelated
+local paths, speculation, and unrelated context.
+
 The `test_plan` must list concrete checks that decide whether the ticket may be
 marked done. For web applications, use relevant repo-local checks such as:
 
@@ -236,6 +254,8 @@ owner.
   delivery before the implementation writer thread is closed.
 - Independent read-only Codex reviewers may run in parallel only when the ticket
   allows it and their questions are distinct.
+- Independent reviewers are read-only and must not edit files, repair issues,
+  stage, commit, push, or weaken acceptance criteria.
 - Codex workers receive a narrow file scope and must not edit outside it.
 - Codex workers must report changed files, commands run, proof, blockers, and
   risks to the manager.
@@ -246,6 +266,8 @@ owner.
   record blocker.
 - Stop if an iteration is worse than the previous accepted state or if the
   iteration cap is reached.
+- For review-repair loops, the default cap is three materially different repair
+  attempts before blocker resolution.
 
 ## Verification
 

@@ -100,3 +100,29 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - Deterministic autonomous run-state validation lives in `tools/validate_run_state.py` with fixtures under `tests/fixtures/run_state/`.
 - The canonical controller phase list is documented in `docs/autonomous_execution.md`, `prompts/autonomous-orchestrator.md`, and `templates/runtime/RUN_STATE.schema.json`.
 - Live controller state belongs outside the worktree, for example `.git/agentic-workflow-controller/RUN_STATE.json`; repository records remain compact ticket plans, reports, reviews, handoffs, and delivery proof.
+
+## Ticket 08 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-08-review-repair-blocker-context`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-08-review-repair-blocker-context.yaml`.
+- Repository ticket copy: `tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-08-review-repair-blocker-context.yaml`.
+- Implementation starts from `main` at `6e407947ea92c001debc439a18aaab9859a8e9aa`.
+- Review/repair contracts live in `prompts/independent-reviewer.md`,
+  `templates/TEMPLATE.ticket-review.md`, and
+  `checklists/review-repair-context.md`.
+- Blocker-resolution contracts live in `prompts/blocker-resolver.md`,
+  `templates/TEMPLATE.blocker-capsule.md`, and
+  `templates/TEMPLATE.blocker-decision.md`.
+- Context-curation contracts live in `prompts/context-curator.md` and
+  `templates/TEMPLATE.context-ledger.md`.
+- Independent review returned `PASS` by subagent
+  `019ef371-c355-71e3-81e2-5a61c08adc92`; repair rounds used: `0`.
+- Proof rerun by the reviewer passed: canonical/repository ticket `cmp`,
+  focused `tests.test_review_repair_context` with 8 tests, full unittest
+  discovery with 31 tests, scoped `git diff --check`, and no `__pycache__`
+  output.
+- Context was curated after PASS. Next legal phase is
+  `git_delivery_started`; Git delivery remains not started until the delivery
+  agent runs.
+- Residual non-blocking risk: the pre-existing untracked ZIP remains excluded
+  from delivery unless separately approved.

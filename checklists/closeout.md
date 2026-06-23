@@ -13,6 +13,21 @@ Use before marking a ticket `done`.
   and follow-up ticket.
 - [ ] Decision locks were respected and no blocking unresolved decision remains.
 - [ ] Context handoff contains compact verified facts, not raw transcript dumps.
+- [ ] Context curation runs only after independent review `PASS`.
+- [ ] Curated context excludes raw logs, raw transcripts, secrets, `.env*`,
+      forbidden paths, unrelated local paths, speculation, and unrelated
+      context.
+- [ ] A review `FAIL` is not marked done without a later independent review
+      `PASS`.
+- [ ] Review `FAIL` findings, if any, are bounded and reproducible.
+- [ ] Repair attempts, if any, did not weaken acceptance criteria, proof gates,
+      or tests.
+- [ ] Repair attempts are capped at three materially different attempts before
+      blocker resolution.
+- [ ] Blocker resolver input, if used, was a minimal blocker capsule rather
+      than raw transcripts or full logs.
+- [ ] Blocker resolver output, if used, records classification, authorization,
+      action, validation, rollback, and any required user question.
 - [ ] No secrets, credentials, `.env*`, or private local paths were changed.
 - [ ] No dependencies were installed, upgraded, or removed without explicit approval.
 - [ ] No destructive cleanup, reset, migration with side effects, or persistent external-service action ran without explicit approval.
