@@ -70,6 +70,13 @@ files.
   recorded.
 - If proof is missing, leave the ticket non-done and report the missing proof.
 - Completed tickets must include a human-readable `execution_result` block.
+- Quick-flow is still ticketed work. It may reduce spec overhead only after the
+  ticket records deterministic quick classification and no escalation threshold
+  is active.
+- Quick-flow must still perform repository discovery, focused proof,
+  self-review, independent review of the actual diff, execution result, context
+  curation, scoped Git delivery when assigned, push when assigned, and upstream
+  equality proof before `done`.
 - Before closing any ticket, explicitly check whether `agent/STATE.md`,
   `agent/DECISIONS.md`, `agent/KNOWN_ISSUES.md`, `agent/TODO.md`,
   `agent/PATHS.md`, `agent/SERVICES.md`, or `agent/CHANGELOG.md` need an
@@ -117,6 +124,7 @@ ticket already grants that permission.
 
 Every implementation ticket must include these fields before product-code work:
 
+- `quick_classification`
 - `spec_refs`
 - `execution_intensity`
 - `manager_role`
@@ -143,6 +151,20 @@ For non-trivial work, `spec_refs` should link requirements, design, and tasks
 specs with stable IDs. Tiny low-risk work may set no-spec mode only when the
 ticket records a concrete reason and has no behavior, API, data, dependency,
 security, or UI contract change.
+
+A task may use `quick_flow` only when all of these are true:
+
+- one bounded objective
+- exact affected files are known before editing
+- no more than three non-ticket files need edits
+- at most one bounded module, service, package, or documentation area changes
+- local meaningful proof exists
+- no security/auth/privacy, schema/data, dependency, multi-service/module,
+  public API/shared-contract, visual-flow ambiguity, unclear-requirement,
+  forbidden-path, or broad-file-scope trigger applies
+
+Escalate quick-flow before implementation if any trigger applies. Escalation
+means converting to a full ticket or parent orchestrator flow before continuing.
 
 When a ticket changes durable behavior or workflow contracts, closeout must
 record spec alignment. Accepted delta specs must update durable current specs or
@@ -174,6 +196,9 @@ owner.
 
 ## Execution Intensities
 
+- `quick_flow`: one tiny, low-risk, ticketed change that passes deterministic
+  quick classification and still completes discovery, proof, review, context
+  curation, and delivery gates.
 - `standard_worker`: one scoped Codex worker, direct proof, scoped checkpoint.
 - `expert_supported`: one read-only Codex planning or review subagent, then one
   scoped Codex worker.
@@ -215,6 +240,37 @@ Before marking a ticket done:
 - capture screenshots or recordings when required by `visual_gate`
 - record failed commands exactly enough for the next Codex session to reproduce
 - record skipped checks with a concrete reason
+- record self-review and independent review status when required
+- record quick classification and any escalation triggers
+- when Git delivery is assigned, record explicit staged paths, commit, push, and
+  `HEAD == origin/main` or configured upstream equality proof
+
+For a single-ticket autonomous run, use this state machine and do not skip
+states:
+
+```text
+source_lock_validated
+-> repository_discovered
+-> plan_recorded
+-> repository_ticket_recorded
+-> writer_assigned
+-> implementation_complete
+-> focused_tests_passed
+-> self_review_complete
+-> independent_review_complete
+-> repair_loop_complete_or_not_needed
+-> context_curated
+-> git_delivery_started
+-> explicit_paths_staged
+-> committed
+-> pushed
+-> head_equals_origin_main_proved
+-> done
+```
+
+Use exactly one implementation writer. Independent review must inspect the
+actual diff. Repair loops are capped at three rounds. `done` is blocked until
+upstream equality proof is recorded when delivery is assigned.
 
 ## Completion Report
 
@@ -227,6 +283,10 @@ completion block that states:
 - commands run
 - proof collected
 - skipped proof and why
+- quick classification and any escalation triggers
+- single-ticket run state when applicable
+- self-review and independent review result
+- delivery proof or skipped delivery reason
 - blockers, if any
 - risks, if any
 - whether a human smoke test is useful

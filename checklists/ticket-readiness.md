@@ -6,6 +6,14 @@ Use before product-code work starts.
 - [ ] Ticket has `ticket.id`, `title`, `repo`, `branch`, `status`, and
   `owner_agent`.
 - [ ] Ticket has a single concrete `scope.goal`.
+- [ ] Ticket has `quick_classification` with `quick`, `standard`, or
+  `escalate` result.
+- [ ] Quick-flow is allowed only when one bounded objective, exact files,
+  maximum three non-ticket files, maximum one module/service, and local proof are
+  all true.
+- [ ] Quick-flow escalates on security/auth/privacy, schema/data, dependencies,
+  multiple services/modules, public API/shared contract, visual ambiguity,
+  unclear requirements, forbidden paths, or broad file scope.
 - [ ] `allowed_files` and `forbidden_files` are explicit.
 - [ ] `spec_refs` either names requirements/design/tasks specs or gives a
   concrete no-spec reason for tiny low-risk work.
@@ -19,8 +27,10 @@ Use before product-code work starts.
 - [ ] Required steering docs are named, and any steering conflict is recorded as
   a blocker or resolved decision.
 - [ ] `in_scope` and `out_of_scope` are explicit.
-- [ ] `execution_intensity` is one of `standard_worker`, `expert_supported`,
-  `bounded_expert_rounds`, or `research_only`.
+- [ ] `execution_intensity` is one of `quick_flow`, `standard_worker`,
+  `expert_supported`, `bounded_expert_rounds`, or `research_only`.
+- [ ] Single-ticket autonomous runs record the full state machine and block
+  `done` until `head_equals_origin_main_proved`.
 - [ ] `manager_role` is explicit.
 - [ ] `worker_sequence` is ordered and each worker has a bounded task.
 - [ ] `expert_plan` says whether read-only Codex reviewer input is required.
@@ -32,6 +42,9 @@ Use before product-code work starts.
 - [ ] `debug_logging_plan` names an owner and surfaces.
 - [ ] `test_plan` lists concrete commands or manual proof steps.
 - [ ] `proof_gates` define what must pass before done.
+- [ ] Proof gates require repository discovery, focused tests, self-review,
+  independent review when required, execution result, context curation, and
+  delivery proof when assigned.
 - [ ] `regression_gates` define what must not break.
 - [ ] `visual_gate` is explicit when UI changes.
 - [ ] `checkpoint_policy` is explicit.

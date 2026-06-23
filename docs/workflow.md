@@ -19,6 +19,80 @@ Fresh-context execution is intentional. The ticket must carry enough context,
 scope, proof requirements, and stop conditions for a new Codex session to do the
 work without relying on unstated chat history.
 
+## Quick Flow
+
+Quick-flow is for genuinely small work, not for skipping the workflow. Create
+quick tickets from `templates/TEMPLATE.quick-ticket.yaml` before installation or
+`tickets/templates/TEMPLATE.quick-ticket.yaml` after installation.
+
+A task is quick only when all quick conditions are true:
+
+- one bounded objective
+- exact affected files are known before editing
+- no more than three non-ticket files need edits
+- at most one bounded module, service, package, or documentation area changes
+- local meaningful proof exists
+- no full SDD, expert review, public contract, migration, dependency,
+  security/auth/privacy, ambiguous visual flow, unclear requirement, forbidden
+  path, or broad file-scope trigger applies
+
+Escalate to a full ticket or parent orchestrator flow when any threshold is
+triggered:
+
+| Threshold | Escalate when |
+| --- | --- |
+| Security/auth/privacy | Auth, permissions, secrets, privacy, payments, deployment, release, remotes, or external-service behavior may change. |
+| Schema/data | Schema, storage, migration, backfill, persistence compatibility, or destructive cleanup is required. |
+| Dependencies | Dependencies must be added, removed, upgraded, reconfigured, or installed. |
+| Multiple services/modules | More than one package, service, app, bounded module, or ownership area changes behavior. |
+| Public API/shared contract | Public APIs, exported types, CLI behavior, config contracts, shared contracts, or integration boundaries change. |
+| Visual flow ambiguity | UI, product copy, layout, accessibility, or visual flow is ambiguous or needs unspecified visual proof. |
+| Unclear requirements | Requirements are unclear, contradictory, missing observable outcomes, or contain unresolved decisions. |
+| Broad file scope | More than three non-ticket files need edits, affected files are unknown, or needed files are outside allowed scope. |
+
+Quick-flow still requires repository discovery, focused proof, self-review,
+independent review of the actual diff, execution result, context curation, Git
+delivery when assigned, push when assigned, and proof that `HEAD == origin/main`
+or the configured upstream before `done`.
+
+Use `prompts/quick-dev.md` as the scoped worker prompt for a quick ticket.
+
+## Single-Ticket Autonomous Run
+
+Use `prompts/run-single-ticket-autonomously.md` when the user assigns one ticket
+for complete autonomous execution. The runner uses the same planner -> writer ->
+reviewer -> repair -> curator -> delivery shape as a package chain, with one
+implementation writer.
+
+The required state machine is:
+
+```text
+source_lock_validated
+-> repository_discovered
+-> plan_recorded
+-> repository_ticket_recorded
+-> writer_assigned
+-> implementation_complete
+-> focused_tests_passed
+-> self_review_complete
+-> independent_review_complete
+-> repair_loop_complete_or_not_needed
+-> context_curated
+-> git_delivery_started
+-> explicit_paths_staged
+-> committed
+-> pushed
+-> head_equals_origin_main_proved
+-> done
+```
+
+The runner may advance one state only when that state's evidence is recorded.
+Do not assign a writer before the plan exists and the repository ticket record
+is in place. Independent review must inspect the actual diff. The repair loop is
+capped at three rounds. Git delivery uses explicit path staging only. `done` is
+blocked until commit, push, and upstream equality proof are recorded when
+delivery is assigned.
+
 ## Ticket Chains
 
 Use a ticket chain for complex work, risky changes, visual work, migrations, or
@@ -144,6 +218,10 @@ install dependencies, widen scope, or write out-of-scope reports unless the
 active ticket and user approval allow the exact action.
 
 ## Execution Modes
+
+`quick_flow` means one tiny, low-risk, ticketed change that passes the
+deterministic quick classification and still completes discovery, proof, review,
+context curation, and delivery gates.
 
 `standard_worker` means one scoped worker completes one bounded ticket with
 direct proof.

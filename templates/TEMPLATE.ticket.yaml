@@ -12,6 +12,27 @@ ticket:
   work_kind: "<feature|bugfix|refactor|test|documentation|diagnosis>"
   phase: "<project-phase-or-milestone>"
 
+quick_classification:
+  evaluated: true
+  result: "quick | standard | escalate"
+  reason: "Why this ticket is quick, standard, or escalated."
+  escalation_triggers:
+    security_auth_privacy: false
+    schema_data: false
+    dependencies: false
+    multiple_services_modules: false
+    public_api_shared_contract: false
+    visual_flow_ambiguity: false
+    unclear_requirements: false
+    broad_file_scope: false
+    forbidden_path: false
+  quick_allowed_only_if:
+    one_bounded_objective: true
+    exact_files_known: true
+    max_three_non_ticket_files: true
+    max_one_module_or_service: true
+    local_meaningful_proof_exists: true
+
 context:
   problem: >
     Describe the user-visible or engineering problem this ticket solves.
@@ -101,11 +122,33 @@ scope:
     - "Related work that must not be done in this ticket."
 
 execution:
-  execution_intensity: standard_worker
+  execution_intensity: "quick_flow | standard_worker | expert_supported | bounded_expert_rounds | research_only"
   manager_role: >
     Main Codex agent owns scope, verifies the work, and records proof in this
     ticket. Any Codex subagent inherits the same AGENTS.md rules, ticket scope,
     approval boundaries, forbidden actions, and verification requirements.
+  single_ticket_state:
+    enabled: false
+    current_state: null
+    required_states:
+      - source_lock_validated
+      - repository_discovered
+      - plan_recorded
+      - repository_ticket_recorded
+      - writer_assigned
+      - implementation_complete
+      - focused_tests_passed
+      - self_review_complete
+      - independent_review_complete
+      - repair_loop_complete_or_not_needed
+      - context_curated
+      - git_delivery_started
+      - explicit_paths_staged
+      - committed
+      - pushed
+      - head_equals_origin_main_proved
+      - done
+    done_gate: "done is blocked until head_equals_origin_main_proved is recorded when delivery is assigned."
   worker_sequence:
     - role: scoped_worker
       mode: implementation
@@ -155,6 +198,9 @@ execution:
     - "Ticket result records changed files, commands, proof, and blockers."
     - "Expert routing is used when risk requires it, or an explicit not-required reason is recorded."
     - "Spec drift is checked for non-trivial work, or a concrete no-spec reason is recorded."
+    - "Self-review is complete."
+    - "Independent review inspects the actual diff when review is required."
+    - "Quick-flow classification is recorded before closeout."
   regression_gates:
     - "No unrelated files changed."
     - "No secrets or local machine paths are committed."
@@ -167,6 +213,13 @@ execution:
   checkpoint_policy: >
     Create a scoped checkpoint commit only after proof passes or after explicit
     user approval.
+  git_delivery:
+    assigned: false
+    explicit_staging_only: true
+    no_bulk_staging: true
+    require_push: false
+    require_head_equals_origin_main: false
+    skipped_reason: "Set when delivery is not part of this ticket."
   rollback_or_accept_policy: >
     If the scoped change fails proof and a bounded fix is not obvious, keep the
     ticket non-done, record the blocker, and do not widen scope without approval.
@@ -192,6 +245,26 @@ execution_result:
   commands_run: []
   proof: []
   skipped_checks: []
+  quick_classification:
+    evaluated: false
+    result: null
+    escalation_triggers: []
+    reason: null
+  single_ticket_state:
+    current_state: null
+    completed_states: []
+    blocked_transition: null
+  review:
+    self_review: pending
+    independent_review: pending
+    repair_rounds_used: 0
+    notes: null
+  delivery:
+    explicit_paths_staged: []
+    commit: null
+    pushed: false
+    head_equals_origin_main_proved: false
+    skipped_reason: null
   agent_memory_updates:
     checked: false
     updated_files: []

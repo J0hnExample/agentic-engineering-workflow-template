@@ -17,6 +17,13 @@ Use before marking a ticket `done`.
 - [ ] No dependencies were installed, upgraded, or removed without explicit approval.
 - [ ] No destructive cleanup, reset, migration with side effects, or persistent external-service action ran without explicit approval.
 - [ ] No push, force-push, release, deploy, publish, or remote modification was performed without explicit approval.
+- [ ] Quick classification result and escalation triggers are recorded.
+- [ ] Quick-flow, if used, still completed repository discovery, focused proof,
+  self-review, independent review, execution result, context curation, and
+  delivery gates assigned by the ticket.
+- [ ] Single-ticket autonomous state is recorded when applicable.
+- [ ] `done` is not recorded before `head_equals_origin_main_proved` when Git
+  delivery was assigned.
 - [ ] Formatter/lint check passed or skip reason is recorded.
 - [ ] Typecheck passed or skip reason is recorded.
 - [ ] Targeted tests passed or skip reason is recorded.
@@ -41,7 +48,11 @@ Use before marking a ticket `done`.
 - [ ] Ticket contains commands run.
 - [ ] Ticket contains proof.
 - [ ] Ticket contains skipped checks.
+- [ ] Ticket contains review result and repair rounds used.
+- [ ] Ticket contains delivery proof or skipped delivery reason.
 - [ ] Ticket contains blockers and risks.
 - [ ] Ticket states whether a human smoke test is useful.
 - [ ] Ticket states the exact next recommended step.
 - [ ] Commit, if any, stages only scoped paths.
+- [ ] Push equality proof, if delivery occurred, shows `HEAD == origin/main` or
+  the configured upstream.

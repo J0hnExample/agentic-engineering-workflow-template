@@ -1,0 +1,89 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket
+order: 5
+title: Add quick flow and full autonomous execution for a single ticket
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Implement a lightweight path for genuinely small work while ensuring a one-ticket request still plans,
+  tests, reviews, curates, commits and pushes cleanly.
+source_requirements:
+- v0.4 quick-flow-escalation ticket
+- User requirement for clean single-ticket execution
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - prompts/quick-dev.md
+  - prompts/run-single-ticket-autonomously.md
+  - templates/TEMPLATE.quick-ticket.yaml
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.execution-result.yaml
+  - checklists/**
+  - docs/workflow.md
+  - templates/AGENTS.md.template
+  - README.md
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Define objective escalation thresholds for security/auth, schema/data, dependencies, multiple services, public
+  API, visual flow, unclear requirements and broad file scope.
+- Quick flow still performs repository discovery, focused tests, self-review and Git delivery.
+- Add a single-ticket runner using the same planner -> writer -> reviewer -> repair -> curator -> delivery state
+  machine.
+- Require one repository ticket record and execution result even for quick flow.
+- Prevent quick flow from bypassing specs when risk thresholds require them.
+acceptance_criteria:
+- Tiny low-risk fixture remains quick.
+- Risky fixtures escalate deterministically.
+- Single-ticket run cannot finish before commit/push equality proof.
+- No prior ticket workflow artifacts remain dirty after a successful run.
+required_tests:
+- Run quick/escalate classification fixtures.
+- Validate single-ticket state transitions.
+- Simulate no-code documentation ticket and code ticket closeout.
+- Check explicit staging policy.
+required_evidence:
+- Classification table.
+- Single-ticket run-state proof.
+- Independent reviewer result.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.

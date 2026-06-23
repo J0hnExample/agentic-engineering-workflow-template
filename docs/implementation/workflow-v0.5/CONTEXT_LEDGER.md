@@ -71,3 +71,13 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget.yaml`.
 - Delivery starts from `main` at `40bd1d5ddadbfef973553fa03faa1e3662a4833d`, matching `origin/main`.
 - v0.4 `conditional-steering` and `decision-lock-context-budget` map to this ticket. Feature branch steering docs were used only as read-only evidence.
+
+## Ticket 05 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket.yaml`.
+- Repository ticket copy: `tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket.yaml`.
+- Delivery starts from `main` at `c462e7e8fc501d7bf421524b4f28809efcedfd51`.
+- v0.4 `quick-dev.md` and `TEMPLATE.quick-ticket.yaml` were used only as read-only evidence and adapted to v0.5 source-lock, review, context curation, and delivery-proof requirements.
+- Quick-flow must remain ticketed work and escalates on security/auth/privacy, schema/data, dependencies, multiple modules/services, public contracts, visual ambiguity, unclear requirements, forbidden paths, or broad file scope.
+- Single-ticket autonomous execution uses the planner -> writer -> reviewer -> repair -> curator -> delivery state machine and blocks `done` until `head_equals_origin_main_proved`.

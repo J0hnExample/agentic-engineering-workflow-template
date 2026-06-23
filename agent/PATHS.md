@@ -15,6 +15,8 @@ note.
 - Spec lifecycle docs: `docs/spec_lifecycle.md`
 - Spec drift verifier prompt/checklist: `prompts/spec-drift-verifier.md`, `checklists/spec-drift.md`
 - Steering templates: `templates/steering/`
+- Quick-flow prompt and template: `prompts/quick-dev.md`, `templates/TEMPLATE.quick-ticket.yaml`
+- Single-ticket autonomous runner prompt: `prompts/run-single-ticket-autonomously.md`
 
 ## Tests And Proof
 
@@ -22,6 +24,10 @@ note.
 - Typecheck: `<command>`
 - Unit tests: `<command>`
 - Build: `<command>`
+- Quick-flow fixture proof: in-memory Python assertion recorded by the active
+  ticket.
+- Single-ticket state proof: in-memory Python assertion recorded by the active
+  ticket.
 - E2E/browser: `<command>`
 
 ## Artifacts

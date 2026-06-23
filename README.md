@@ -28,6 +28,8 @@ implementation, review, and final verification.
 | Codex 5.5 first | Use Codex 5.5 to understand, initialize, calibrate, and orchestrate the workflow. |
 | Ticket-driven memory | Tickets, closeouts, and `agent/*.md` files preserve context between agent steps. |
 | Drift control | Scope, proof gates, role boundaries, and documentation checkpoints keep work reviewable. |
+| Quick-flow path | Tiny low-risk tasks can use a quick ticket, but still require discovery, proof, review, context curation, and delivery gates. |
+| Single-ticket runner | One ticket can be run end to end with the same planner -> writer -> reviewer -> repair -> curator -> delivery state machine. |
 | Native Codex profiles | Optional `.codex/agents/*.toml` profiles can define scoped planners, reviewers, implementers, and expert review lenses. |
 | Target-repo installed | This template stays the source; the workflow files are installed into another repo. |
 | No runtime dependency | It does not add an app runtime, framework, service, or product code. |
@@ -140,6 +142,7 @@ target. Source files in this template install into different paths in the target
 | [`templates/AGENTS.md.template`](templates/AGENTS.md.template) | `AGENTS.md` |
 | [`agent/*.md`](agent/) | `agent/*.md` |
 | [`templates/TEMPLATE.ticket.yaml`](templates/TEMPLATE.ticket.yaml) | `tickets/templates/TEMPLATE.ticket.yaml` |
+| [`templates/TEMPLATE.quick-ticket.yaml`](templates/TEMPLATE.quick-ticket.yaml) | `tickets/templates/TEMPLATE.quick-ticket.yaml` |
 | [`templates/TEMPLATE.orchestrator-ticket.yaml`](templates/TEMPLATE.orchestrator-ticket.yaml) | `tickets/templates/TEMPLATE.orchestrator-ticket.yaml` |
 | [`templates/TEMPLATE.execution-result.yaml`](templates/TEMPLATE.execution-result.yaml) | `tickets/templates/TEMPLATE.execution-result.yaml` |
 | [`templates/TEMPLATE.reusable-feature-path.md`](templates/TEMPLATE.reusable-feature-path.md) | `docs/reusable_feature_implementation_paths.md` |
@@ -166,6 +169,7 @@ shape around its normal product code, tests, package files, docs, and scripts:
 ├── tickets/
 │   ├── templates/
 │   │   ├── TEMPLATE.ticket.yaml
+│   │   ├── TEMPLATE.quick-ticket.yaml
 │   │   ├── TEMPLATE.orchestrator-ticket.yaml
 │   │   └── TEMPLATE.execution-result.yaml
 │   └── TKT-YYYY-MM-DD-example.yaml
@@ -197,8 +201,22 @@ remain the fallback and the durable source for environments that do not load
 native profiles.
 
 The execution modes are defined in the templates and docs:
-`standard_worker`, `expert_supported`, `bounded_expert_rounds`, and
-`research_only`.
+`quick_flow`, `standard_worker`, `expert_supported`, `bounded_expert_rounds`,
+and `research_only`.
+
+Quick-flow is a ticketed path for tiny low-risk changes. It is quick only when
+the exact files are known, no more than three non-ticket files need edits, at
+most one bounded module or service changes, local proof exists, and no
+security/auth/privacy, schema/data, dependency, public-contract, visual
+ambiguity, unclear-requirement, or broad-scope trigger applies. It still
+requires repository discovery, focused proof, self-review, independent review,
+execution result, context curation, and delivery proof when assigned.
+
+For one complete ticket, use
+[`prompts/run-single-ticket-autonomously.md`](prompts/run-single-ticket-autonomously.md).
+The runner follows the planner -> writer -> reviewer -> repair -> curator ->
+delivery state machine and cannot mark done before commit, push, and upstream
+equality proof when delivery is assigned.
 
 ## Safety Model
 
@@ -258,6 +276,11 @@ and let the manager split the outcome into child tickets.
   repository from this template.
 - [`prompts/manager-orchestrator.md`](prompts/manager-orchestrator.md) runs a
   parent ticket chain.
+- [`prompts/quick-dev.md`](prompts/quick-dev.md) runs a scoped quick-flow
+  ticket.
+- [`prompts/run-single-ticket-autonomously.md`](prompts/run-single-ticket-autonomously.md)
+  runs one ticket through planning, implementation, review, repair, curation,
+  delivery, and upstream equality proof.
 - [`prompts/scoped-worker.md`](prompts/scoped-worker.md) runs one bounded
   implementation ticket.
 - [`prompts/read-only-expert.md`](prompts/read-only-expert.md) supports Codex

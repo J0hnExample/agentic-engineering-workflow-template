@@ -15,6 +15,27 @@ execution_result:
   skipped_checks:
     - check: "command or proof not run"
       reason: "Concrete reason."
+  quick_classification:
+    evaluated: true
+    result: "quick | standard | escalate | not_applicable"
+    reason: >
+      Record why quick-flow was allowed, why standard flow was used, or which
+      escalation threshold blocked quick-flow.
+    escalation_triggers:
+      - "security_auth_privacy | schema_data | dependencies | multiple_services_modules | public_api_shared_contract | visual_flow_ambiguity | unclear_requirements | broad_file_scope | forbidden_path | none"
+  single_ticket_state:
+    enabled: false
+    current_state: null
+    completed_states: []
+    blocked_transition: null
+    done_blocked_until_head_equals_origin_main_proved: true
+  review:
+    self_review: "pending | pass | fail | not_required"
+    independent_review: "pending | pass | fail | not_required"
+    independent_review_actual_diff: false
+    repair_rounds_used: 0
+    max_repair_rounds: 3
+    notes: null
   spec_alignment:
     required: false
     no_spec_reason: null
@@ -31,6 +52,17 @@ execution_result:
     notes: >
       List updated agent files, or write: agent memory checked: no update
       needed.
+  delivery:
+    git_delivery_started: false
+    explicit_paths_staged:
+      - "path/to/file"
+    commit: null
+    pushed: false
+    upstream: "origin/main"
+    head_equals_origin_main_proved: false
+    proof:
+      - "Command and observed result, or skip reason when delivery was not assigned."
+    skipped_reason: null
   blockers: []
   risks:
     - "Remaining risk, or 'none'."
