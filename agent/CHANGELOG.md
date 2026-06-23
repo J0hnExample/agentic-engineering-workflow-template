@@ -14,3 +14,4 @@ release notes.
 - `TKT-2026-06-22-aew-v05-03-delta-spec-drift-verification`: added delta-spec lifecycle and spec drift verification records.
 - `TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget`: added steering templates, decision locks, and context budget records.
 - `TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket`: added quick-flow classification thresholds, single-ticket runner state records, and delivery-proof closeout fields.
+- `TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder`: added generic autonomous package prompts, skeleton templates, dependency-free builder/validator tools, and tempdir-based package validation tests.

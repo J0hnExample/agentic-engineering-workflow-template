@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+"""Package-local active-ticket validator placeholder.
+
+The repository builder writes a concrete active-ticket validator into generated
+packages.
+"""

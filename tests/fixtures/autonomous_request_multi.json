@@ -1,0 +1,108 @@
+{
+  "package_id": "GENERIC-AUTONOMOUS-PACKAGE-MULTI",
+  "target_repository": "ExampleOrg/example-repository",
+  "target_branch": "main",
+  "goal": "Deliver a generic multi-ticket software change.",
+  "context": "Current repository evidence is authoritative.",
+  "constraints": "Use serial execution and preserve unrelated work.",
+  "done": "All acceptance criteria and proof gates are recorded.",
+  "tickets": [
+    {
+      "id": "TKT-2026-02-01-generic-fixture-1",
+      "order": 0,
+      "title": "Generic fixture one",
+      "objective": "Implement the first generic scoped outcome.",
+      "depends_on": [],
+      "allowed_paths": [
+        "src/**",
+        "tests/**"
+      ],
+      "forbidden_paths": [
+        ".env",
+        ".git/**"
+      ],
+      "acceptance_criteria": [
+        "The first scoped behavior is implemented."
+      ],
+      "required_tests": [
+        "Run focused unit tests."
+      ],
+      "required_evidence": [
+        "Record changed files and test output."
+      ],
+      "stop_conditions": [
+        "Stop if scope expands."
+      ],
+      "delivery": {
+        "assigned": true,
+        "require_push": true
+      }
+    },
+    {
+      "id": "TKT-2026-02-02-generic-fixture-2",
+      "order": 1,
+      "title": "Generic fixture two",
+      "objective": "Implement the second generic scoped outcome.",
+      "depends_on": [
+        "TKT-2026-02-01-generic-fixture-1"
+      ],
+      "allowed_paths": [
+        "src/**",
+        "tests/**"
+      ],
+      "forbidden_paths": [
+        ".env",
+        ".git/**"
+      ],
+      "acceptance_criteria": [
+        "The second scoped behavior is implemented after the first ticket."
+      ],
+      "required_tests": [
+        "Run focused unit tests."
+      ],
+      "required_evidence": [
+        "Record changed files and test output."
+      ],
+      "stop_conditions": [
+        "Stop if scope expands."
+      ],
+      "delivery": {
+        "assigned": true,
+        "require_push": true
+      }
+    },
+    {
+      "id": "TKT-2026-02-03-generic-fixture-3",
+      "order": 2,
+      "title": "Generic fixture three",
+      "objective": "Implement the third generic scoped outcome.",
+      "depends_on": [
+        "TKT-2026-02-02-generic-fixture-2"
+      ],
+      "allowed_paths": [
+        "src/**",
+        "tests/**"
+      ],
+      "forbidden_paths": [
+        ".env",
+        ".git/**"
+      ],
+      "acceptance_criteria": [
+        "The third scoped behavior is implemented after the second ticket."
+      ],
+      "required_tests": [
+        "Run focused unit tests."
+      ],
+      "required_evidence": [
+        "Record changed files and test output."
+      ],
+      "stop_conditions": [
+        "Stop if scope expands."
+      ],
+      "delivery": {
+        "assigned": true,
+        "require_push": true
+      }
+    }
+  ]
+}

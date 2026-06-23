@@ -1,0 +1,29 @@
+schema_version: 1
+id: "{{TICKET_ID}}"
+order: {{TICKET_ORDER}}
+title: "{{TICKET_TITLE}}"
+target_repository: "{{TARGET_REPOSITORY}}"
+target_branch: "{{TARGET_BRANCH}}"
+depends_on: {{TICKET_DEPENDS_ON}}
+objective: "{{TICKET_OBJECTIVE}}"
+scope:
+  allowed_paths: {{TICKET_ALLOWED_PATHS}}
+  forbidden_paths: {{TICKET_FORBIDDEN_PATHS}}
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  implementation_must_wait_for_acceptance: true
+acceptance_criteria: {{TICKET_ACCEPTANCE_CRITERIA}}
+required_tests: {{TICKET_REQUIRED_TESTS}}
+required_evidence: {{TICKET_REQUIRED_EVIDENCE}}
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+context_handoff:
+  curator_required: true
+delivery:
+  assigned: {{TICKET_DELIVERY_ASSIGNED}}
+  explicit_staging_only: true
+  require_push: {{TICKET_REQUIRE_PUSH}}
+hard_stop_conditions: {{TICKET_STOP_CONDITIONS}}

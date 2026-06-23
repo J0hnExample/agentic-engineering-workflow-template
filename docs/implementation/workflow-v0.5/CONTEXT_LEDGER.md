@@ -81,3 +81,12 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - v0.4 `quick-dev.md` and `TEMPLATE.quick-ticket.yaml` were used only as read-only evidence and adapted to v0.5 source-lock, review, context curation, and delivery-proof requirements.
 - Quick-flow must remain ticketed work and escalates on security/auth/privacy, schema/data, dependencies, multiple modules/services, public contracts, visual ambiguity, unclear requirements, forbidden paths, or broad file scope.
 - Single-ticket autonomous execution uses the planner -> writer -> reviewer -> repair -> curator -> delivery state machine and blocks `done` until `head_equals_origin_main_proved`.
+
+## Ticket 06 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder.yaml`.
+- Repository ticket copy: `tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder.yaml`.
+- Delivery starts from `main` at `32a305a867ace26abed0d8fe97e80f7f05f61afd`, matching `origin/main`.
+- Generic autonomous package generation lives in `tools/build_autonomous_package.py`, `tools/validate_autonomous_package.py`, `templates/autonomous-package/`, and `docs/autonomous_ticket_packages.md`.
+- Generated package fixtures must remain generic and avoid project-specific product language from this upgrade package.

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "package_id": "{{PACKAGE_ID}}",
+  "package_version": "1.0.0",
+  "target_repository": "{{TARGET_REPOSITORY}}",
+  "target_branch": "{{TARGET_BRANCH}}",
+  "execution_mode": "strict_serial_autonomous",
+  "read_order": [],
+  "tickets": [],
+  "dependency_graph": [],
+  "files": []
+}

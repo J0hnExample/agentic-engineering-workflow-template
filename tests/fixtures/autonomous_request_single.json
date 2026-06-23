@@ -1,0 +1,42 @@
+{
+  "package_id": "GENERIC-AUTONOMOUS-PACKAGE-SINGLE",
+  "target_repository": "ExampleOrg/example-repository",
+  "target_branch": "main",
+  "goal": "Deliver a generic software change.",
+  "context": "Current repository evidence is authoritative.",
+  "constraints": "Use serial execution and preserve unrelated work.",
+  "done": "All acceptance criteria and proof gates are recorded.",
+  "tickets": [
+    {
+      "id": "TKT-2026-02-01-generic-fixture-1",
+      "order": 0,
+      "title": "Generic fixture one",
+      "objective": "Implement one generic scoped outcome.",
+      "depends_on": [],
+      "allowed_paths": [
+        "src/**",
+        "tests/**"
+      ],
+      "forbidden_paths": [
+        ".env",
+        ".git/**"
+      ],
+      "acceptance_criteria": [
+        "The scoped behavior is implemented."
+      ],
+      "required_tests": [
+        "Run focused unit tests."
+      ],
+      "required_evidence": [
+        "Record changed files and test output."
+      ],
+      "stop_conditions": [
+        "Stop if scope expands."
+      ],
+      "delivery": {
+        "assigned": true,
+        "require_push": true
+      }
+    }
+  ]
+}

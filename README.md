@@ -30,6 +30,7 @@ implementation, review, and final verification.
 | Drift control | Scope, proof gates, role boundaries, and documentation checkpoints keep work reviewable. |
 | Quick-flow path | Tiny low-risk tasks can use a quick ticket, but still require discovery, proof, review, context curation, and delivery gates. |
 | Single-ticket runner | One ticket can be run end to end with the same planner -> writer -> reviewer -> repair -> curator -> delivery state machine. |
+| Autonomous packages | Generic source-locked package builder and validator can produce serial ticket packages for arbitrary software requests. |
 | Native Codex profiles | Optional `.codex/agents/*.toml` profiles can define scoped planners, reviewers, implementers, and expert review lenses. |
 | Target-repo installed | This template stays the source; the workflow files are installed into another repo. |
 | No runtime dependency | It does not add an app runtime, framework, service, or product code. |
@@ -217,6 +218,19 @@ For one complete ticket, use
 The runner follows the planner -> writer -> reviewer -> repair -> curator ->
 delivery state machine and cannot mark done before commit, push, and upstream
 equality proof when delivery is assigned.
+
+For a reusable autonomous package, start with
+[`prompts/create-autonomous-ticket-package.md`](prompts/create-autonomous-ticket-package.md)
+or [`prompts/generic-autonomous-software-request.md`](prompts/generic-autonomous-software-request.md),
+then build and validate it with:
+
+```text
+python tools/build_autonomous_package.py --request request.json --output-dir /tmp/example-package
+python tools/validate_autonomous_package.py /tmp/example-package
+```
+
+See [`docs/autonomous_ticket_packages.md`](docs/autonomous_ticket_packages.md)
+for request fields, validation rules, and active-ticket source-lock checks.
 
 ## Safety Model
 

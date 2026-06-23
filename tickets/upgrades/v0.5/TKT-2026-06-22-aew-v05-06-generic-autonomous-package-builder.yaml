@@ -1,0 +1,88 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder
+order: 6
+title: Add a reusable source-locked autonomous ticket-package builder
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-05-quick-flow-single-ticket
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Make the RL-style autonomous package pattern reusable for any software request through generic prompts,
+  templates, manifests, hashes and validation tools.
+source_requirements:
+- User request for a context-free prompt and identical autonomous behavior on other software
+- Canonical source-lock lessons from prior execution
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - prompts/create-autonomous-ticket-package.md
+  - prompts/generic-autonomous-software-request.md
+  - templates/autonomous-package/**
+  - tools/build_autonomous_package.py
+  - tools/validate_autonomous_package.py
+  - tests/**
+  - docs/autonomous_ticket_packages.md
+  - README.md
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Add a generic request prompt with goal, context, constraints and done fields plus autonomous defaults.
+- Add a package skeleton containing entry point, manifest, agent roles, policies, runtime state, ticket templates
+  and validators.
+- Build manifests with SHA-256 for every package file and exact ordered dependency graph.
+- Validate full ticket ID, absolute package path and hash before agent phases.
+- Detect similarly named repository tickets and prevent source substitution.
+- Provide a dependency-free Python builder that emits one ZIP and a validation report.
+acceptance_criteria:
+- A fixture request can produce one valid ZIP with no project-specific language.
+- Mutation, missing file, duplicate ID, out-of-order dependency and ticket-path substitution are rejected.
+- Generated package can represent one ticket or a multi-ticket chain.
+- The generic prompt explicitly requires serial autonomous execution and per-ticket delivery.
+required_tests:
+- Unit-test builder and validator in temporary directories.
+- Mutate a hashed file and assert failure.
+- Substitute a repository ticket path and assert failure.
+- Build both single- and multi-ticket fixtures.
+required_evidence:
+- Generated fixture ZIP.
+- Validator/test output.
+- Manifest hash/dependency report.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.

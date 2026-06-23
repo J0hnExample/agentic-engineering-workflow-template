@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "package_id": "{{PACKAGE_ID}}",
+  "current_ticket_id": null,
+  "last_completed_ticket_id": null,
+  "tickets": []
+}
