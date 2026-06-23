@@ -1,0 +1,80 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-00-reality-audit-provenance
+order: 0
+title: Audit the real repository and lock v0.4-to-v0.5 requirement provenance
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on: []
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-00-reality-audit-provenance/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Establish a verified baseline, preserve newer valid work, and create durable traceability from the supplied
+  v0.4 tickets and current user requirements to the canonical v0.5 chain.
+source_requirements:
+- Entire supplied v0.4 ticket pack
+- Observed GitHub 0.3.0 baseline
+- User requirement for autonomous serial delivery
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-00-reality-audit-provenance.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-00-reality-audit-provenance/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - docs/implementation/workflow-v0.5/**
+  - tickets/upgrades/v0.5/**
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Verify current VERSION, README version, branch, remotes, status, upstream and recent commits at runtime.
+- Create requirement traceability covering every supplied v0.4 child ticket and every new autonomy/Git requirement.
+- Record pre-existing worktree changes once and classify managed, unrelated and generated paths.
+- Copy the canonical ticket into the repository as an execution record without making it the execution authority.
+- Produce the complete global plan and cross-ticket contract map before feature implementation.
+acceptance_criteria:
+- No supplied v0.4 requirement is omitted or silently reinterpreted.
+- Current repository state is based on commands/files, not the package observation alone.
+- Pre-existing unrelated changes are preserved and excluded from staging.
+- The next ticket has an accepted path map and bounded handoff.
+required_tests:
+- Validate all package files and hashes.
+- Parse all supplied YAML tickets.
+- Check traceability has one row for every supplied child ticket.
+- Run git diff --check for repository records.
+required_evidence:
+- Baseline command transcript stored under controller .git state.
+- Committed traceability/global-plan documents.
+- Commit and push SHA equality proof.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-00-reality-audit-provenance/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-00-reality-audit-provenance
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.
