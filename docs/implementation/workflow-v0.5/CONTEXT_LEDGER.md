@@ -90,3 +90,13 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - Delivery starts from `main` at `32a305a867ace26abed0d8fe97e80f7f05f61afd`, matching `origin/main`.
 - Generic autonomous package generation lives in `tools/build_autonomous_package.py`, `tools/validate_autonomous_package.py`, `templates/autonomous-package/`, and `docs/autonomous_ticket_packages.md`.
 - Generated package fixtures must remain generic and avoid project-specific product language from this upgrade package.
+
+## Ticket 07 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-07-serial-controller-resume`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-07-serial-controller-resume.yaml`.
+- Repository ticket copy: `tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-07-serial-controller-resume.yaml`.
+- Delivery starts from `main` at `53f85a098db98c8d5c8b2429305136d1e88348b3`, matching `origin/main`.
+- Deterministic autonomous run-state validation lives in `tools/validate_run_state.py` with fixtures under `tests/fixtures/run_state/`.
+- The canonical controller phase list is documented in `docs/autonomous_execution.md`, `prompts/autonomous-orchestrator.md`, and `templates/runtime/RUN_STATE.schema.json`.
+- Live controller state belongs outside the worktree, for example `.git/agentic-workflow-controller/RUN_STATE.json`; repository records remain compact ticket plans, reports, reviews, handoffs, and delivery proof.

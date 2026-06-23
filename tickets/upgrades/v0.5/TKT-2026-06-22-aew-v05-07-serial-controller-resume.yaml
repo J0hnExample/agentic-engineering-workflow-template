@@ -1,0 +1,89 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-07-serial-controller-resume
+order: 7
+title: Add the serial multi-agent controller, run state and safe resume protocol
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-06-generic-autonomous-package-builder
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-07-serial-controller-resume/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Turn the documented manager flow into an explicit deterministic state machine that cannot skip phases
+  or start the next ticket before delivery.
+source_requirements:
+- User-requested sequential subagents, context transfer and autonomous continuation
+- Official Codex subagent context-isolation guidance
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-07-serial-controller-resume.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-07-serial-controller-resume/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - prompts/autonomous-orchestrator.md
+  - docs/autonomous_execution.md
+  - templates/TEMPLATE.autonomous-run.yaml
+  - templates/TEMPLATE.ticket-plan.md
+  - templates/TEMPLATE.ticket-handoff.md
+  - templates/TEMPLATE.next-agent-capsule.md
+  - templates/runtime/**
+  - tools/validate_run_state.py
+  - tests/**
+  - templates/AGENTS.md.template
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Define explicit per-ticket phase states and legal transitions.
+- Require active-ticket source lock before every role spawn.
+- Enforce one open implementation writer and close completed subagent threads before the next writer.
+- Persist live controller state outside the worktree and compact durable records inside the repository.
+- Resume from the first incomplete phase after validating package, Git and last delivery SHA.
+- Support full-chain and single-ticket mode with the same engine.
+acceptance_criteria:
+- Illegal phase skips and out-of-order completion are rejected.
+- Next-ticket planning is blocked until previous HEAD equals upstream.
+- Resume does not redo a completed commit or trust a ticket name as completion proof.
+- Only one implementation writer can hold the writer lock.
+required_tests:
+- Unit-test state transitions and completed-prefix invariant.
+- Test writer-lock contention.
+- Test interrupted review and interrupted post-commit resume.
+- Test source-lock failure.
+required_evidence:
+- State-machine test output.
+- Resume fixtures.
+- Controller schema and example state.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-07-serial-controller-resume/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-07-serial-controller-resume
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.

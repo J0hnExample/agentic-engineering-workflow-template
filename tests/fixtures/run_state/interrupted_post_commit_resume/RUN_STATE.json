@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "package_id": "POST-COMMIT-RESUME",
+  "mode": "single_ticket",
+  "active_ticket_id": "TKT-2026-06-22-post-commit",
+  "active_phase": "pushed",
+  "last_completed_ticket_id": null,
+  "source_lock": {
+    "active_ticket_id": "TKT-2026-06-22-post-commit",
+    "status": "valid",
+    "failure_marker": null
+  },
+  "writer_lock": {
+    "held_by": null,
+    "ticket_id": null
+  },
+  "tickets": [
+    {
+      "order": 0,
+      "id": "TKT-2026-06-22-post-commit",
+      "phase": "committed",
+      "completed_phases": [
+        "pending",
+        "source_lock_validated",
+        "repository_validated",
+        "plan_recorded",
+        "repository_ticket_recorded",
+        "implementation_writer_locked",
+        "implementation_spawned",
+        "implementation_completed",
+        "writer_thread_closed",
+        "focused_tests_passed",
+        "self_review_completed",
+        "independent_review_spawned",
+        "independent_review_completed",
+        "repair_completed_or_not_needed",
+        "context_curated",
+        "git_delivery_started",
+        "explicit_paths_staged",
+        "committed"
+      ],
+      "delivery": {
+        "commit_sha": "cccccccccccccccccccccccccccccccccccccccc",
+        "pushed": false,
+        "head_equals_upstream_proved": false
+      }
+    }
+  ]
+}

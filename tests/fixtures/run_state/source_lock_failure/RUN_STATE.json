@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "package_id": "SOURCE-LOCK-FAILURE",
+  "mode": "single_ticket",
+  "active_ticket_id": "TKT-2026-06-22-source-lock",
+  "active_phase": "source_lock_validated",
+  "last_completed_ticket_id": null,
+  "source_lock": {
+    "active_ticket_id": "TKT-2026-06-22-source-lock",
+    "status": "failed",
+    "failure_marker": "active ticket manifest hash mismatch"
+  },
+  "writer_lock": {
+    "held_by": null,
+    "ticket_id": null
+  },
+  "tickets": [
+    {
+      "order": 0,
+      "id": "TKT-2026-06-22-source-lock",
+      "phase": "pending",
+      "completed_phases": [
+        "pending"
+      ],
+      "delivery": {
+        "commit_sha": null,
+        "pushed": false,
+        "head_equals_upstream_proved": false
+      }
+    }
+  ]
+}

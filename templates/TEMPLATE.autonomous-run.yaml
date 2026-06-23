@@ -1,0 +1,30 @@
+schema_version: 1
+package_id: "<package id>"
+mode: "full_chain" # full_chain or single_ticket
+state_location: ".git/agentic-workflow-controller/RUN_STATE.json"
+source_lock:
+  package_root: "<absolute package root>"
+  active_ticket_id: "<ticket id>"
+  active_ticket_file: "<absolute package-local ticket file>"
+  validator: "python tools/validate_autonomous_package.py <package_root> --active-ticket-id <ticket id> --active-ticket-file <ticket file>"
+controller:
+  run_state_validator: "python tools/validate_run_state.py <run state>"
+  branch: "main"
+  upstream: "origin/main"
+  writer_lock: "one open implementation writer maximum"
+resume:
+  algorithm:
+    - "Validate package and active-ticket source lock."
+    - "Validate branch, upstream, completed-ticket prefix, and delivery proof."
+    - "Select the first incomplete ticket and first missing legal phase."
+    - "Resume review or repair after interrupted review states."
+    - "After committed, verify the recorded SHA and push/upstream proof instead of recommitting."
+tickets:
+  - order: 0
+    id: "<ticket id>"
+    repository_ticket_copy: "tickets/<ticket id>.yaml"
+    plan_record: "docs/implementation/<ticket id>/PLAN.md"
+    handoff_record: "docs/implementation/<ticket id>/HANDOFF.md"
+    delivery_required: true
+    required_proof:
+      - "<focused command>"

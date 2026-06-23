@@ -77,6 +77,18 @@ files.
   self-review, independent review of the actual diff, execution result, context
   curation, scoped Git delivery when assigned, push when assigned, and upstream
   equality proof before `done`.
+- Autonomous package chains and single-ticket autonomous runs must use the
+  deterministic controller phases from `docs/autonomous_execution.md` and
+  `tools/validate_run_state.py`. Quick-flow may reduce planning overhead, but
+  it must not bypass controller phases.
+- Live autonomous controller state belongs outside the worktree, for example
+  `.git/agentic-workflow-controller/RUN_STATE.json`. Repository files store
+  compact plans, reports, handoffs, reviews, and delivery proof only.
+- Before every autonomous role spawn, validate the package and active-ticket
+  source lock. A source-lock failure marker is a hard stop.
+- Completed tickets in a chain must form a prefix. Do not plan the next ticket
+  until the previous ticket records commit SHA, push proof, and upstream
+  equality proof.
 - Before closing any ticket, explicitly check whether `agent/STATE.md`,
   `agent/DECISIONS.md`, `agent/KNOWN_ISSUES.md`, `agent/TODO.md`,
   `agent/PATHS.md`, `agent/SERVICES.md`, or `agent/CHANGELOG.md` need an
@@ -216,6 +228,12 @@ owner.
   reviews subagent output before continuing.
 - Run exactly one implementation worker at a time unless the ticket explicitly
   declares disjoint write scopes.
+- Autonomous controller runs are stricter: they always allow only one open
+  implementation writer. A writer lock starts at
+  `implementation_writer_locked` and is released only after
+  `writer_thread_closed`.
+- Do not start self-review, independent review, repair, context curation, or
+  delivery before the implementation writer thread is closed.
 - Independent read-only Codex reviewers may run in parallel only when the ticket
   allows it and their questions are distinct.
 - Codex workers receive a narrow file scope and must not edit outside it.
@@ -245,32 +263,37 @@ Before marking a ticket done:
 - when Git delivery is assigned, record explicit staged paths, commit, push, and
   `HEAD == origin/main` or configured upstream equality proof
 
-For a single-ticket autonomous run, use this state machine and do not skip
-states:
+Single-ticket autonomous runs and full autonomous package chains use the same
+controller engine defined in `docs/autonomous_execution.md` and validated by
+`tools/validate_run_state.py`. Use this state machine and do not skip states:
 
 ```text
-source_lock_validated
--> repository_discovered
+pending
+-> source_lock_validated
+-> repository_validated
 -> plan_recorded
 -> repository_ticket_recorded
--> writer_assigned
--> implementation_complete
+-> implementation_writer_locked
+-> implementation_spawned
+-> implementation_completed
+-> writer_thread_closed
 -> focused_tests_passed
--> self_review_complete
--> independent_review_complete
--> repair_loop_complete_or_not_needed
+-> self_review_completed
+-> independent_review_spawned
+-> independent_review_completed
+-> repair_completed_or_not_needed
 -> context_curated
 -> git_delivery_started
 -> explicit_paths_staged
 -> committed
 -> pushed
--> head_equals_origin_main_proved
--> done
+-> head_equals_upstream_proved
+-> completed
 ```
 
-Use exactly one implementation writer. Independent review must inspect the
-actual diff. Repair loops are capped at three rounds. `done` is blocked until
-upstream equality proof is recorded when delivery is assigned.
+Use `python tools/validate_run_state.py <RUN_STATE>` before resuming an
+autonomous run. If resume happens after `committed`, verify the recorded commit
+SHA, push status, and upstream equality instead of committing again.
 
 ## Completion Report
 

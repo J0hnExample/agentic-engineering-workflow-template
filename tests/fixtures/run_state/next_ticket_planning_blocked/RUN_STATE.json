@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "package_id": "NEXT-BLOCKED",
+  "mode": "full_chain",
+  "active_ticket_id": "TKT-2026-06-22-ticket-1",
+  "active_phase": "plan_recorded",
+  "last_completed_ticket_id": null,
+  "source_lock": {
+    "active_ticket_id": "TKT-2026-06-22-ticket-1",
+    "status": "valid",
+    "failure_marker": null
+  },
+  "writer_lock": {
+    "held_by": null,
+    "ticket_id": null
+  },
+  "tickets": [
+    {
+      "order": 0,
+      "id": "TKT-2026-06-22-ticket-0",
+      "phase": "pushed",
+      "completed_phases": [
+        "pending",
+        "source_lock_validated",
+        "repository_validated",
+        "plan_recorded",
+        "repository_ticket_recorded",
+        "implementation_writer_locked",
+        "implementation_spawned",
+        "implementation_completed",
+        "writer_thread_closed",
+        "focused_tests_passed",
+        "self_review_completed",
+        "independent_review_spawned",
+        "independent_review_completed",
+        "repair_completed_or_not_needed",
+        "context_curated",
+        "git_delivery_started",
+        "explicit_paths_staged",
+        "committed",
+        "pushed"
+      ],
+      "delivery": {
+        "commit_sha": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "pushed": true,
+        "head_equals_upstream_proved": false
+      }
+    },
+    {
+      "order": 1,
+      "id": "TKT-2026-06-22-ticket-1",
+      "phase": "repository_validated",
+      "completed_phases": [
+        "pending",
+        "source_lock_validated",
+        "repository_validated"
+      ],
+      "delivery": {
+        "commit_sha": null,
+        "pushed": false,
+        "head_equals_upstream_proved": false
+      }
+    }
+  ]
+}

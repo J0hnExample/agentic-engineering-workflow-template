@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "package_id": "BAD-SKIP",
+  "mode": "single_ticket",
+  "active_ticket_id": "TKT-2026-06-22-bad-skip",
+  "active_phase": "implementation_spawned",
+  "last_completed_ticket_id": null,
+  "source_lock": {
+    "active_ticket_id": "TKT-2026-06-22-bad-skip",
+    "status": "valid",
+    "failure_marker": null
+  },
+  "writer_lock": {
+    "held_by": "writer-a",
+    "ticket_id": "TKT-2026-06-22-bad-skip"
+  },
+  "tickets": [
+    {
+      "order": 0,
+      "id": "TKT-2026-06-22-bad-skip",
+      "phase": "implementation_spawned",
+      "completed_phases": [
+        "pending",
+        "source_lock_validated",
+        "repository_validated",
+        "implementation_writer_locked"
+      ],
+      "delivery": {
+        "commit_sha": null,
+        "pushed": false,
+        "head_equals_upstream_proved": false
+      }
+    }
+  ]
+}

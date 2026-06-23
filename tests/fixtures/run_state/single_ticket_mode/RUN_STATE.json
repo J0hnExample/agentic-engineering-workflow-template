@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "package_id": "SINGLE-TICKET-PACKAGE",
+  "mode": "single_ticket",
+  "active_ticket_id": "TKT-2026-06-22-single-ticket",
+  "active_phase": "focused_tests_passed",
+  "last_completed_ticket_id": null,
+  "source_lock": {
+    "active_ticket_id": "TKT-2026-06-22-single-ticket",
+    "status": "valid",
+    "failure_marker": null
+  },
+  "writer_lock": {
+    "held_by": null,
+    "ticket_id": null
+  },
+  "tickets": [
+    {
+      "order": 0,
+      "id": "TKT-2026-06-22-single-ticket",
+      "phase": "writer_thread_closed",
+      "completed_phases": [
+        "pending",
+        "source_lock_validated",
+        "repository_validated",
+        "plan_recorded",
+        "repository_ticket_recorded",
+        "implementation_writer_locked",
+        "implementation_spawned",
+        "implementation_completed",
+        "writer_thread_closed"
+      ],
+      "delivery": {
+        "commit_sha": null,
+        "pushed": false,
+        "head_equals_upstream_proved": false
+      }
+    }
+  ]
+}

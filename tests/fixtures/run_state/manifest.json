@@ -1,0 +1,19 @@
+{
+  "package_id": "AEW-V0.5-AUTONOMOUS-MULTIAGENT-UPGRADE-2026-06-22-V1",
+  "tickets": [
+    {
+      "order": 0,
+      "id": "TKT-2026-06-22-aew-v05-00-reality-audit-provenance",
+      "path": "tickets/TKT-2026-06-22-aew-v05-00-reality-audit-provenance.yaml",
+      "depends_on": []
+    },
+    {
+      "order": 1,
+      "id": "TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing",
+      "path": "tickets/TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing.yaml",
+      "depends_on": [
+        "TKT-2026-06-22-aew-v05-00-reality-audit-provenance"
+      ]
+    }
+  ]
+}
