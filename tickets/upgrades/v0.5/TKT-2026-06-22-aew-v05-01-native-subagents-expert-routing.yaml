@@ -1,0 +1,87 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing
+order: 1
+title: Add native Codex subagent profiles and expert routing
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-00-reality-audit-provenance
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Modernize the workflow with project-scoped native Codex custom agents while preserving tool-agnostic
+  prompt fallbacks and implementing the supplied expert-routing profile requirements.
+source_requirements:
+- v0.4 expert-routing-profiles ticket
+- Official Codex custom-agent configuration guidance
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - .codex/**
+  - prompts/**
+  - templates/**
+  - checklists/**
+  - docs/workflow.md
+  - README.md
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Add `.codex/config.toml` with bounded subagent concurrency and max_depth=1.
+- Add narrow custom agent TOML profiles for global planner, ticket planner, implementer, independent reviewer, context
+  curator, Git delivery, blocker resolver and release auditor.
+- Mark planning/review/blocker/audit agents read-only and avoid hardcoded model versions.
+- Add expert routing profiles for architecture, test, security, UX/accessibility, performance, data/migration and
+  release/docs.
+- Keep existing markdown role prompts as fallback when native profiles are unavailable.
+- Update readiness rules so routing is based on ticket risk and evidence needs, not ceremony.
+acceptance_criteria:
+- All TOML files parse and contain required name, description and developer_instructions fields.
+- Exactly one implementation writer is permitted by workflow policy.
+- Read-only profiles cannot edit the worktree by configuration.
+- Expert routing is explicit in ticket templates and does not create a competing manager hierarchy.
+required_tests:
+- Parse TOML with Python tomllib.
+- Validate unique custom-agent names.
+- Search for hardcoded current Codex model names in durable profiles.
+- Run documentation link/path checks.
+required_evidence:
+- TOML parse output.
+- Routing-profile matrix.
+- Independent review of sandbox and scope boundaries.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.

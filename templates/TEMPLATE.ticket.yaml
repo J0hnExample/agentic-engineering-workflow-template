@@ -58,6 +58,25 @@ execution:
     planning_reviewer: null
     reviewer: null
     record_location: "execution_result"
+  expert_routing:
+    native_profiles_preferred: true
+    markdown_fallback: "prompts/read-only-expert.md"
+    required_profiles: []
+    not_required_reason: "Low-risk ticket with no architecture, test, security, UX/accessibility, performance, data/migration, or release/docs risk."
+    available_profiles:
+      architecture: "expert-architecture-reviewer"
+      test: "expert-test-reviewer"
+      security: "expert-security-reviewer"
+      ux_accessibility: "expert-ux-accessibility-reviewer"
+      performance: "expert-performance-reviewer"
+      data_migration: "expert-data-migration-reviewer"
+      release_docs: "expert-release-docs-reviewer"
+    output_required:
+      - "profile_used"
+      - "trigger"
+      - "findings"
+      - "required_proof"
+      - "bounded_next_action"
   debug_logging_plan:
     owner: scoped_worker
     surfaces:
@@ -77,6 +96,7 @@ execution:
     - "Relevant automated checks pass or skipped checks are justified."
     - "Agent-memory update check is recorded."
     - "Ticket result records changed files, commands, proof, and blockers."
+    - "Expert routing is used when risk requires it, or an explicit not-required reason is recorded."
   regression_gates:
     - "No unrelated files changed."
     - "No secrets or local machine paths are committed."

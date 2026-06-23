@@ -13,6 +13,9 @@ Use before product-code work starts.
 - [ ] `manager_role` is explicit.
 - [ ] `worker_sequence` is ordered and each worker has a bounded task.
 - [ ] `expert_plan` says whether read-only Codex reviewer input is required.
+- [ ] `expert_routing` names required native expert profiles or records an
+  explicit not-required reason.
+- [ ] Expert routing is based on concrete risk/evidence needs, not ceremony.
 - [ ] Any Codex subagent role inherits `AGENTS.md`, ticket scope, approval
   boundaries, forbidden actions, and verification requirements.
 - [ ] `debug_logging_plan` names an owner and surfaces.

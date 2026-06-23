@@ -8,6 +8,9 @@ note.
 ## Source Areas
 
 - `<area>`: `<path>`
+- Native Codex profile config: `.codex/config.toml`
+- Project-scoped Codex custom agents: `.codex/agents/*.toml`
+- Workflow v0.5 implementation records: `docs/implementation/workflow-v0.5/`
 
 ## Tests And Proof
 

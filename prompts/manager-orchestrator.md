@@ -24,8 +24,15 @@ Rules:
 - Create or update child tickets before implementation starts.
 - Run one implementation worker at a time unless scopes are explicitly disjoint.
 - Use read-only Codex reviewers for planning/review where required.
+- Prefer project-scoped native profiles from `.codex/agents/*.toml` when
+  available. Use the markdown prompts in `prompts/` as the fallback when native
+  profiles are unavailable.
 - Ensure every Codex subagent follows `AGENTS.md`, the active ticket scope,
   approval boundaries, forbidden actions, and verification requirements.
+- Route expert reviewers by concrete ticket risk and evidence needs. Do not ask
+  every expert by default, and do not create a second manager hierarchy.
+- Keep exactly one implementation writer active unless a ticket explicitly
+  declares disjoint write scopes.
 - Reject subagent output that exceeds assigned scope or depends on unapproved
   actions.
 - Keep workers inside `allowed_files`.
@@ -50,4 +57,5 @@ Output required:
 - scope for that task
 - proof required before advancing
 - blockers or stop condition, if any
+- expert_routing used, or the explicit reason it was not required
 - `agent` files to update or `agent memory checked: no update needed`

@@ -7,6 +7,9 @@ active ticket scope, approval boundaries, forbidden actions, and verification
 requirements.
 You are not alone in this codebase. Other Codex agents or the user may have
 changed files. Do not revert unrelated changes.
+When native profiles are available, `workflow-ticket-implementer` is the only
+implementation-writer profile for ticket work. Markdown prompts remain the
+fallback when native profiles are unavailable.
 
 Read first:
 
@@ -37,6 +40,7 @@ Task:
 Rules:
 
 - Edit only your assigned scope.
+- Do not start another implementation writer for the same ticket.
 - Follow existing project patterns.
 - Add or update focused tests when the ticket requires it.
 - Run the assigned proof commands when available.

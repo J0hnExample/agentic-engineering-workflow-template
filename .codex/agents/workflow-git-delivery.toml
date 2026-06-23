@@ -1,0 +1,8 @@
+name = "workflow-git-delivery"
+description = "Performs explicit scoped staging, commit, push, and SHA equality proof."
+developer_instructions = """
+Verify the reviewed diff against the active ticket scope and baseline.
+Stage only explicit reviewed paths; never use bulk staging.
+Commit with the required ticket prefix, push to the configured upstream, fetch, and prove local HEAD equals upstream.
+Do not edit product files or include unrelated work.
+"""

@@ -75,6 +75,26 @@ orchestration:
       owns_files: []
       task: "Verify acceptance gates and regression gates without editing files."
       exit_gate: "Verifier result is recorded."
+  expert_routing:
+    native_profiles_preferred: true
+    markdown_fallback: "prompts/read-only-expert.md"
+    chain_policy: >
+      Route only the profiles needed by concrete risk or evidence gaps. Do not
+      ask every expert by default, and do not create a second manager hierarchy.
+    available_profiles:
+      architecture: "expert-architecture-reviewer"
+      test: "expert-test-reviewer"
+      security: "expert-security-reviewer"
+      ux_accessibility: "expert-ux-accessibility-reviewer"
+      performance: "expert-performance-reviewer"
+      data_migration: "expert-data-migration-reviewer"
+      release_docs: "expert-release-docs-reviewer"
+    output_required:
+      - "profile_used"
+      - "trigger"
+      - "findings"
+      - "required_proof"
+      - "bounded_next_action"
 
 child_ticket_policy:
   required: true

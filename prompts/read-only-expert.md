@@ -9,6 +9,10 @@ Inspect files and report findings only. Do not install dependencies, run
 migrations, modify git state, call deploy or release commands, or perform remote
 operations.
 
+When native profiles are available, use the matching `.codex/agents/*.toml`
+profile. When they are unavailable, this markdown prompt is the fallback.
+Expert profiles are review lenses, not managers.
+
 Read:
 
 1. `AGENTS.md`
@@ -30,9 +34,27 @@ Focus on:
 - likely regressions
 - stop conditions
 
+Expert routing profiles:
+
+- `expert-architecture-reviewer`: architecture, contracts, sequencing, public
+  API shape, or major abstractions.
+- `expert-test-reviewer`: missing proof, flaky checks, fixture coverage, or
+  regression strategy.
+- `expert-security-reviewer`: secrets, auth, permissions, sandbox escape risk,
+  dependency risk, or security-sensitive changes.
+- `expert-ux-accessibility-reviewer`: UI copy, accessibility, keyboard flow, or
+  visual/interaction regressions.
+- `expert-performance-reviewer`: latency, memory, scaling, repeated work, or
+  expensive queries/build steps.
+- `expert-data-migration-reviewer`: schemas, persistence contracts, migrations,
+  backfills, or irreversible data risk.
+- `expert-release-docs-reviewer`: release notes, version claims, installation
+  docs, or user-facing workflow docs.
+
 Output required:
 
 - recommendation: `proceed`, `revise_plan`, or `stop`
+- `profile_used` and trigger, when routed as an expert reviewer
 - key findings ordered by severity
 - exact files/functions/routes involved
 - proof that should be required

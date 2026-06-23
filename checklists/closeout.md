@@ -12,6 +12,11 @@ Use before marking a ticket `done`.
 - [ ] Formatter/lint check passed or skip reason is recorded.
 - [ ] Typecheck passed or skip reason is recorded.
 - [ ] Targeted tests passed or skip reason is recorded.
+- [ ] Changed `.codex/**/*.toml` files parse and custom-agent names are unique.
+- [ ] Read-only native profiles are configured with `sandbox_mode = "read-only"`.
+- [ ] Exactly one implementation-writer profile exists when native profiles are
+  changed.
+- [ ] Durable native profiles do not pin current model names.
 - [ ] Build passed when relevant or skip reason is recorded.
 - [ ] Browser/UI proof was collected when user-facing UI changed.
 - [ ] Screenshots/recordings were captured when visual gate required them.

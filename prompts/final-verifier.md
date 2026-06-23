@@ -27,12 +27,17 @@ Verify:
   made or explicitly deferred
 - user-visible behavior was inspected when relevant
 - execution_result is complete and honest
+- native `.codex/agents/*.toml` profiles parse when changed
+- read-only roles are configured as read-only when native profiles are changed
+- expert routing is risk/evidence based, or a not-required reason is recorded
+- markdown prompt fallbacks remain usable when native profiles are introduced
 
 Output required:
 
 - verdict: `pass`, `pass_with_risk`, or `fail`
 - blocking issues with file references
 - missing proof
+- native profile or expert-routing issues
 - missing `agent` memory updates
 - residual risks
 - whether the ticket may be marked done

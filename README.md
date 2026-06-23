@@ -28,6 +28,7 @@ implementation, review, and final verification.
 | Codex 5.5 first | Use Codex 5.5 to understand, initialize, calibrate, and orchestrate the workflow. |
 | Ticket-driven memory | Tickets, closeouts, and `agent/*.md` files preserve context between agent steps. |
 | Drift control | Scope, proof gates, role boundaries, and documentation checkpoints keep work reviewable. |
+| Native Codex profiles | Optional `.codex/agents/*.toml` profiles can define scoped planners, reviewers, implementers, and expert review lenses. |
 | Target-repo installed | This template stays the source; the workflow files are installed into another repo. |
 | No runtime dependency | It does not add an app runtime, framework, service, or product code. |
 | No project security rules | Security constraints must be added after target-context review. |
@@ -189,6 +190,11 @@ shape around its normal product code, tests, package files, docs, and scripts:
 All roles are Codex roles. Codex subagents inherit the installed `AGENTS.md`, the
 active ticket scope, approval boundaries, forbidden actions, and verification
 requirements of the main Codex session.
+
+When a target repository trusts project configuration, native Codex profiles in
+`.codex/agents/*.toml` can provide the same roles directly. The markdown prompts
+remain the fallback and the durable source for environments that do not load
+native profiles.
 
 The execution modes are defined in the templates and docs:
 `standard_worker`, `expert_supported`, `bounded_expert_rounds`, and

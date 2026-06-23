@@ -43,6 +43,36 @@ Before installation, the workflow package stores these source files under
 `templates/`. After installation, use the target repository paths under
 `tickets/templates/`.
 
+## Native Codex Profiles
+
+Projects can provide optional native Codex profiles under `.codex/agents/*.toml`
+with shared subagent limits in `.codex/config.toml`. Native profiles are the
+preferred path when Codex loads project configuration; the markdown prompts in
+`prompts/` remain the fallback for tools or environments that do not load those
+profiles.
+
+The workflow keeps one implementation writer active for a ticket:
+`workflow-ticket-implementer`. Planning, review, blocker resolution, release
+audit, and expert-review profiles are read-only. Context curation and Git
+delivery have narrow write responsibilities and should not edit product
+behavior.
+
+Expert reviewers are selected by risk and evidence needs:
+
+| Risk area | Native profile |
+| --- | --- |
+| Architecture, contracts, public API shape | `expert-architecture-reviewer` |
+| Tests, fixtures, proof quality | `expert-test-reviewer` |
+| Secrets, auth, permissions, dependency risk | `expert-security-reviewer` |
+| UI, accessibility, keyboard or visual regressions | `expert-ux-accessibility-reviewer` |
+| Latency, memory, scaling, expensive work | `expert-performance-reviewer` |
+| Schema, persistence, migrations, backfills | `expert-data-migration-reviewer` |
+| Release notes, version claims, install docs | `expert-release-docs-reviewer` |
+
+Do not ask every expert by default. Each expert response should record
+`profile_used`, the trigger, findings, required proof, and a bounded next
+action.
+
 ## Roles
 
 `manager-orchestrator` keeps the whole chain in view, creates child tickets,

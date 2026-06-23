@@ -43,3 +43,10 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - First independent review: FAIL. Findings were non-exact repository ticket copy and insufficient traceability fields.
 - Repair round 1: restored the repository ticket copy to byte-for-byte canonical content and expanded requirement traceability.
 - Second independent review: PASS. No remaining fail findings.
+
+## Ticket 01 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing.yaml`.
+- Delivery starts from `main` at `802f1cad291ab2e1fe8e92f1322d53a3fe7b56a2`, matching `origin/main`.
+- Official Codex documentation confirms project-scoped custom agents under `.codex/agents/*.toml`, required fields `name`, `description`, `developer_instructions`, and `[agents] max_depth = 1` as the safe default.
