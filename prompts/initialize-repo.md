@@ -16,6 +16,8 @@ Start by asking the user for:
   approval
 - whether Codex subagents may be used for bounded read-only review or scoped
   implementation tasks
+- whether larger features should use full SDD specs, quick tickets without
+  specs, or a mixed policy based on risk
 
 Rules:
 
@@ -54,9 +56,12 @@ Initialization work:
 8. If files are missing, propose the minimal package-to-target copy plan before
    writing anything.
 9. Propose the minimal files to create or update.
-10. Propose dependency, lint, test, build, and dev-server commands from repo
+10. For non-trivial features, propose the minimal useful SDD package:
+    requirements, design, and tasks specs. For tiny low-risk work, record why
+    no full spec is needed.
+11. Propose dependency, lint, test, build, and dev-server commands from repo
    evidence.
-11. Ask for approval before writing files or running dependency installation.
+12. Ask for approval before writing files or running dependency installation.
 
 Closeout:
 

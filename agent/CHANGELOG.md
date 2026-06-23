@@ -10,3 +10,4 @@ release notes.
 ## 2026-06-23
 
 - `TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing`: added native Codex profile paths and risk-based expert routing records.
+- `TKT-2026-06-22-aew-v05-02-sdd-spec-artifacts`: added SDD spec template paths and ticket spec-reference records.

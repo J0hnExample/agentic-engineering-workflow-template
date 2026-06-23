@@ -1,0 +1,45 @@
+schema_version: 2
+
+ticket:
+  id: TKT-YYYY-MM-DD-example-quick-no-spec
+  title: "Example quick no-spec ticket"
+  repo: "<repo-name>"
+  branch: "<target-branch>"
+  status: backlog
+  created_at: "YYYY-MM-DD"
+  owner_agent: scoped_worker
+  ticket_class: implementation
+  work_kind: documentation
+  phase: calibration
+
+spec_refs:
+  mode: no_spec
+  not_required_reason: "Tiny low-risk documentation-only change with no behavior, API, data, dependency, security, or UI contract change."
+  requirements: null
+  design: null
+  tasks: null
+
+scope:
+  goal: "Demonstrate a quick ticket that does not need full SDD specs."
+  allowed_files:
+    - "docs/example.md"
+  forbidden_files:
+    - ".env"
+    - ".env.*"
+  in_scope:
+    - "One documentation sentence."
+  out_of_scope:
+    - "Runtime behavior."
+
+execution:
+  execution_intensity: standard_worker
+  worker_sequence:
+    - role: scoped_worker
+      mode: implementation
+      task: "Make the documentation-only change."
+  test_plan:
+    - "Run markdown/path inspection."
+  proof_gates:
+    - "No behavior-bearing files changed."
+  regression_gates:
+    - "No unrelated files changed."

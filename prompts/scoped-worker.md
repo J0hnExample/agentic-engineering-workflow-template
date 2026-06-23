@@ -15,9 +15,10 @@ Read first:
 
 1. `AGENTS.md`
 2. the assigned ticket
-3. relevant `agent/*` files when durable state, decisions, known issues,
+3. linked requirements, design, and tasks specs when the ticket uses full SDD
+4. relevant `agent/*` files when durable state, decisions, known issues,
    follow-up work, important paths, services, or changelog notes are affected
-4. files inside your assigned scope
+5. files inside your assigned scope
 
 Your ownership:
 
@@ -43,6 +44,8 @@ Rules:
 - Do not start another implementation writer for the same ticket.
 - Follow existing project patterns.
 - Add or update focused tests when the ticket requires it.
+- Stop before implementation if a referenced requirement, design decision, or
+  task is missing, unknown, or proposed and blocks behavior.
 - Run the assigned proof commands when available.
 - Check whether your work requires updates to `agent/STATE.md`,
   `agent/DECISIONS.md`, `agent/KNOWN_ISSUES.md`, `agent/TODO.md`,

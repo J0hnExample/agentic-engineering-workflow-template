@@ -117,6 +117,7 @@ ticket already grants that permission.
 
 Every implementation ticket must include these fields before product-code work:
 
+- `spec_refs`
 - `execution_intensity`
 - `manager_role`
 - `worker_sequence`
@@ -137,6 +138,11 @@ Every implementation ticket must include these fields before product-code work:
 The `test_plan` or closeout proof must include an agent-memory update check for
 `agent/` files whenever the ticket changes durable project state, decisions,
 known issues, setup paths, service assumptions, or follow-up work.
+
+For non-trivial work, `spec_refs` should link requirements, design, and tasks
+specs with stable IDs. Tiny low-risk work may set no-spec mode only when the
+ticket records a concrete reason and has no behavior, API, data, dependency,
+security, or UI contract change.
 
 The `test_plan` must list concrete checks that decide whether the ticket may be
 marked done. For web applications, use relevant repo-local checks such as:

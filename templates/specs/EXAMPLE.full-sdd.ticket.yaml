@@ -1,0 +1,47 @@
+schema_version: 2
+
+ticket:
+  id: TKT-YYYY-MM-DD-example-full-sdd
+  title: "Example full SDD ticket"
+  repo: "<repo-name>"
+  branch: "<target-branch>"
+  status: backlog
+  created_at: "YYYY-MM-DD"
+  owner_agent: scoped_worker
+  ticket_class: implementation
+  work_kind: documentation
+  phase: calibration
+
+spec_refs:
+  mode: full_sdd
+  requirements: "templates/specs/EXAMPLE.full-sdd.requirements.md"
+  design: "templates/specs/EXAMPLE.full-sdd.design.md"
+  tasks: "templates/specs/EXAMPLE.full-sdd.tasks.md"
+  not_required_reason: null
+  unresolved_decisions: []
+
+scope:
+  goal: "Demonstrate requirement -> design -> task -> ticket -> proof traceability."
+  allowed_files:
+    - "templates/TEMPLATE.ticket.yaml"
+  forbidden_files:
+    - ".env"
+    - ".env.*"
+  in_scope:
+    - "Reference the full SDD spec files."
+  out_of_scope:
+    - "Runtime behavior."
+
+execution:
+  execution_intensity: standard_worker
+  worker_sequence:
+    - role: scoped_worker
+      mode: implementation
+      task: "Update only the scoped ticket template reference."
+  test_plan:
+    - "Parse this ticket as YAML."
+    - "Verify referenced SDD spec paths exist."
+  proof_gates:
+    - "Requirement -> design -> task -> ticket -> proof links resolve."
+  regression_gates:
+    - "No unrelated files changed."

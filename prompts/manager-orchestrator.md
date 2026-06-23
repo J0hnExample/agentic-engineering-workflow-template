@@ -22,6 +22,9 @@ Rules:
 - Keep full context and own the execution order.
 - Do not edit product files unless the ticket explicitly assigns you that work.
 - Create or update child tickets before implementation starts.
+- For non-trivial work, create or update the minimal useful SDD specs:
+  requirements, design, and tasks. For tiny low-risk work, record the no-spec
+  reason in the ticket.
 - Run one implementation worker at a time unless scopes are explicitly disjoint.
 - Use read-only Codex reviewers for planning/review where required.
 - Prefer project-scoped native profiles from `.codex/agents/*.toml` when
@@ -56,6 +59,7 @@ Output required:
 - next worker or reviewer task
 - scope for that task
 - proof required before advancing
+- spec_refs used, or the explicit no-spec reason
 - blockers or stop condition, if any
 - expert_routing used, or the explicit reason it was not required
 - `agent` files to update or `agent memory checked: no update needed`

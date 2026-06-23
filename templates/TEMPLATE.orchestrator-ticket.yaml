@@ -30,6 +30,12 @@ context:
     - "agent/PATHS.md"
     - "agent/SERVICES.md"
     - "agent/CHANGELOG.md"
+  spec_refs:
+    mode: "full_sdd | no_spec"
+    requirements: "templates/specs/<feature>.requirements.md or null"
+    design: "templates/specs/<feature>.design.md or null"
+    tasks: "templates/specs/<feature>.tasks.md or null"
+    not_required_reason: "Required when mode is no_spec."
 
 orchestration:
   execution_intensity: bounded_expert_rounds
@@ -105,6 +111,8 @@ child_ticket_policy:
     - "Each child ticket declares allowed_files and forbidden_files."
     - "Each child ticket records execution_result before it can close."
     - "The manager reconciles child results into this orchestrator ticket."
+    - "Full-SDD child tickets reference requirements, design, and tasks specs by stable IDs."
+    - "No-spec child tickets record why full specs are not useful for the risk level."
 
 debug_logging_plan:
   owner: manager

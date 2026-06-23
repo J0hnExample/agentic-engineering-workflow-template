@@ -1,0 +1,84 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-02-sdd-spec-artifacts
+order: 2
+title: Add machine-readable SDD requirements, design and task artifacts
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-02-sdd-spec-artifacts/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Implement the supplied SDD spec-artifact package so tickets no longer carry all requirements/design/tasks
+  responsibilities at once.
+source_requirements:
+- v0.4 spec-artifact-package ticket
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-02-sdd-spec-artifacts.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-02-sdd-spec-artifacts/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - templates/specs/**
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+  - templates/AGENTS.md.template
+  - prompts/**
+  - checklists/**
+  - docs/workflow.md
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Add reusable requirements, design and tasks templates with stable identifiers and explicit status.
+- Define source-of-truth and cross-reference fields from tickets to specs.
+- Require unresolved requirement/design decisions to be explicit rather than invented by a worker.
+- Update initialization and manager/scoped-worker prompts to create only the minimum useful spec package.
+- Document when lightweight tickets may omit full specs and when escalation is mandatory.
+acceptance_criteria:
+- A feature can be traced requirement -> design -> task -> ticket -> test/evidence.
+- Templates distinguish unknown, proposed, accepted and superseded decisions.
+- Small low-risk work is not forced into unnecessary full-spec ceremony.
+- Existing ticket safety fields remain intact.
+required_tests:
+- Parse YAML templates.
+- Validate required spec identifiers and references.
+- Run example full-SDD and no-spec quick-flow fixtures.
+- Check no existing safety field is removed.
+required_evidence:
+- Rendered example spec package.
+- Cross-reference validation output.
+- Reviewer proof that tickets and specs have non-overlapping responsibilities.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-02-sdd-spec-artifacts/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-02-sdd-spec-artifacts
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.

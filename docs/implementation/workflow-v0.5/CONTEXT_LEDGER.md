@@ -50,3 +50,10 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-01-native-subagents-expert-routing.yaml`.
 - Delivery starts from `main` at `802f1cad291ab2e1fe8e92f1322d53a3fe7b56a2`, matching `origin/main`.
 - Official Codex documentation confirms project-scoped custom agents under `.codex/agents/*.toml`, required fields `name`, `description`, `developer_instructions`, and `[agents] max_depth = 1` as the safe default.
+
+## Ticket 02 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-02-sdd-spec-artifacts`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-02-sdd-spec-artifacts.yaml`.
+- Delivery starts from `main` at `a62d29c02f703fd8ce36c34d97ff74c17c508e1a`, matching `origin/main`.
+- v0.4 `spec-artifact-package` maps to this ticket. The feature branch templates were used only as read-only evidence and adapted to v0.5 ticket/source-lock rules.

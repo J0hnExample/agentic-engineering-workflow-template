@@ -22,6 +22,18 @@ context:
   relevant_prior_work:
     - "Link or path to prior ticket/doc, or 'none'."
 
+spec_refs:
+  mode: "full_sdd | no_spec"
+  requirements: "templates/specs/<feature>.requirements.md or null"
+  design: "templates/specs/<feature>.design.md or null"
+  tasks: "templates/specs/<feature>.tasks.md or null"
+  not_required_reason: "Required when mode is no_spec. Use only for tiny low-risk work with no behavior, API, data, dependency, security, or UI contract change."
+  unresolved_decisions:
+    - id: "DEC-001"
+      status: "unknown | proposed | accepted | superseded"
+      question: "<decision that must be resolved before implementation, or none>"
+      blocks_implementation: true
+
 scope:
   goal: >
     One concrete outcome for this ticket.
@@ -117,6 +129,8 @@ execution:
     - "The change requires editing forbidden files."
     - "Automated proof reveals an unrelated broader failure."
     - "The work requires dependency installation, destructive commands, remote operations, deployment, release, secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit approval."
+    - "Full SDD mode references missing requirements, design, or tasks specs."
+    - "A blocking requirement or design decision remains unknown or proposed."
   handoff_requirements:
     - "Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates, and next action."
   done_definition: >

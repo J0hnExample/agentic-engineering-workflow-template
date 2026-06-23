@@ -7,6 +7,11 @@ Use before product-code work starts.
   `owner_agent`.
 - [ ] Ticket has a single concrete `scope.goal`.
 - [ ] `allowed_files` and `forbidden_files` are explicit.
+- [ ] `spec_refs` either names requirements/design/tasks specs or gives a
+  concrete no-spec reason for tiny low-risk work.
+- [ ] Full-SDD spec references resolve and use stable IDs.
+- [ ] Blocking unknown/proposed requirements or design decisions are resolved
+  before a worker starts.
 - [ ] `in_scope` and `out_of_scope` are explicit.
 - [ ] `execution_intensity` is one of `standard_worker`, `expert_supported`,
   `bounded_expert_rounds`, or `research_only`.

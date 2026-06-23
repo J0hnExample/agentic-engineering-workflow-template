@@ -73,6 +73,27 @@ Do not ask every expert by default. Each expert response should record
 `profile_used`, the trigger, findings, required proof, and a bounded next
 action.
 
+## SDD Spec Artifacts
+
+For non-trivial work, keep durable requirements, design decisions, and task
+decomposition in linked spec files instead of overloading the ticket. The ticket
+still owns execution scope, proof, and closeout.
+
+Use:
+
+- `templates/specs/TEMPLATE.requirements.md` for stable requirement IDs,
+  acceptance criteria, ambiguity logs, and proof targets.
+- `templates/specs/TEMPLATE.design.md` for accepted design decisions, impacted
+  files, interfaces, failure modes, and test strategy.
+- `templates/specs/TEMPLATE.tasks.md` for dependency-ordered scoped tasks and
+  proof mapping.
+
+Ticket `spec_refs` must either point to requirements, design, and tasks specs or
+record a concrete `no_spec` reason. Tiny low-risk documentation or mechanical
+changes can skip full specs when there is no behavior, API, data, dependency,
+security, or UI contract change. Workers must stop when a blocking requirement
+or design decision remains `unknown` or `proposed`.
+
 ## Roles
 
 `manager-orchestrator` keeps the whole chain in view, creates child tickets,

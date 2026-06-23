@@ -11,6 +11,7 @@ note.
 - Native Codex profile config: `.codex/config.toml`
 - Project-scoped Codex custom agents: `.codex/agents/*.toml`
 - Workflow v0.5 implementation records: `docs/implementation/workflow-v0.5/`
+- SDD spec templates and examples: `templates/specs/`
 
 ## Tests And Proof
 
