@@ -94,6 +94,16 @@ changes can skip full specs when there is no behavior, API, data, dependency,
 security, or UI contract change. Workers must stop when a blocking requirement
 or design decision remains `unknown` or `proposed`.
 
+Delta specs describe changes to durable specs:
+
+- `ADDED` for new behavior or proof rules.
+- `MODIFIED` for intentional changes to existing contracts.
+- `REMOVED` for behavior or constraints that no longer apply.
+
+Before closeout, non-trivial tickets should run a read-only spec drift check and
+record `execution_result.spec_alignment`. Final verification must treat a
+blocking drift verdict as a ticket failure.
+
 ## Roles
 
 `manager-orchestrator` keeps the whole chain in view, creates child tickets,

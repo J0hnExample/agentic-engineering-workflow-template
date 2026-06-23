@@ -27,6 +27,7 @@ spec_refs:
   requirements: "templates/specs/<feature>.requirements.md or null"
   design: "templates/specs/<feature>.design.md or null"
   tasks: "templates/specs/<feature>.tasks.md or null"
+  delta: "templates/specs/<feature>.delta-spec.md or null"
   not_required_reason: "Required when mode is no_spec. Use only for tiny low-risk work with no behavior, API, data, dependency, security, or UI contract change."
   unresolved_decisions:
     - id: "DEC-001"
@@ -109,6 +110,7 @@ execution:
     - "Agent-memory update check is recorded."
     - "Ticket result records changed files, commands, proof, and blockers."
     - "Expert routing is used when risk requires it, or an explicit not-required reason is recorded."
+    - "Spec drift is checked for non-trivial work, or a concrete no-spec reason is recorded."
   regression_gates:
     - "No unrelated files changed."
     - "No secrets or local machine paths are committed."
@@ -131,6 +133,7 @@ execution:
     - "The work requires dependency installation, destructive commands, remote operations, deployment, release, secrets, migrations with side effects, network-dependent setup, or scope expansion without explicit approval."
     - "Full SDD mode references missing requirements, design, or tasks specs."
     - "A blocking requirement or design decision remains unknown or proposed."
+    - "Accepted delta specs are not reflected in durable specs and no owner/follow-up is recorded."
   handoff_requirements:
     - "Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates, and next action."
   done_definition: >

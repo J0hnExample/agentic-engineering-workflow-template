@@ -12,6 +12,8 @@ note.
 - Project-scoped Codex custom agents: `.codex/agents/*.toml`
 - Workflow v0.5 implementation records: `docs/implementation/workflow-v0.5/`
 - SDD spec templates and examples: `templates/specs/`
+- Spec lifecycle docs: `docs/spec_lifecycle.md`
+- Spec drift verifier prompt/checklist: `prompts/spec-drift-verifier.md`, `checklists/spec-drift.md`
 
 ## Tests And Proof
 

@@ -144,6 +144,10 @@ specs with stable IDs. Tiny low-risk work may set no-spec mode only when the
 ticket records a concrete reason and has no behavior, API, data, dependency,
 security, or UI contract change.
 
+When a ticket changes durable behavior or workflow contracts, closeout must
+record spec alignment. Accepted delta specs must update durable current specs or
+record a blocking deferred update with owner and follow-up ticket.
+
 The `test_plan` must list concrete checks that decide whether the ticket may be
 marked done. For web applications, use relevant repo-local checks such as:
 

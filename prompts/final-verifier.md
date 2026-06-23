@@ -31,6 +31,8 @@ Verify:
 - read-only roles are configured as read-only when native profiles are changed
 - expert routing is risk/evidence based, or a not-required reason is recorded
 - markdown prompt fallbacks remain usable when native profiles are introduced
+- non-trivial tickets include `execution_result.spec_alignment`, and final
+  verification does not silently ignore drift verifier failures
 
 Output required:
 
@@ -38,6 +40,7 @@ Output required:
 - blocking issues with file references
 - missing proof
 - native profile or expert-routing issues
+- spec drift or missing spec-alignment issues
 - missing `agent` memory updates
 - residual risks
 - whether the ticket may be marked done

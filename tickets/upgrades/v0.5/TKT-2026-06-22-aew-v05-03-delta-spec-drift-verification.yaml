@@ -1,0 +1,88 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-03-delta-spec-drift-verification
+order: 3
+title: Add delta-spec lifecycle and cross-artifact drift verification
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-02-sdd-spec-artifacts
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-03-delta-spec-drift-verification/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Implement durable ADDED/MODIFIED/REMOVED spec changes and a read-only verifier that compares specs, tickets,
+  code, tests and docs.
+source_requirements:
+- v0.4 delta-spec-lifecycle ticket
+- v0.4 spec-drift-verifier ticket
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-03-delta-spec-drift-verification.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-03-delta-spec-drift-verification/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - templates/specs/**
+  - docs/spec_lifecycle.md
+  - docs/workflow.md
+  - prompts/spec-drift-verifier.md
+  - prompts/final-verifier.md
+  - checklists/spec-drift.md
+  - checklists/closeout.md
+  - templates/TEMPLATE.execution-result.yaml
+  - templates/TEMPLATE.ticket.yaml
+  - templates/AGENTS.md.template
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Define baseline specs and delta specs with ADDED, MODIFIED and REMOVED semantics.
+- Require accepted deltas to update durable specs before ticket closeout.
+- Add an independent read-only spec-drift verifier and structured result fields.
+- Compare requirements/design/tasks against actual diff, tests, public docs and execution result.
+- Block completion on unexplained drift; permit explicit deferred drift only with owner and follow-up ticket.
+acceptance_criteria:
+- Lifecycle handles new, changed and removed behavior without losing history.
+- Verifier catches at least missing test, stale requirement and undocumented public behavior fixtures.
+- Final verification consumes drift results and cannot silently ignore failure.
+- No verifier edits implementation files.
+required_tests:
+- Parse lifecycle examples.
+- Run positive and negative drift fixtures.
+- Validate execution-result schema fields.
+- Run all template consistency checks.
+required_evidence:
+- Fixture results for each drift class.
+- Read-only reviewer verdict.
+- Trace from accepted delta to updated durable spec.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-03-delta-spec-drift-verification/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-03-delta-spec-drift-verification
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.

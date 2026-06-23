@@ -9,6 +9,8 @@ Use before marking a ticket `done`.
   update was required.
 - [ ] Requirement -> design -> task -> ticket -> proof links are present when
   full SDD mode is used.
+- [ ] Spec drift verification passed, or non-blocking/deferred drift has owner
+  and follow-up ticket.
 - [ ] No secrets, credentials, `.env*`, or private local paths were changed.
 - [ ] No dependencies were installed, upgraded, or removed without explicit approval.
 - [ ] No destructive cleanup, reset, migration with side effects, or persistent external-service action ran without explicit approval.

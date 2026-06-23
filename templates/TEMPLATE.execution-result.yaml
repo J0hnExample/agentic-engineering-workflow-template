@@ -15,6 +15,15 @@ execution_result:
   skipped_checks:
     - check: "command or proof not run"
       reason: "Concrete reason."
+  spec_alignment:
+    required: false
+    no_spec_reason: null
+    verdict: null
+    checked_specs: []
+    drift_findings: []
+    required_followups: []
+    missing_proof: []
+    residual_risks: []
   agent_memory_updates:
     checked: true
     updated_files:
