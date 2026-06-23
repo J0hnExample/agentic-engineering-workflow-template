@@ -33,6 +33,10 @@ Verify:
 - markdown prompt fallbacks remain usable when native profiles are introduced
 - non-trivial tickets include `execution_result.spec_alignment`, and final
   verification does not silently ignore drift verifier failures
+- blocking unresolved decisions were resolved before implementation started
+- steering conflicts were reported rather than silently merged
+- context handoff is compact and excludes raw transcripts, secrets, and
+  unrelated logs
 
 Output required:
 
@@ -41,6 +45,7 @@ Output required:
 - missing proof
 - native profile or expert-routing issues
 - spec drift or missing spec-alignment issues
+- unresolved decision, steering, or context-budget issues
 - missing `agent` memory updates
 - residual risks
 - whether the ticket may be marked done

@@ -1,0 +1,90 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget
+order: 4
+title: Add conditional steering, decision locks and bounded context packs
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-03-delta-spec-drift-verification
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Reduce context noise while forcing grey-area decisions to be resolved before implementation and keeping
+  AGENTS.md concise.
+source_requirements:
+- v0.4 conditional-steering ticket
+- v0.4 decision-lock-context-budget ticket
+- Official AGENTS.md hierarchy/32 KiB guidance
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - templates/steering/**
+  - templates/AGENTS.md.template
+  - templates/TEMPLATE.ticket.yaml
+  - templates/TEMPLATE.orchestrator-ticket.yaml
+  - prompts/**
+  - checklists/**
+  - agent/DECISIONS.md
+  - docs/workflow.md
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Add steering metadata for always, fileMatch, manual and auto-like discovery without depending on a proprietary
+  IDE.
+- Define deterministic loading precedence and conflict reporting.
+- Add locked_decisions, unresolved_decisions, context_budget and required_context fields to ticket templates.
+- Require planners to resolve implementation grey areas or stop before a writer starts.
+- Refactor root AGENTS template to concise durable rules that reference focused docs and remain under the configured
+  size budget.
+- Ensure context curators pass compact verified handoffs rather than full transcripts.
+acceptance_criteria:
+- Relevant steering loads for matching paths; irrelevant steering is omitted.
+- Conflicting decisions are reported instead of silently merged.
+- A worker cannot start with unresolved blocking decisions.
+- Instruction-size validation passes with margin below default Codex project-doc limit.
+required_tests:
+- Run steering match/no-match/conflict fixtures.
+- Validate decision-lock state transitions.
+- Measure AGENTS template byte size.
+- Test context-pack inclusion/exclusion.
+required_evidence:
+- Steering fixture matrix.
+- Byte-size output.
+- Rejected unresolved-decision fixture.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.

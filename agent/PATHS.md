@@ -14,6 +14,7 @@ note.
 - SDD spec templates and examples: `templates/specs/`
 - Spec lifecycle docs: `docs/spec_lifecycle.md`
 - Spec drift verifier prompt/checklist: `prompts/spec-drift-verifier.md`, `checklists/spec-drift.md`
+- Steering templates: `templates/steering/`
 
 ## Tests And Proof
 

@@ -35,6 +35,50 @@ spec_refs:
       question: "<decision that must be resolved before implementation, or none>"
       blocks_implementation: true
 
+decision_locks:
+  locked_decisions:
+    - id: "DEC-ACCEPTED-001"
+      status: "accepted"
+      decision: "<decision already accepted>"
+      source: "<spec, ticket, user instruction, or agent/DECISIONS.md>"
+      applies_to:
+        - "<path or behavior>"
+  unresolved_decisions:
+    - id: "DEC-BLOCKING-001"
+      status: "unknown | proposed"
+      question: "<decision that must be resolved before implementation>"
+      owner: "<manager|user|domain-owner>"
+      blocks_implementation: true
+
+context_budget:
+  max_files: 12
+  max_summary_lines: 80
+  include:
+    - "AGENTS.md"
+    - "active ticket"
+    - "linked specs"
+    - "relevant steering"
+  exclude:
+    - "raw transcripts"
+    - "unrelated logs"
+    - "secret values"
+  required_context:
+    - path: "<path>"
+      reason: "<why the worker needs it>"
+
+steering:
+  required:
+    - "templates/steering/security.md"
+  conditional:
+    - id: product
+      when: "product behavior or user outcome changes"
+    - id: tech
+      when: "implementation, tooling, dependency, or runtime files change"
+    - id: testing
+      when: "behavior or proof gates change"
+    - id: structure
+      when: "repository layout or file ownership changes"
+
 scope:
   goal: >
     One concrete outcome for this ticket.
@@ -134,6 +178,8 @@ execution:
     - "Full SDD mode references missing requirements, design, or tasks specs."
     - "A blocking requirement or design decision remains unknown or proposed."
     - "Accepted delta specs are not reflected in durable specs and no owner/follow-up is recorded."
+    - "Required steering conflicts with accepted decisions or ticket scope."
+    - "Context budget cannot include required evidence without raw logs, secrets, or unrelated transcripts."
   handoff_requirements:
     - "Record changed files, commands run, proof result, skipped checks, blockers, risks, agent updates, and next action."
   done_definition: >

@@ -104,6 +104,22 @@ Before closeout, non-trivial tickets should run a read-only spec drift check and
 record `execution_result.spec_alignment`. Final verification must treat a
 blocking drift verdict as a ticket failure.
 
+## Steering And Context Budgets
+
+Steering files under `templates/steering/` are focused guidance packs. Load them
+deterministically:
+
+1. `always` steering, such as security boundaries.
+2. `fileMatch` steering for the paths in scope.
+3. `auto` steering discovered from repository structure or ownership signals.
+4. `manual` steering named by the ticket or manager.
+
+Conflicting steering must be reported as a decision or blocker. Do not silently
+merge incompatible guidance. Tickets should also carry `locked_decisions`,
+`unresolved_decisions`, `context_budget`, and `required_context` fields so
+planners resolve grey areas before a writer starts and workers receive compact
+verified context instead of raw transcripts.
+
 ## Roles
 
 `manager-orchestrator` keeps the whole chain in view, creates child tickets,

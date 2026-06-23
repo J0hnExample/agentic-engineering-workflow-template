@@ -64,3 +64,10 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-03-delta-spec-drift-verification.yaml`.
 - Delivery starts from `main` at `1662fc1705e4f5026bb45ceffa87368e6c16d12d`, matching `origin/main`.
 - v0.4 `delta-spec-lifecycle` and `spec-drift-verifier` map to this ticket. The feature branch docs were used only as read-only evidence and adapted to v0.5 SDD artifacts.
+
+## Ticket 04 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-04-steering-decisions-context-budget.yaml`.
+- Delivery starts from `main` at `40bd1d5ddadbfef973553fa03faa1e3662a4833d`, matching `origin/main`.
+- v0.4 `conditional-steering` and `decision-lock-context-budget` map to this ticket. Feature branch steering docs were used only as read-only evidence.

@@ -148,6 +148,11 @@ When a ticket changes durable behavior or workflow contracts, closeout must
 record spec alignment. Accepted delta specs must update durable current specs or
 record a blocking deferred update with owner and follow-up ticket.
 
+Tickets should also record decision locks, unresolved decisions, steering, and a
+context budget. Blocking unresolved decisions stop implementation. Context
+handoffs should contain compact verified facts, not raw transcripts or unrelated
+logs.
+
 The `test_plan` must list concrete checks that decide whether the ticket may be
 marked done. For web applications, use relevant repo-local checks such as:
 

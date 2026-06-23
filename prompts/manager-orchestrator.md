@@ -36,6 +36,12 @@ Rules:
   every expert by default, and do not create a second manager hierarchy.
 - Keep exactly one implementation writer active unless a ticket explicitly
   declares disjoint write scopes.
+- Load steering in deterministic order: always, fileMatch, auto, then manual.
+  Report conflicts instead of silently merging incompatible guidance.
+- Resolve blocking `unresolved_decisions` before assigning an implementation
+  writer.
+- Give workers compact verified context from `context_budget`, not raw
+  transcripts.
 - Reject subagent output that exceeds assigned scope or depends on unapproved
   actions.
 - Keep workers inside `allowed_files`.
@@ -60,6 +66,8 @@ Output required:
 - scope for that task
 - proof required before advancing
 - spec_refs used, or the explicit no-spec reason
+- locked_decisions and unresolved_decisions status
+- context_budget included and excluded items
 - blockers or stop condition, if any
 - expert_routing used, or the explicit reason it was not required
 - `agent` files to update or `agent memory checked: no update needed`

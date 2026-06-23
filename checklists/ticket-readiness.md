@@ -12,6 +12,12 @@ Use before product-code work starts.
 - [ ] Full-SDD spec references resolve and use stable IDs.
 - [ ] Blocking unknown/proposed requirements or design decisions are resolved
   before a worker starts.
+- [ ] `locked_decisions` and `unresolved_decisions` are explicit.
+- [ ] No `unresolved_decisions` item blocks implementation.
+- [ ] `context_budget.required_context` is compact and excludes raw transcripts,
+  secrets, and unrelated logs.
+- [ ] Required steering docs are named, and any steering conflict is recorded as
+  a blocker or resolved decision.
 - [ ] `in_scope` and `out_of_scope` are explicit.
 - [ ] `execution_intensity` is one of `standard_worker`, `expert_supported`,
   `bounded_expert_rounds`, or `research_only`.

@@ -36,6 +36,16 @@ context:
     design: "templates/specs/<feature>.design.md or null"
     tasks: "templates/specs/<feature>.tasks.md or null"
     not_required_reason: "Required when mode is no_spec."
+  decision_locks:
+    locked_decisions: []
+    unresolved_decisions: []
+  context_budget:
+    max_files: 20
+    max_summary_lines: 120
+    required_context:
+      - "current parent ticket"
+      - "active child ticket"
+      - "accepted child handoff"
 
 orchestration:
   execution_intensity: bounded_expert_rounds
@@ -46,6 +56,11 @@ orchestration:
     AGENTS.md rules, ticket scope, approval boundaries, forbidden actions, and
     verification requirements.
   max_iterations: 5
+  steering_policy: >
+    Load always-on steering first, then fileMatch steering for touched paths,
+    then auto steering discovered from repository structure or ownership
+    signals, then manual steering named by the ticket. Report conflicts instead
+    of silently merging incompatible guidance.
   parallelism_policy: >
     Read-only Codex reviewers may run in parallel only for independent
     questions. Implementation workers run serially unless child tickets declare

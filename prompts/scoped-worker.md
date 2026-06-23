@@ -16,9 +16,10 @@ Read first:
 1. `AGENTS.md`
 2. the assigned ticket
 3. linked requirements, design, and tasks specs when the ticket uses full SDD
-4. relevant `agent/*` files when durable state, decisions, known issues,
+4. required steering docs and accepted decision locks
+5. relevant `agent/*` files when durable state, decisions, known issues,
    follow-up work, important paths, services, or changelog notes are affected
-5. files inside your assigned scope
+6. files inside your assigned scope
 
 Your ownership:
 
@@ -46,6 +47,10 @@ Rules:
 - Add or update focused tests when the ticket requires it.
 - Stop before implementation if a referenced requirement, design decision, or
   task is missing, unknown, or proposed and blocks behavior.
+- Stop before implementation if `unresolved_decisions` contains a blocking
+  unknown/proposed decision.
+- Do not request or persist raw transcripts when the ticket provides compact
+  handoff/context-budget records.
 - Run the assigned proof commands when available.
 - Check whether your work requires updates to `agent/STATE.md`,
   `agent/DECISIONS.md`, `agent/KNOWN_ISSUES.md`, `agent/TODO.md`,
