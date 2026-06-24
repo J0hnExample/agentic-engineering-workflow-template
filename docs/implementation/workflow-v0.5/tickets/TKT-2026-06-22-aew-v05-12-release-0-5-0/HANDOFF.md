@@ -1,7 +1,9 @@
 # Ticket 12 Handoff
 
 Ticket: `TKT-2026-06-22-aew-v05-12-release-0-5-0`
-Status: release metadata and records implemented locally; release audit has no remaining content defects after repair, but final PASS is process-blocked on scoped delivery and `HEAD == origin/main` proof.
+Status: release metadata and records delivered to `origin/main` in
+`f42f359212b4ba3a364c684fddab019cfcf7cd85`; after fetch, local `HEAD` matched
+`origin/main` at that SHA.
 
 ## Durable Context
 

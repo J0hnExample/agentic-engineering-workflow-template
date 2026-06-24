@@ -43,11 +43,11 @@ Pre-existing untracked file preserved and not touched: `tickets/Agentic_Engineer
 
 ## Requirement Traceability
 
-The full release matrix is maintained in `docs/implementation/workflow-v0.5/REQUIREMENT_TRACEABILITY.md`. It maps every imported v0.4 child requirement and every v0.5 autonomy/Git requirement to implemented artifacts, proof, review verdict, and delivery SHA or pending Ticket 12 delivery.
+The full release matrix is maintained in `docs/implementation/workflow-v0.5/REQUIREMENT_TRACEABILITY.md`. It maps every imported v0.4 child requirement and every v0.5 autonomy/Git requirement to implemented artifacts, proof, review verdict, and delivery SHA.
 
 ## Commit Table
 
-The complete ticket table for orders 00-12 is maintained in `docs/implementation/workflow-v0.5/REQUIREMENT_TRACEABILITY.md`. Tickets 00-11 are delivered on `main` through `b494fa4d5f148cf59fa37a0684593770cbddfa0c`; Ticket 12 delivery is pending independent release-auditor PASS and scoped Git delivery.
+The complete ticket table for orders 00-12 is maintained in `docs/implementation/workflow-v0.5/REQUIREMENT_TRACEABILITY.md`. Tickets 00-12 are delivered on `main`; Ticket 12 delivered release `0.5.0` in commit `f42f359212b4ba3a364c684fddab019cfcf7cd85`.
 
 ## Proof
 
@@ -64,15 +64,14 @@ The complete ticket table for orders 00-12 is maintained in `docs/implementation
 | `rg -n "0\\.5\\.0|0\\.4\\.0|0\\.3\\.0" VERSION README.md CHANGELOG.md docs prompts templates checklists agent tickets/upgrades/v0.5` | Expected historical references plus current `0.5.0` release metadata. |
 | `git diff --check -- README.md CHANGELOG.md VERSION docs prompts templates checklists agent tools tests tickets/upgrades/v0.5 .codex` | Passed with no output. |
 | `find . -type d -name __pycache__ -print` | Passed with no output. |
-| `git status --short --branch --untracked-files=all` | Shows only Ticket 12 modified/untracked files plus the preserved untracked ZIP. |
+| `git status --short --branch --untracked-files=all` after Ticket 12 delivery | Shows `## main...origin/main` plus only the preserved untracked ZIP. |
+| `git rev-parse HEAD` after Ticket 12 delivery | `f42f359212b4ba3a364c684fddab019cfcf7cd85`. |
+| `git rev-parse origin/main` after Ticket 12 delivery | `f42f359212b4ba3a364c684fddab019cfcf7cd85`. |
 
 ## Skipped Checks
 
-- Git delivery commands (`git add`, `git commit`, `git push`, final upstream equality) are intentionally pending until independent release-auditor PASS.
 - No build/lint/type commands were found in repository manifests during prior planning; the repository is Python stdlib tooling and documentation oriented.
 
 ## Residual Risks
 
 - The immutable canonical package currently fails the strict autonomous package validator with `dependency graph order does not match ticket order`. This is recorded as a package/validator-shape limitation and was not repaired because package mutation is out of scope.
-- Ticket 12 release audit is pending independent release-auditor PASS.
-- Git delivery remains pending until that audit passes.

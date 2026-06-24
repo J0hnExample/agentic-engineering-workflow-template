@@ -1,12 +1,19 @@
 # Ticket 12 Git Delivery
 
-Status: pending scoped Ticket 12 delivery and `HEAD == origin/main` proof.
+Status: delivered to `origin/main`.
 
-No staging, commit, push, branch, stash, worktree, tag, GitHub release, deployment, or release publication operation has been performed by the Ticket 12 implementation subagent or context curator. The release auditor found no remaining content defects after repair, but final PASS is process-blocked until the scoped Ticket 12 commit, push to `origin/main`, and upstream equality proof are recorded here.
+Delivery commit: `f42f359212b4ba3a364c684fddab019cfcf7cd85`
+
+Commit message: `TKT-2026-06-22-aew-v05-12-release-0-5-0: release 0.5.0`
+
+Push result: `origin/main` advanced from `b494fa4` to `f42f359`.
+
+No force push, tag, branch, stash, worktree, GitHub release, deployment, or
+release publication operation was performed.
 
 ## Required Delivery Scope
 
-For delivery, stage only Ticket 12 scoped files:
+Delivered scoped files:
 
 - `VERSION`
 - `README.md`
@@ -23,3 +30,13 @@ For delivery, stage only Ticket 12 scoped files:
 - `tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-12-release-0-5-0.yaml`
 
 Exclude `tickets/Agentic_Engineering_Workflow_V0.5_Autonomous_Multiagent_Upgrade.zip` unless a future instruction explicitly widens scope.
+
+## Proof
+
+| Check | Result |
+| --- | --- |
+| `git diff --cached --name-only` before commit | Matched the scoped Ticket 12 path list. |
+| `git diff --cached --check` before commit | Passed. |
+| `git rev-parse HEAD` after fetch | `f42f359212b4ba3a364c684fddab019cfcf7cd85`. |
+| `git rev-parse origin/main` after fetch | `f42f359212b4ba3a364c684fddab019cfcf7cd85`. |
+| `git status --short --branch --untracked-files=all` | `## main...origin/main` plus only the preserved untracked ZIP. |

@@ -28,7 +28,7 @@ This matrix preserves the supplied v0.4 release intent as upgraded into the v0.5
 | Git delivery clean worktree | Ticket 09 | `docs/git_delivery.md`, `prompts/git-delivery-agent.md`, `templates/TEMPLATE.workflow-policy.yaml`, `templates/TEMPLATE.git-delivery-result.yaml`, `tools/workflow_git.py`, tests | Temp Git/bare-origin fixtures, explicit staging, dirty baseline, divergence and upstream equality tests | Review PASS after repair; delivered in `da88539c8757e71bfe6a004dce3f67ff998ee2f2` | Released in 0.5.0 |
 | Trusted hooks, validators, self-tests | Ticket 10 | `.codex/hooks.json`, `tools/codex_hooks/**`, `tools/validate_workflow.py`, tests, docs | Hook contract tests, continuation circuit breaker tests, aggregate validator, adversarial fixtures | Review PASS; delivered in `151c6eaac952a9e36348c4e55c06ab68205fb658` | Released in 0.5.0 |
 | Documentation and installation modernization | Ticket 11 | `README.md`, `docs/workflow.md`, install/package docs, prompts/templates, validator docs checks | Workflow validator, focused validator tests, stale public language checks | Review PASS; delivered in `b494fa4d5f148cf59fa37a0684593770cbddfa0c` | Released in 0.5.0 |
-| Release metadata and final proof | Ticket 12 | `VERSION`, `README.md`, `CHANGELOG.md`, release records, traceability, agent ledger | Workflow validators, active source lock evidence, run-state fixture validator, full unittest discovery, parse checks, version search, diff check, no-cache check | Pending independent release audit | Pending scoped Git delivery after audit PASS |
+| Release metadata and final proof | Ticket 12 | `VERSION`, `README.md`, `CHANGELOG.md`, release records, traceability, agent ledger | Workflow validators, active source lock evidence, run-state fixture validator, full unittest discovery, parse checks, version search, diff check, no-cache check | PASS | Delivered in `f42f359212b4ba3a364c684fddab019cfcf7cd85` |
 
 ## Canonical Ticket Release Table
 
@@ -46,7 +46,7 @@ This matrix preserves the supplied v0.4 release intent as upgraded into the v0.5
 | 09 | `TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree` | Git delivery clean worktree | PASS after repair | `da88539c8757e71bfe6a004dce3f67ff998ee2f2` |
 | 10 | `TKT-2026-06-22-aew-v05-10-hooks-validators-selftests` | Hooks, validators, self-tests | PASS | `151c6eaac952a9e36348c4e55c06ab68205fb658` |
 | 11 | `TKT-2026-06-22-aew-v05-11-docs-installation-modernization` | Docs and installation modernization | PASS | `b494fa4d5f148cf59fa37a0684593770cbddfa0c` |
-| 12 | `TKT-2026-06-22-aew-v05-12-release-0-5-0` | Release 0.5.0 | Pending independent release audit | Pending scoped Git delivery after audit PASS |
+| 12 | `TKT-2026-06-22-aew-v05-12-release-0-5-0` | Release 0.5.0 | PASS | `f42f359212b4ba3a364c684fddab019cfcf7cd85` |
 
 ## Release Boundary
 
