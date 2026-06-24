@@ -65,10 +65,9 @@ the setup.
 
 ## Public Release Status
 
-This repository is a pre-1.0 workflow template. Check `VERSION` and
-`CHANGELOG.md` in the checkout you are using for release metadata. Installation
-docs intentionally avoid claiming a new release before the release ticket owns
-that metadata.
+This repository is a pre-1.0 workflow template. The current checkout is release
+`0.5.0`; check `VERSION` and `CHANGELOG.md` in the checkout you are using for
+release metadata.
 
 The template is mature enough to describe repeatable Codex roles, scoped tickets,
 proof expectations, and closeout records. It is not a guarantee that a target

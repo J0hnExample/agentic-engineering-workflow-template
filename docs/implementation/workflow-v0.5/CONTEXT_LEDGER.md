@@ -200,3 +200,16 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - Proof passed after the hygiene repair: `PYTHONDONTWRITEBYTECODE=1 python tools/validate_workflow.py`, focused validator tests with 9 tests, full unittest discovery with 54 tests, and no `__pycache__` output.
 - Ticket 12 still owns `VERSION`, release changelog headings, and any `0.5.0` current-release claim.
 - Git delivery was intentionally not run for Ticket 11 in this implementation turn because the user prohibited staging, committing, pushing, branches, stashes, and worktrees.
+
+## Ticket 12 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-12-release-0-5-0`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-12-release-0-5-0.yaml`.
+- Repository ticket copy: `tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-12-release-0-5-0.yaml`.
+- Implementation starts from `main` at `b494fa4d5f148cf59fa37a0684593770cbddfa0c`, matching `origin/main`.
+- Release metadata now targets `0.5.0` in `VERSION`, README public release status, and root `CHANGELOG.md`.
+- `docs/implementation/workflow-v0.5/REQUIREMENT_TRACEABILITY.md` is the release matrix for imported v0.4 requirements, v0.5 autonomy/Git requirements, and canonical tickets 00-12.
+- The package root remained immutable. Package validation with the package-local active ticket file currently fails with `dependency graph order does not match ticket order`; this is recorded as a package/validator-shape limitation, not repaired by mutating package contents.
+- Release auditor found no remaining content defects after repair, but final PASS is process-blocked until scoped Ticket 12 delivery and `HEAD == origin/main` proof are recorded.
+- Git delivery for Ticket 12 is the next legal phase; delivery must remain scoped and must exclude the preserved ZIP unless separately authorized.
+- The pre-existing untracked ZIP `tickets/Agentic_Engineering_Workflow_V0.5_Autonomous_Multiagent_Upgrade.zip` remains untouched and excluded.

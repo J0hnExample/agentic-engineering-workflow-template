@@ -1,0 +1,90 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-12-release-0-5-0
+order: 12
+title: Release and prove Agentic Engineering Workflow Template 0.5.0
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-11-docs-installation-modernization
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-12-release-0-5-0/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Finalize version metadata only after all functionality and proof pass, then independently audit and deliver
+  the 0.5.0 release on main.
+source_requirements:
+- All canonical tickets
+- Supplied v0.4 release intent upgraded to 0.5.0
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-12-release-0-5-0.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-12-release-0-5-0/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - VERSION
+  - CHANGELOG.md
+  - agent/CHANGELOG.md
+  - README.md
+  - docs/**
+  - tickets/upgrades/v0.5/**
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Set VERSION and current README release references to 0.5.0.
+- Add changelog entry covering SDD artifacts, native subagents, autonomous packages, single-ticket mode, blocker
+  handling, hooks and Git delivery.
+- Complete requirement traceability with implementation files, tests and delivery commits.
+- Run every package/workflow validator and full repository-appropriate checks.
+- Spawn independent release auditor; create bounded repair tickets for any failure before retrying audit.
+- Commit and push final release ticket and prove local HEAD equals origin/main.
+acceptance_criteria:
+- Every canonical ticket is completed in order with review PASS and delivery SHA.
+- Every supplied v0.4 child requirement maps to implemented files and proof.
+- VERSION, README and changelog agree on 0.5.0.
+- No unresolved release blocker, stale current-version claim or uncommitted managed artifact remains.
+- Release auditor verdict is PASS and local/upstream SHAs match.
+required_tests:
+- Run package and workflow unit/adversarial tests.
+- Parse all JSON/TOML/YAML templates.
+- Run link/reference/version consistency checks.
+- Run repository lint/type/test/build commands that exist.
+- Run final Git baseline/equality audit.
+required_evidence:
+- Final release report.
+- Complete commit table.
+- Requirement traceability matrix.
+- Release-auditor PASS.
+- Final local/upstream SHA proof.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-12-release-0-5-0/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-12-release-0-5-0
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.
