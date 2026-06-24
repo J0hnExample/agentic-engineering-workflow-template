@@ -2,7 +2,9 @@
 
 Status: delivered to `origin/main`.
 
-Delivery commit: `f42f359212b4ba3a364c684fddab019cfcf7cd85`
+Release delivery commit: `f42f359212b4ba3a364c684fddab019cfcf7cd85`
+
+Final proof records: delivered by scoped follow-up commits to `origin/main`; verify the current final SHA with `git rev-parse HEAD` and `git rev-parse origin/main`.
 
 Commit message: `TKT-2026-06-22-aew-v05-12-release-0-5-0: release 0.5.0`
 
@@ -37,6 +39,6 @@ Exclude `tickets/Agentic_Engineering_Workflow_V0.5_Autonomous_Multiagent_Upgrade
 | --- | --- |
 | `git diff --cached --name-only` before commit | Matched the scoped Ticket 12 path list. |
 | `git diff --cached --check` before commit | Passed. |
-| `git rev-parse HEAD` after fetch | `f42f359212b4ba3a364c684fddab019cfcf7cd85`. |
-| `git rev-parse origin/main` after fetch | `f42f359212b4ba3a364c684fddab019cfcf7cd85`. |
+| `git rev-parse HEAD` after final fetch | Must equal `git rev-parse origin/main`. |
+| `git rev-parse origin/main` after final fetch | Must equal `git rev-parse HEAD`. |
 | `git status --short --branch --untracked-files=all` | `## main...origin/main` plus only the preserved untracked ZIP. |

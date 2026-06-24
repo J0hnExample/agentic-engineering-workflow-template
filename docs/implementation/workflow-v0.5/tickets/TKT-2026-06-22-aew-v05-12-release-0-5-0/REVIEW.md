@@ -18,7 +18,5 @@ PASS.
 
 ## Delivery Status
 
-Ticket 12 was delivered to `origin/main` in commit
-`f42f359212b4ba3a364c684fddab019cfcf7cd85`, and local `HEAD` matched
-`origin/main` at that SHA after fetch. The only remaining untracked path is the
+Ticket 12 release metadata was delivered to `origin/main` in commit `f42f359212b4ba3a364c684fddab019cfcf7cd85`; scoped proof-record commits followed, and the final Git gate is the latest `git rev-parse HEAD` equaling `git rev-parse origin/main` after fetch. The only remaining untracked path is the
 preserved package ZIP.

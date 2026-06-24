@@ -13,9 +13,7 @@ Updated: 2026-06-24
 
 - Preserve unrelated generated package ZIPs unless explicitly authorized.
 - Do not mutate canonical autonomous package roots during release validation.
-- Ticket 12 delivered in commit
-  `3d96893038bc4640b2db8488c74aa4c0e99d9408`; after fetch, local `HEAD`
-  matched `origin/main` at that SHA.
+- Ticket 12 release metadata delivered in `f42f359212b4ba3a364c684fddab019cfcf7cd85`; final proof records were delivered by follow-up commits, and the latest Git proof must show local `HEAD` equal to `origin/main`.
 
 ## Current Proof Baseline
 

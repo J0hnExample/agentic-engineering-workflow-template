@@ -47,7 +47,7 @@ The full release matrix is maintained in `docs/implementation/workflow-v0.5/REQU
 
 ## Commit Table
 
-The complete ticket table for orders 00-12 is maintained in `docs/implementation/workflow-v0.5/REQUIREMENT_TRACEABILITY.md`. Tickets 00-12 are delivered on `main`; Ticket 12 delivered release `0.5.0` in commit `f42f359212b4ba3a364c684fddab019cfcf7cd85`.
+The complete ticket table for orders 00-12 is maintained in `docs/implementation/workflow-v0.5/REQUIREMENT_TRACEABILITY.md`. Tickets 00-12 are delivered on `main`; Ticket 12 delivered release `0.5.0` in commit `f42f359212b4ba3a364c684fddab019cfcf7cd85`, followed by scoped proof-record commits.
 
 ## Proof
 
@@ -65,8 +65,8 @@ The complete ticket table for orders 00-12 is maintained in `docs/implementation
 | `git diff --check -- README.md CHANGELOG.md VERSION docs prompts templates checklists agent tools tests tickets/upgrades/v0.5 .codex` | Passed with no output. |
 | `find . -type d -name __pycache__ -print` | Passed with no output. |
 | `git status --short --branch --untracked-files=all` after Ticket 12 delivery | Shows `## main...origin/main` plus only the preserved untracked ZIP. |
-| `git rev-parse HEAD` after Ticket 12 delivery | `f42f359212b4ba3a364c684fddab019cfcf7cd85`. |
-| `git rev-parse origin/main` after Ticket 12 delivery | `f42f359212b4ba3a364c684fddab019cfcf7cd85`. |
+| `git rev-parse HEAD` after final fetch | Must equal `git rev-parse origin/main`. |
+| `git rev-parse origin/main` after final fetch | Must equal `git rev-parse HEAD`. |
 
 ## Skipped Checks
 

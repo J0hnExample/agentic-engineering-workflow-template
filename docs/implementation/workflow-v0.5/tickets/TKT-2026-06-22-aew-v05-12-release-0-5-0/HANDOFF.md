@@ -2,8 +2,7 @@
 
 Ticket: `TKT-2026-06-22-aew-v05-12-release-0-5-0`
 Status: release metadata and records delivered to `origin/main` in
-`f42f359212b4ba3a364c684fddab019cfcf7cd85`; after fetch, local `HEAD` matched
-`origin/main` at that SHA.
+`f42f359212b4ba3a364c684fddab019cfcf7cd85`; scoped proof-record commits followed, and final equality is proven by the latest `git rev-parse HEAD` equaling `git rev-parse origin/main` after fetch.
 
 ## Durable Context
 

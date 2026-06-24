@@ -210,6 +210,6 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - Release metadata now targets `0.5.0` in `VERSION`, README public release status, and root `CHANGELOG.md`.
 - `docs/implementation/workflow-v0.5/REQUIREMENT_TRACEABILITY.md` is the release matrix for imported v0.4 requirements, v0.5 autonomy/Git requirements, and canonical tickets 00-12.
 - The package root remained immutable. Package validation with the package-local active ticket file currently fails with `dependency graph order does not match ticket order`; this is recorded as a package/validator-shape limitation, not repaired by mutating package contents.
-- Ticket 12 delivery commit is `f42f359212b4ba3a364c684fddab019cfcf7cd85` on `main`.
-- After fetch, local `HEAD` matched `origin/main` at `f42f359212b4ba3a364c684fddab019cfcf7cd85`.
+- Ticket 12 release commit is `f42f359212b4ba3a364c684fddab019cfcf7cd85` on `main`, followed by scoped proof-record commits.
+- After each final delivery push, the manager verifies local `HEAD` equals `origin/main`; the exact current SHA is the Git command output, not a hardcoded tracked-file constant.
 - The pre-existing untracked ZIP `tickets/Agentic_Engineering_Workflow_V0.5_Autonomous_Multiagent_Upgrade.zip` remains untouched and excluded.

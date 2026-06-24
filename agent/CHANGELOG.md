@@ -22,6 +22,6 @@ release notes.
 
 ## 2026-06-24
 
-- `TKT-2026-06-22-aew-v05-10-hooks-validators-selftests`: added trusted Codex lifecycle hook config, dependency-free hook helpers, aggregate workflow validator, adversarial fixtures, and focused hook/validator tests; independent review remains pending.
+- `TKT-2026-06-22-aew-v05-10-hooks-validators-selftests`: added trusted Codex lifecycle hook config, dependency-free hook helpers, aggregate workflow validator, adversarial fixtures, and focused hook/validator tests; independent review passed by `019efa44-64a6-7273-b92e-20f8eeeb6d6b`.
 - `TKT-2026-06-22-aew-v05-11-docs-installation-modernization`: modernized README/workflow/package/install docs with model-neutral Codex wording, four-mode selection guidance, source-to-target install mapping, package source-lock clarifications, and validator coverage for stale public language, install mapping, documentation consistency, public references, and AGENTS template size; independent review passed by `019efa53-3dbc-7963-8d07-19323217a370`, followed only by a `REVIEW.md` verdict hygiene repair to `PASS`.
 - `TKT-2026-06-22-aew-v05-12-release-0-5-0`: set release metadata to `0.5.0`, completed the v0.4/v0.5 traceability matrix and ticket table, recorded the package validator shape limitation, and curated pre-delivery audit context after the release auditor found no remaining content defects.
