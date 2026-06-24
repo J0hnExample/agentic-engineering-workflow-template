@@ -1,0 +1,50 @@
+schema_version: 1
+workflow_policy:
+  delivery:
+    branch: main
+    remote: origin
+    upstream: origin/main
+    commit_and_push_per_ticket: true
+    explicit_staging_only: true
+    require_clean_baseline_relative_to_scope: true
+    require_head_equals_upstream_after_push: true
+  preapproved_operations:
+    - read repository status and Git metadata
+    - record baseline dirty paths with stable content identity
+    - stage explicit ticket paths with `git add -- <path...>`
+    - commit completed ticket scope with the ticket id prefix
+    - push `HEAD` to the configured branch
+    - verify local and upstream SHA equality
+  ask_again_when:
+    - policy file is absent
+    - policy contradicts the active ticket or user instruction
+    - upstream, branch, or remote is missing or unsafe
+    - delivery would stage, discard, rewrite, or overwrite unrelated work
+  authorized_workflow_artifacts:
+    - tickets/upgrades/*/TKT-*.yaml
+    - tickets/templates/*
+    - docs/implementation/workflow-*/CONTEXT_LEDGER.md
+    - docs/implementation/workflow-*/tickets/TKT-*/*
+    - agent/*.md
+  baseline_dirty_paths:
+    # Record each pre-existing unrelated dirty path once at ticket start.
+    # Suppress repeated warnings only while the path identity is unchanged and
+    # the path does not overlap the active ticket scope.
+    - path: ""
+      state: file
+      size: 0
+      sha256: ""
+      recorded_at_head: ""
+      reason: pre-existing unrelated work
+  prohibited_git_operations:
+    - git add -A
+    - git add .
+    - branch creation, deletion, or switching for delivery
+    - git worktree
+    - git stash
+    - git push --force
+    - git push -f
+    - git reset --hard
+    - git checkout used to discard unrelated work
+    - git restore used to discard unrelated work
+    - staging unrelated baseline paths

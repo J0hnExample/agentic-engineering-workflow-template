@@ -126,3 +126,26 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
   agent runs.
 - Residual non-blocking risk: the pre-existing untracked ZIP remains excluded
   from delivery unless separately approved.
+
+## Ticket 09 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree.yaml`.
+- Repository ticket copy: `tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree.yaml`.
+- Implementation starts from `main` at `248b2a2376dfc07ac90fdddf5f6f32d2932e8f7c`, matching `origin/main`.
+- Git delivery policy lives in `docs/git_delivery.md`,
+  `templates/TEMPLATE.workflow-policy.yaml`,
+  `templates/TEMPLATE.git-delivery-result.yaml`, and
+  `prompts/git-delivery-agent.md`.
+- Dependency-free Git delivery helper lives in `tools/workflow_git.py` with
+  focused tests in `tests/test_workflow_git.py`.
+- Independent review passed after one bounded repair round that removed only a
+  generated `tools/__pycache__` artifact; proof was rerun with
+  `PYTHONDONTWRITEBYTECODE=1`.
+- README feature review confirmed no additional README edit was needed because
+  deterministic Git delivery, recorded policy, helper, explicit staging,
+  commit/push/upstream proof, and baseline-relative dirty handling are already
+  named.
+- The pre-existing untracked ZIP
+  `tickets/Agentic_Engineering_Workflow_V0.5_Autonomous_Multiagent_Upgrade.zip`
+  remains excluded from Ticket 09 delivery.

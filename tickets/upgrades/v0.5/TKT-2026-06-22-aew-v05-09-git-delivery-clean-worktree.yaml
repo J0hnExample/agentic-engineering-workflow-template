@@ -1,0 +1,95 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree
+order: 9
+title: Add deterministic clean-worktree handling and automatic commit/push per ticket
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-08-review-repair-blocker-context
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Eliminate repeated dirty-ticket warnings and guarantee scoped, recoverable delivery after every single
+  or chained ticket.
+source_requirements:
+- User requirement for automatic commit/push after every ticket
+- User requirement to stop repeatedly reporting uncommitted ticket files
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - templates/TEMPLATE.workflow-policy.yaml
+  - templates/TEMPLATE.git-delivery-result.yaml
+  - docs/git_delivery.md
+  - prompts/git-delivery-agent.md
+  - tools/workflow_git.py
+  - tests/**
+  - templates/AGENTS.md.template
+  - prompts/initialize-repo.md
+  - docs/workflow.md
+  - README.md
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Add durable repo policy with target branch/remote, commit-and-push-per-ticket, explicit staging, baseline cleanliness
+  and preapproved operations.
+- Initialization asks once for delivery policy and records it; agents do not ask again per ticket.
+- Classify active ticket/plan/review/handoff/agent-memory paths as authorized workflow artifacts.
+- Record unrelated dirty paths once, preserve them byte-for-byte and suppress repeated warnings unless they change
+  or overlap scope.
+- Implement a dependency-free Git helper for preflight, scoped staging verification, commit, push and SHA equality
+  proof.
+- Forbid bulk staging, branches, stashes, force push and destructive reset.
+- Require every completed ticket to update its execution record so a non-empty scoped commit normally exists.
+acceptance_criteria:
+- Expected active ticket artifacts do not block or produce repeated warnings.
+- Unrelated pre-existing changes are neither staged nor modified.
+- A previous ticket cannot leak managed changes into the next ticket.
+- Successful finalize commits and pushes to a local bare-origin fixture and proves equality.
+- Divergence, missing upstream and changed baseline paths produce bounded blocker facts.
+required_tests:
+- Use temporary Git repositories and local bare remotes.
+- Test expected-dirty suppression.
+- Test explicit path staging excludes unrelated changes.
+- Test commit/push/equality and divergence rejection.
+- Test no prohibited Git commands are emitted.
+required_evidence:
+- Git fixture logs.
+- Commit/push SHAs.
+- Post-delivery status relative to baseline.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.

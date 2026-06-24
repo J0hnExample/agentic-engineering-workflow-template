@@ -33,6 +33,11 @@ note.
   `templates/TEMPLATE.blocker-decision.md`,
   `templates/TEMPLATE.context-ledger.md`
 - Review/repair checklist: `checklists/review-repair-context.md`
+- Git delivery policy docs: `docs/git_delivery.md`
+- Git delivery prompt: `prompts/git-delivery-agent.md`
+- Git delivery helper: `tools/workflow_git.py`
+- Git delivery templates: `templates/TEMPLATE.workflow-policy.yaml`,
+  `templates/TEMPLATE.git-delivery-result.yaml`
 
 ## Tests And Proof
 
@@ -49,6 +54,7 @@ note.
 - Autonomous run-state proof: `python -m unittest tests.test_run_state`
   and direct `python tools/validate_run_state.py tests/fixtures/run_state/<fixture>/RUN_STATE.json`
 - Review/repair/context proof: `python -m unittest tests.test_review_repair_context`
+- Git delivery proof: `PYTHONDONTWRITEBYTECODE=1 python -m unittest tests.test_workflow_git`
 - E2E/browser: `<command>`
 
 ## Artifacts

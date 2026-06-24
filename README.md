@@ -30,6 +30,7 @@ implementation, review, and final verification.
 | Drift control | Scope, proof gates, role boundaries, and documentation checkpoints keep work reviewable. |
 | Quick-flow path | Tiny low-risk tasks can use a quick ticket, but still require discovery, proof, review, context curation, and delivery gates. |
 | Single-ticket runner | One ticket can be run end to end with the same planner -> writer -> reviewer -> repair -> curator -> delivery state machine. |
+| Deterministic Git delivery | A recorded policy drives explicit staging, commit, push, dirty-path preservation, and upstream equality proof per ticket. |
 | Autonomous packages | Generic source-locked package builder and validator can produce serial ticket packages for arbitrary software requests. |
 | Native Codex profiles | Optional `.codex/agents/*.toml` profiles can define scoped planners, reviewers, implementers, and expert review lenses. |
 | Target-repo installed | This template stays the source; the workflow files are installed into another repo. |
@@ -113,6 +114,12 @@ tickets/templates/*, and docs/reusable_feature_implementation_paths.md. Ask for
 approval before writing files or running dependency installation. Do not invent
 unknown values; mark unknowns explicitly.
 
+Ask once for the Git delivery policy: branch, remote/upstream, whether completed
+tickets should be committed and pushed automatically, and whether explicit
+staging is required. Record it from the workflow policy template so future
+ticket agents do not ask again unless the policy is absent, contradictory, or
+unsafe.
+
 Before serious work starts, recommend 1-2 small calibration loops so the user can
 tune ticket size, scope rules, proof gates, stop conditions, review style, and
 memory behavior. Also identify that this template does not include
@@ -146,6 +153,8 @@ target. Source files in this template install into different paths in the target
 | [`templates/TEMPLATE.quick-ticket.yaml`](templates/TEMPLATE.quick-ticket.yaml) | `tickets/templates/TEMPLATE.quick-ticket.yaml` |
 | [`templates/TEMPLATE.orchestrator-ticket.yaml`](templates/TEMPLATE.orchestrator-ticket.yaml) | `tickets/templates/TEMPLATE.orchestrator-ticket.yaml` |
 | [`templates/TEMPLATE.execution-result.yaml`](templates/TEMPLATE.execution-result.yaml) | `tickets/templates/TEMPLATE.execution-result.yaml` |
+| [`templates/TEMPLATE.workflow-policy.yaml`](templates/TEMPLATE.workflow-policy.yaml) | workflow policy path chosen during initialization |
+| [`templates/TEMPLATE.git-delivery-result.yaml`](templates/TEMPLATE.git-delivery-result.yaml) | ticket delivery result path |
 | [`templates/TEMPLATE.reusable-feature-path.md`](templates/TEMPLATE.reusable-feature-path.md) | `docs/reusable_feature_implementation_paths.md` |
 
 Prompts and checklists can remain in the template or be copied into the target if
@@ -219,6 +228,11 @@ The runner follows the planner -> writer -> reviewer -> repair -> curator ->
 delivery state machine and cannot mark done before commit, push, and upstream
 equality proof when delivery is assigned.
 
+Git delivery is documented in [`docs/git_delivery.md`](docs/git_delivery.md).
+Use [`tools/workflow_git.py`](tools/workflow_git.py) for dependency-free
+preflight, explicit staging verification, commit, push, and `HEAD == upstream`
+proof.
+
 For a reusable autonomous package, start with
 [`prompts/create-autonomous-ticket-package.md`](prompts/create-autonomous-ticket-package.md)
 or [`prompts/generic-autonomous-software-request.md`](prompts/generic-autonomous-software-request.md),
@@ -243,6 +257,8 @@ The template is built around narrow scope and explicit proof:
   out-of-scope work, proof gates, regression gates, stop conditions, and done
   definitions.
 - Implementation workers edit only assigned scope and do not use bulk staging.
+- Git delivery uses a recorded branch/remote policy, explicit path staging, and
+  baseline-relative dirty-worktree handling.
 - Read-only Codex reviewers may analyze but do not edit files.
 - Closeout records changed files, commands run, proof, skipped checks, blockers,
   risks, and whether `agent/*.md` needed updates.
@@ -301,6 +317,10 @@ and let the manager split the outcome into child tickets.
   planning or review without file edits.
 - [`prompts/final-verifier.md`](prompts/final-verifier.md) checks completion
   before done.
+- [`prompts/git-delivery-agent.md`](prompts/git-delivery-agent.md) performs
+  scoped commit/push delivery and records upstream equality proof.
+- [`docs/git_delivery.md`](docs/git_delivery.md) defines the durable Git
+  delivery policy.
 - [`checklists/ticket-readiness.md`](checklists/ticket-readiness.md) checks a
   ticket before product-code work starts.
 - [`checklists/closeout.md`](checklists/closeout.md) checks a ticket before it is

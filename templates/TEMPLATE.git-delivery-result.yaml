@@ -1,0 +1,35 @@
+schema_version: 1
+git_delivery_result:
+  ticket_id: ""
+  status: not_started
+  policy_source: ""
+  baseline:
+    branch: main
+    head: ""
+    upstream: origin/main
+    upstream_sha: ""
+    baseline_dirty_paths:
+      - path: ""
+        identity: ""
+        excluded_from_delivery: true
+  scoped_delivery:
+    explicit_staged_paths:
+      - ""
+    excluded_pre_existing_paths:
+      - ""
+    commit_message: ""
+    commit_sha: ""
+    push_remote: origin
+    push_branch: main
+    upstream_sha_after_push: ""
+    head_equals_upstream: false
+  verification:
+    preflight_passed: false
+    no_unrelated_paths_staged: false
+    no_prohibited_commands_used: false
+    post_delivery_status: ""
+    managed_state_remaining: ""
+  blockers:
+    - ""
+  risks:
+    - ""

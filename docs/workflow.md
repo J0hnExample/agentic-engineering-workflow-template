@@ -14,6 +14,8 @@ memory closeout for a target repository.
 6. Close out with the installed target template
    `tickets/templates/TEMPLATE.execution-result.yaml`.
 7. Update `agent/*.md`, or record `agent memory checked: no update needed`.
+8. When delivery is assigned, run scoped Git delivery from the recorded policy
+   and prove local `HEAD` equals the configured upstream.
 
 Fresh-context execution is intentional. The ticket must carry enough context,
 scope, proof requirements, and stop conditions for a new Codex session to do the
@@ -211,6 +213,10 @@ output should become ticket context for the next worker.
 skipped checks, and memory closeout. It does not repair issues unless the
 manager creates or assigns a repair ticket.
 
+`git delivery agent` stages only explicit ticket paths and required workflow
+records, commits the completed ticket, pushes to the recorded branch/remote, and
+records SHA equality proof. It does not edit product behavior.
+
 All Codex roles, including subagents, inherit the installed `AGENTS.md`, active
 ticket scope, approval boundaries, forbidden actions, and verification
 requirements. A subagent may not push, deploy, release, publish, edit secrets,
@@ -250,3 +256,25 @@ agent memory checked: no update needed
 
 Do not invent unknowns. Use repository evidence, explicit user input, verified
 commands, or ticket results.
+
+## Git Delivery
+
+Repository initialization records the delivery policy once from
+`templates/TEMPLATE.workflow-policy.yaml`: branch, remote/upstream,
+commit-and-push-per-ticket, explicit staging, authorized workflow artifacts,
+baseline dirty-path handling, and prohibited operations. Agents do not ask again
+per ticket unless the policy is absent, contradictory, or unsafe.
+
+Use `docs/git_delivery.md`, `prompts/git-delivery-agent.md`, and
+`tools/workflow_git.py` for delivery. The helper is dependency-free and provides
+preflight, scoped staging verification, commit, push, and upstream equality
+proof.
+
+Expected active ticket artifacts do not block delivery. Unrelated pre-existing
+dirty paths are recorded once and preserved byte-for-byte; repeated warnings are
+suppressed only when those paths are unchanged and non-overlapping. Previous
+ticket managed dirt blocks the next ticket.
+
+Forbidden delivery operations include bulk staging, branch switching or
+creation, worktrees, stashes, force push, destructive reset, and checkout or
+restore used to discard unrelated work.

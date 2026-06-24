@@ -91,14 +91,26 @@ files.
 - Completed tickets in a chain must form a prefix. Do not plan the next ticket
   until the previous ticket records commit SHA, push proof, and upstream
   equality proof.
+- Delivery policy is recorded once during repository initialization. Use that
+  policy for each ticket and do not ask again unless it is absent,
+  contradictory, or unsafe for the current branch, remote, upstream, or dirty
+  worktree state.
 - Before closing any ticket, explicitly check whether `agent/STATE.md`,
   `agent/DECISIONS.md`, `agent/KNOWN_ISSUES.md`, `agent/TODO.md`,
   `agent/PATHS.md`, `agent/SERVICES.md`, or `agent/CHANGELOG.md` need an
   update. If they do, update them inside the ticket scope or record why the
   update is deferred. If they do not, record `agent memory checked: no update
   needed` in the ticket result.
-- Stage only files in the ticket scope plus the ticket record. Do not use bulk
-  staging such as `git add -A`.
+- Stage only files in the ticket scope plus the required workflow records. Use
+  explicit path staging such as `git add -- <path...>`. Do not use bulk staging
+  such as `git add -A` or `git add .`.
+- Pre-existing unrelated dirty paths may be recorded once and preserved
+  byte-for-byte. Suppress repeated dirty warnings only when the recorded path is
+  unchanged and does not overlap the active ticket scope.
+- Active ticket records, active plan/review/handoff/delivery files, context
+  ledgers, and required `agent/*.md` updates are authorized workflow artifacts.
+  Previous-ticket managed dirt blocks the next ticket until delivered or
+  explicitly resolved.
 - Do not revert changes you did not make unless explicitly requested.
 
 ## Safety And Approval Boundaries
@@ -116,6 +128,9 @@ Forbidden unless the user explicitly requests or approves the exact action:
 - widening ticket scope beyond `allowed_files`
 - changing application behavior outside the active ticket objective
 - broad staging such as `git add -A`
+- broad staging such as `git add .`
+- branch creation or switching for delivery, worktrees, stashes, force push,
+  destructive reset, or checkout/restore to discard unrelated work
 - committing secrets, local private paths, generated caches, dependency folders,
   or build output
 - writing run logs, review notes, transient conversation notes, or closeout
@@ -343,6 +358,11 @@ completion block that states:
 - Commit only after the ticket is done or after explicit user approval for a
   checkpoint.
 - Use scoped staging with explicit paths.
+- When ticket delivery is assigned, commit and push every completed ticket on
+  the recorded branch/remote and prove local `HEAD` equals the configured
+  upstream after push.
+- Use `tools/workflow_git.py` when available for preflight, scoped staging
+  verification, commit, push, and SHA equality proof.
 - Commit message format:
 
 ```text

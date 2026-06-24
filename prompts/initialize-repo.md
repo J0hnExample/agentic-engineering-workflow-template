@@ -18,6 +18,9 @@ Start by asking the user for:
   implementation tasks
 - whether larger features should use full SDD specs, quick tickets without
   specs, or a mixed policy based on risk
+- the Git delivery policy: target branch, remote/upstream, whether completed
+  tickets should be committed and pushed automatically, and whether scoped
+  explicit staging is required
 
 Rules:
 
@@ -33,6 +36,10 @@ Rules:
   boundaries, forbidden actions, and verification requirements.
 - Do not push, deploy, release, publish, edit secrets, or widen scope unless the
   user explicitly approves the exact action.
+- Record the approved Git delivery policy once from
+  `templates/TEMPLATE.workflow-policy.yaml`. Future agents should not ask again
+  per ticket unless the policy is absent, contradictory, or unsafe for the
+  current repository state.
 - Propose external tools, network-dependent setup commands, and dependency
   operations before running them.
 
@@ -53,15 +60,18 @@ Initialization work:
    than placeholders.
 6. Check whether ticket templates are available under `tickets/templates/*`.
 7. Check whether reusable workflow docs exist under `docs/`.
-8. If files are missing, propose the minimal package-to-target copy plan before
+8. Check whether a Git delivery policy exists and whether it names the target
+   branch, remote/upstream, commit/push behavior, explicit staging, baseline
+   dirty-path handling, and prohibited operations.
+9. If files are missing, propose the minimal package-to-target copy plan before
    writing anything.
-9. Propose the minimal files to create or update.
-10. For non-trivial features, propose the minimal useful SDD package:
+10. Propose the minimal files to create or update.
+11. For non-trivial features, propose the minimal useful SDD package:
     requirements, design, and tasks specs. For tiny low-risk work, record why
     no full spec is needed.
-11. Propose dependency, lint, test, build, and dev-server commands from repo
+12. Propose dependency, lint, test, build, and dev-server commands from repo
    evidence.
-12. Ask for approval before writing files or running dependency installation.
+13. Ask for approval before writing files or running dependency installation.
 
 Closeout:
 
@@ -69,6 +79,8 @@ Closeout:
 - List commands run and proof collected.
 - Record skipped checks with reasons.
 - State whether Codex subagents are enabled for bounded tasks.
+- State the recorded Git delivery policy path, branch, remote/upstream, and
+  whether commit-and-push-per-ticket is enabled.
 - Record updated `agent/*.md` files, or write:
 
 ```text
