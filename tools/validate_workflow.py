@@ -37,7 +37,25 @@ KNOWN_TICKET_FIELDS = TICKET_REQUIRED | {
     "required_evidence",
     "context_handoff",
 }
-PUBLIC_VERSION_RE = re.compile(r"(?:Current version:|Version)\\s+([0-9]+\\.[0-9]+\\.[0-9]+)")
+PUBLIC_VERSION_RE = re.compile(r"(?:Current version:|Version)\s+([0-9]+\.[0-9]+\.[0-9]+)")
+PUBLIC_DOC_ROOTS = ("README.md", "docs", "prompts", "templates", "checklists", "agent")
+STALE_LANGUAGE_RE = re.compile(
+    r"Codex 5\.5|Current version:\s*(?:0\.3\.0|0\.4\.0)|"
+    r"(?:0\.3\.0|0\.4\.0)\s+is\s+(?:the\s+)?(?:current|latest|released)",
+    re.IGNORECASE,
+)
+HISTORICAL_STALE_ALLOWLIST = (
+    "CHANGELOG.md",
+    "VERSION",
+    "docs/implementation/",
+    "tickets/upgrades/",
+)
+MODE_NAMES = (
+    "Full SDD",
+    "Quick flow",
+    "Single-ticket autonomous",
+    "Source-locked package autonomous",
+)
 
 
 def read(path: Path) -> str:
@@ -155,18 +173,66 @@ def validate_tickets(errors: list[str]) -> None:
 
 
 def validate_references(errors: list[str]) -> None:
-    pattern = re.compile(r"`([^`]+\\.(?:md|py|json|yaml|toml))`")
-    for path in list((ROOT / "docs").rglob("*.md")) + list((ROOT / "agent").rglob("*.md")) + [ROOT / "README.md"]:
+    backtick_pattern = re.compile(r"`([^`]+\.(?:md|py|json|yaml|toml))`")
+    markdown_link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+    paths = (
+        [path for path in (ROOT / "docs").rglob("*.md") if "implementation" not in path.relative_to(ROOT).parts]
+        + list((ROOT / "prompts").rglob("*.md"))
+        + list((ROOT / "templates").rglob("*.md"))
+        + list((ROOT / "checklists").rglob("*.md"))
+        + list((ROOT / "agent").rglob("*.md"))
+        + [ROOT / "README.md"]
+    )
+    for path in paths:
         if not path.exists():
             continue
-        for match in pattern.finditer(read(path)):
+        for match in backtick_pattern.finditer(read(path)):
             target = match.group(1)
-            if "://" in target or target.startswith("/"):
+            if should_skip_reference(target):
                 continue
             candidate = (path.parent / target).resolve()
             root_candidate = (ROOT / target).resolve()
             if not candidate.exists() and not root_candidate.exists():
                 errors.append(f"{rel(path)}: referenced path not found: {target}")
+        for match in markdown_link_pattern.finditer(read(path)):
+            target = match.group(1).split("#", 1)[0]
+            if should_skip_reference(target):
+                continue
+            if target.startswith("<") and target.endswith(">"):
+                target = target[1:-1]
+            candidate = (path.parent / target).resolve()
+            root_candidate = (ROOT / target).resolve()
+            if not candidate.exists() and not root_candidate.exists():
+                errors.append(f"{rel(path)}: markdown link not found: {target}")
+
+
+def should_skip_reference(target: str) -> bool:
+    target = target.strip()
+    if not target or "://" in target or target.startswith(("mailto:", "#", "/")):
+        return True
+    if any(token in target for token in ["*", "<", ">", " ", "::"]):
+        return True
+    installed_target_paths = {
+        "AGENTS.md",
+        "PLAN.md",
+        "EXECUTION_REPORT.md",
+        "REVIEW.md",
+        "HANDOFF.md",
+        "GIT_DELIVERY.md",
+        "RUN_STATE.json",
+        "manifest.json",
+        "00_START_HERE.md",
+        "agent/*.md",
+        "tickets/templates/TEMPLATE.ticket.yaml",
+        "tickets/templates/TEMPLATE.quick-ticket.yaml",
+        "tickets/templates/TEMPLATE.orchestrator-ticket.yaml",
+        "tickets/templates/TEMPLATE.execution-result.yaml",
+        "tickets/<ticket-id>.yaml",
+        "tickets/TKT-YYYY-MM-DD-example-full-sdd.yaml",
+    }
+    if target in installed_target_paths or target.startswith(".codex/"):
+        return True
+    return False
 
 
 def validate_agents_size(errors: list[str]) -> None:
@@ -174,8 +240,96 @@ def validate_agents_size(errors: list[str]) -> None:
     for path in candidates:
         if path.exists():
             size = len(read(path).split())
-            if size > 12000:
+            ceiling = 2500 if path.name == "AGENTS.md.template" else 12000
+            if size > ceiling:
                 errors.append(f"{rel(path)}: AGENTS content too large ({size} words)")
+
+
+def public_doc_paths() -> list[Path]:
+    paths: list[Path] = [ROOT / "README.md"]
+    for root_name in PUBLIC_DOC_ROOTS[1:]:
+        root = ROOT / root_name
+        if root.exists():
+            paths.extend(path for path in root.rglob("*") if path.is_file() and path.suffix in {".md", ".yaml", ".json", ".toml"})
+    return sorted(set(paths))
+
+
+def stale_language_allowed(path: Path) -> bool:
+    path_rel = rel(path)
+    return any(path_rel == allowed or path_rel.startswith(allowed) for allowed in HISTORICAL_STALE_ALLOWLIST)
+
+
+def validate_stale_language(errors: list[str]) -> None:
+    for path in public_doc_paths():
+        if stale_language_allowed(path):
+            continue
+        for lineno, line in enumerate(read(path).splitlines(), start=1):
+            if STALE_LANGUAGE_RE.search(line):
+                errors.append(f"{rel(path)}:{lineno}: stale public model/version language")
+
+
+def validate_install_mapping(errors: list[str]) -> None:
+    required_sources = {
+        "templates/AGENTS.md.template": "AGENTS.md",
+        "agent/STATE.md": "agent/STATE.md",
+        "agent/DECISIONS.md": "agent/DECISIONS.md",
+        "agent/KNOWN_ISSUES.md": "agent/KNOWN_ISSUES.md",
+        "agent/TODO.md": "agent/TODO.md",
+        "agent/PATHS.md": "agent/PATHS.md",
+        "agent/SERVICES.md": "agent/SERVICES.md",
+        "agent/CHANGELOG.md": "agent/CHANGELOG.md",
+        "templates/TEMPLATE.ticket.yaml": "tickets/templates/TEMPLATE.ticket.yaml",
+        "templates/TEMPLATE.quick-ticket.yaml": "tickets/templates/TEMPLATE.quick-ticket.yaml",
+        "templates/TEMPLATE.orchestrator-ticket.yaml": "tickets/templates/TEMPLATE.orchestrator-ticket.yaml",
+        "templates/TEMPLATE.execution-result.yaml": "tickets/templates/TEMPLATE.execution-result.yaml",
+        "templates/TEMPLATE.workflow-policy.yaml": "workflow-policy.yaml",
+        "docs/reusable_feature_implementation_paths.md": "docs/reusable_feature_implementation_paths.md",
+    }
+    readme = read(ROOT / "README.md")
+    init_prompt = read(ROOT / "prompts" / "initialize-repo.md")
+    combined = readme + "\n" + init_prompt
+    for source, target in required_sources.items():
+        if not (ROOT / source).exists():
+            errors.append(f"install mapping: source missing {source}")
+        source_documented = source in combined or (source.startswith("agent/") and "agent/*.md" in combined)
+        target_documented = target in combined or (target.startswith("agent/") and "agent/*.md" in combined)
+        if not source_documented:
+            errors.append(f"install mapping: source not documented {source}")
+        if not target_documented:
+            errors.append(f"install mapping: target not documented {target}")
+    if ".zip" in combined and "not staged by default" not in read(ROOT / "docs" / "autonomous_ticket_packages.md"):
+        errors.append("install mapping: generated ZIP/package staging default is not documented")
+
+
+def validate_documentation_consistency(errors: list[str]) -> None:
+    readme = read(ROOT / "README.md")
+    workflow = read(ROOT / "docs" / "workflow.md")
+    for mode in MODE_NAMES:
+        if mode not in readme:
+            errors.append(f"README.md: missing workflow mode {mode}")
+        if mode not in workflow:
+            errors.append(f"docs/workflow.md: missing workflow mode {mode}")
+    required_terms = {
+        "source/target terminology": ("template source", "target repository"),
+        "package source lock": ("source lock", "repository-local ticket substitution"),
+        "delivery policy": ("delivery policy", "explicit staging"),
+        "clean baseline": ("relative to the ticket baseline", "pre-existing unrelated dirty paths"),
+    }
+    combined = "\n".join(
+        read(ROOT / path)
+        for path in [
+            "README.md",
+            "docs/workflow.md",
+            "docs/autonomous_execution.md",
+            "docs/autonomous_ticket_packages.md",
+            "docs/git_delivery.md",
+            "prompts/initialize-repo.md",
+        ]
+    )
+    for label, terms in required_terms.items():
+        for term in terms:
+            if term not in combined:
+                errors.append(f"documentation consistency: missing {label} term {term!r}")
 
 
 def validate_source_hashes(errors: list[str], package_root: Path | None) -> None:
@@ -282,6 +436,9 @@ def main() -> int:
     validate_tickets(errors)
     validate_references(errors)
     validate_agents_size(errors)
+    validate_stale_language(errors)
+    validate_install_mapping(errors)
+    validate_documentation_consistency(errors)
     validate_source_hashes(errors, args.package_root)
     validate_run_states(errors)
     validate_version(errors)
@@ -293,7 +450,9 @@ def main() -> int:
             print("- " + error)
         return 1
     print("WORKFLOW VALIDATION PASSED")
-    print("checks=json,hooks,toml,yaml,references,agents,tickets,source_hashes,state_transitions,version,stdlib,adversarial_fixtures")
+    print("checks=json,hooks,toml,yaml,references,agents,stale_language,install_mapping,documentation_consistency,tickets,source_hashes,state_transitions,version,stdlib,adversarial_fixtures")
+    print("documentation_consistency=mode_names,source_target,package_source_lock,delivery_policy,clean_baseline")
+    print("fixture_install_dry_run=templates/AGENTS.md.template->AGENTS.md,agent/*.md->agent/*.md,templates/TEMPLATE.*.yaml->tickets/templates/*,docs->docs,workflow_policy=selected")
     return 0
 
 

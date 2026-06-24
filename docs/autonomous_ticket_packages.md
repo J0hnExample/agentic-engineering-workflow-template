@@ -6,6 +6,12 @@ definition, and ticket list into a package directory plus ZIP with manifests,
 hashes, policies, role instructions, ticket files, reports, runtime state, and
 validators.
 
+The package directory is the source of truth for packaged ticket files. The
+software repository being changed is the target repository. Copying a ticket
+into the target can create a local execution record, but active-ticket source
+lock validation must still compare against the package-local canonical ticket
+and reject repository-local substitution.
+
 ## Build A Package
 
 Create a JSON request with:
@@ -31,6 +37,8 @@ python tools/build_autonomous_package.py --request request.json --output-dir /tm
 
 The builder creates `/tmp/example-package` and `/tmp/example-package.zip` unless
 `--zip` supplies a different ZIP path. It uses only the Python standard library.
+Generated ZIPs and package output are build artifacts. Do not stage them by
+default unless the active delivery policy explicitly includes them.
 
 ## Validate A Package
 
@@ -53,6 +61,10 @@ The validator rejects relative package roots, missing manifests, missing
 declared files, undeclared files, hash mismatches, duplicate ticket IDs, short
 ticket IDs, missing or later dependencies, dependency graph order drift, active
 ticket paths outside the package root, and repository-local ticket substitution.
+
+Run active-ticket validation before every planner, writer, reviewer, repair,
+context curator, blocker resolver, and delivery role. A mismatch is a hard stop,
+not a warning to repair by editing the repository copy.
 
 ## Generic Execution Defaults
 

@@ -22,6 +22,12 @@ Start by asking the user for:
   tickets should be committed and pushed automatically, and whether scoped
   explicit staging is required
 
+Ask once for delivery and side-effect policy, then record it from
+`templates/TEMPLATE.workflow-policy.yaml`. Include dependency installation,
+external-service commands, commit/push behavior, explicit staging, generated
+artifact handling, and baseline dirty-path handling. Future ticket agents should
+reuse the recorded policy unless it is absent, contradictory, or unsafe.
+
 Rules:
 
 - Inspect repository evidence before writing `AGENTS.md`, `agent/*.md`,
@@ -42,36 +48,46 @@ Rules:
   current repository state.
 - Propose external tools, network-dependent setup commands, and dependency
   operations before running them.
+- Keep the workflow template source and target repository distinct. Never treat
+  a package source path as the target path for product changes.
 
 Initialization work:
 
 1. Confirm which directory is the workflow package source and which directory is
    the target repository.
-2. Confirm the target layout:
+2. Produce a source-to-target install map:
+   - `templates/AGENTS.md.template` -> `AGENTS.md`
+   - `agent/*.md` -> `agent/*.md`
+   - `templates/TEMPLATE.*.yaml` -> `tickets/templates/TEMPLATE.*.yaml`
+   - `templates/TEMPLATE.workflow-policy.yaml` -> the selected workflow policy
+     record path
+   - `docs/reusable_feature_implementation_paths.md` -> `docs/reusable_feature_implementation_paths.md`
+   - optional prompts/checklists/docs -> target paths only if they will be used
+3. Confirm the target layout:
    - `AGENTS.md`
    - `agent/*.md`
    - `tickets/templates/*`
    - `docs/reusable_feature_implementation_paths.md`
-3. Check whether the package files are already installed in the target
+4. Check whether the package files are already installed in the target
    repository before proposing writes.
-4. Check whether `templates/AGENTS.md.template` has been installed as
+5. Check whether `templates/AGENTS.md.template` has been installed as
    `AGENTS.md`.
-5. Check whether `agent/*.md` exists and contains repo-specific evidence rather
+6. Check whether `agent/*.md` exists and contains repo-specific evidence rather
    than placeholders.
-6. Check whether ticket templates are available under `tickets/templates/*`.
-7. Check whether reusable workflow docs exist under `docs/`.
-8. Check whether a Git delivery policy exists and whether it names the target
+7. Check whether ticket templates are available under `tickets/templates/*`.
+8. Check whether reusable workflow docs exist under `docs/`.
+9. Check whether a Git delivery policy exists and whether it names the target
    branch, remote/upstream, commit/push behavior, explicit staging, baseline
    dirty-path handling, and prohibited operations.
-9. If files are missing, propose the minimal package-to-target copy plan before
+10. If files are missing, propose the minimal package-to-target copy plan before
    writing anything.
-10. Propose the minimal files to create or update.
-11. For non-trivial features, propose the minimal useful SDD package:
+11. Propose the minimal files to create or update.
+12. For non-trivial features, propose the minimal useful SDD package:
     requirements, design, and tasks specs. For tiny low-risk work, record why
     no full spec is needed.
-12. Propose dependency, lint, test, build, and dev-server commands from repo
+13. Propose dependency, lint, test, build, and dev-server commands from repo
    evidence.
-13. Ask for approval before writing files or running dependency installation.
+14. Ask for approval before writing files or running dependency installation.
 
 Closeout:
 

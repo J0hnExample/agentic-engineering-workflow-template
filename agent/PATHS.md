@@ -65,6 +65,10 @@ note.
 - Full workflow validation: `PYTHONDONTWRITEBYTECODE=1 python tools/validate_workflow.py`
 - Hook and workflow validator proof: `PYTHONDONTWRITEBYTECODE=1 python -m unittest tests.test_codex_hooks tests.test_validate_workflow`
 - Aggregate workflow proof: `PYTHONDONTWRITEBYTECODE=1 python tools/validate_workflow.py`
+- Public install docs: `README.md`, `docs/workflow.md`,
+  `prompts/initialize-repo.md`
+- Public docs stale-language/install mapping proof:
+  `PYTHONDONTWRITEBYTECODE=1 python tools/validate_workflow.py`
 - E2E/browser: `<command>`
 
 ## Artifacts

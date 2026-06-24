@@ -37,6 +37,8 @@ class WorkflowValidatorTests(unittest.TestCase):
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
         self.assertIn("WORKFLOW VALIDATION PASSED", result.stdout)
         self.assertIn("hooks", result.stdout)
+        self.assertIn("documentation_consistency=mode_names", result.stdout)
+        self.assertIn("fixture_install_dry_run=templates/AGENTS.md.template->AGENTS.md", result.stdout)
 
     def test_hooks_validator_rejects_wrong_event_shape(self):
         errors: list[str] = []
@@ -80,6 +82,30 @@ class WorkflowValidatorTests(unittest.TestCase):
     def test_adversarial_fixture_inventory(self):
         errors: list[str] = []
         validator.validate_adversarial_fixtures(errors)
+        self.assertEqual([], errors)
+
+    def test_stale_language_checker_rejects_public_claims(self):
+        errors: list[str] = []
+        original_paths = validator.public_doc_paths
+        original_read = validator.read
+        try:
+            fake_path = ROOT / "README.md"
+            validator.public_doc_paths = lambda: [fake_path]
+            validator.read = lambda requested: "Current version: 0.3.0\nCodex 5.5 setup\n"
+            validator.validate_stale_language(errors)
+        finally:
+            validator.public_doc_paths = original_paths
+            validator.read = original_read
+        self.assertEqual(2, len(errors), errors)
+
+    def test_install_mapping_documents_source_to_target_paths(self):
+        errors: list[str] = []
+        validator.validate_install_mapping(errors)
+        self.assertEqual([], errors)
+
+    def test_documentation_consistency_reports_modes_and_policies(self):
+        errors: list[str] = []
+        validator.validate_documentation_consistency(errors)
         self.assertEqual([], errors)
 
 

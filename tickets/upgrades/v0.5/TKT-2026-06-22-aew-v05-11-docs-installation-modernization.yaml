@@ -1,0 +1,93 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-11-docs-installation-modernization
+order: 11
+title: Modernize installation, AGENTS guidance and public documentation for v0.5
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-10-hooks-validators-selftests
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-11-docs-installation-modernization/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Make the new SDD and autonomous modes understandable, model-neutral and reusable without bloating always-on
+  agent context.
+source_requirements:
+- v0.4 README terminology ticket
+- Official Codex best-practice guidance
+- All v0.5 workflow changes
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-11-docs-installation-modernization.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-11-docs-installation-modernization/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - README.md
+  - docs/**
+  - prompts/initialize-repo.md
+  - prompts/manager-orchestrator.md
+  - prompts/scoped-worker.md
+  - prompts/final-verifier.md
+  - templates/AGENTS.md.template
+  - templates/**
+  - checklists/**
+  - agent/**
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Replace stale hardcoded model-name claims with current product-neutral Codex wording except historical changelog
+  entries.
+- Document full SDD, quick flow, single-ticket autonomous and ticket-package autonomous paths with decision table.
+- Update installation to inspect target repo, install native profiles/templates, and record delivery/side-effect
+  policy once.
+- Explain expected workflow artifacts and clean-relative-to-baseline semantics.
+- Document blocker resolver limits, hook trust, source lock and resume.
+- Keep root AGENTS practical and concise; link to focused policy/docs.
+- Add the generic copy-paste prompt and a minimal one-line package invocation.
+acceptance_criteria:
+- A new user can select the correct mode without reading ticket internals.
+- README, workflow docs, templates and prompts use consistent terminology.
+- No current documentation claims version 0.4.0 or 0.3.0 as current.
+- All links and install source/target path mappings resolve.
+required_tests:
+- Run link/path checker.
+- Search current docs for stale model/version language.
+- Measure AGENTS template size.
+- Dry-run initialization mapping against a fixture repository.
+required_evidence:
+- Documentation consistency report.
+- Fixture install plan.
+- Independent usability/release-doc review.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-11-docs-installation-modernization/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-11-docs-installation-modernization
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.

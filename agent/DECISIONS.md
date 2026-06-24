@@ -30,3 +30,10 @@ Newest entries go at the bottom.
 - Decision: Hook configuration lives in `.codex/hooks.json` and must rely on normal Codex project trust review; bypassing hook trust is not part of normal workflow operation.
 - Consequence: Future changes to hook behavior must document trust-review impact and must not weaken source-lock, scope, review, approval, or delivery gates.
 - Source: `docs/autonomous_execution.md`
+
+## 2026-06-24 - Public Install Docs Are Model-Neutral Before Release
+
+- Context: `TKT-2026-06-22-aew-v05-11-docs-installation-modernization` modernizes public installation docs before the release metadata ticket.
+- Decision: Public setup docs use model-neutral `Codex` wording, avoid hardcoded current model labels, and do not claim `0.3.0`, `0.4.0`, or `0.5.0` as the current release from README prose.
+- Consequence: Ticket 12 must update release metadata explicitly and keep public docs, `VERSION`, and `CHANGELOG.md` consistent at release time.
+- Source: `README.md`, `docs/workflow.md`, `tools/validate_workflow.py`

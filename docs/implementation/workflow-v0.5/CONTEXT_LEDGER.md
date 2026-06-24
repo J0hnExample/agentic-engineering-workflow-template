@@ -182,3 +182,21 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - `tools/validate_workflow.py` is a dependency-free aggregate validator for hook JSON, TOML, known YAML fields, references, AGENTS size, ticket fields, optional source hashes, run-state transitions, version consistency, stdlib imports, and adversarial fixture inventory.
 - Stop continuation is allowed only with valid source lock, nonterminal state, an incomplete next phase, changed progress token, and remaining continuation budget.
 - The pre-existing untracked ZIP remains excluded from Ticket 10 implementation and delivery.
+
+## Ticket 11 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-11-docs-installation-modernization`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-11-docs-installation-modernization.yaml`.
+- Repository ticket copy: `tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-11-docs-installation-modernization.yaml`.
+- Public docs now use model-neutral Codex wording and avoid stale current-version claims for `0.3.0` or `0.4.0`.
+- README and `docs/workflow.md` document full SDD, quick flow, single-ticket autonomous, and source-locked package autonomous modes.
+- `prompts/initialize-repo.md` requires target-repository evidence first, source-to-target install mapping, and one recorded delivery/side-effect policy from `templates/TEMPLATE.workflow-policy.yaml`.
+- `docs/autonomous_ticket_packages.md` clarifies package-local source of truth, repository-ticket substitution rejection, active-ticket validation before role spawns, and generated package/ZIP output not staged by default.
+- `tools/validate_workflow.py` now checks stale public language, public references, install mapping, documentation consistency, and a 2500-word `templates/AGENTS.md.template` ceiling. Its pass output includes documentation consistency and fixture install dry-run summaries.
+- Independent review passed by reviewer
+  `019efa53-3dbc-7963-8d07-19323217a370`; the only follow-up was a hygiene
+  repair changing `REVIEW.md` from `pass_with_risk` to `PASS` after the review
+  had already confirmed no blocking residual risk.
+- Proof passed after the hygiene repair: `PYTHONDONTWRITEBYTECODE=1 python tools/validate_workflow.py`, focused validator tests with 9 tests, full unittest discovery with 54 tests, and no `__pycache__` output.
+- Ticket 12 still owns `VERSION`, release changelog headings, and any `0.5.0` current-release claim.
+- Git delivery was intentionally not run for Ticket 11 in this implementation turn because the user prohibited staging, committing, pushing, branches, stashes, and worktrees.

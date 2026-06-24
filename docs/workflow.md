@@ -3,6 +3,22 @@
 This template supports Codex-first planning, execution, verification, and
 memory closeout for a target repository.
 
+## Workflow Modes
+
+Use this document as the canonical mode reference.
+
+| Mode | Best fit | Required shape |
+| --- | --- | --- |
+| Full SDD | Non-trivial requirements, design choices, data changes, API or public contracts, dependency changes, security/privacy/auth, visual ambiguity, migrations, or multi-module behavior. | Requirements, design, and tasks specs feed a scoped ticket, plan, implementation, proof, review, handoff, context curation, and delivery record when assigned. |
+| Quick flow | Tiny low-risk work with known files, no broad scope, and meaningful local proof. | A quick ticket records why no full spec is needed and still completes discovery, proof, independent review, memory check, and delivery gates when assigned. |
+| Single-ticket autonomous | One canonical ticket should be run end to end without a parent chain. | Source lock, repository discovery, plan, repository ticket record, one writer, proof, review/repair, context curation, and delivery proof when assigned. |
+| Source-locked package autonomous | A package owns a serial ticket list for a target repository. | Validate package source hashes and the active ticket before every role spawn; completed tickets must form a delivered prefix before the next ticket starts. |
+
+Expected durable artifacts are tickets, plans, execution reports, reviews,
+handoffs, context ledger entries, Git delivery records, and concise
+`agent/*.md` updates when a ticket changes durable state. Live controller state
+belongs outside the worktree.
+
 ## Basic Workflow
 
 1. Plan one bounded step from current repository evidence.
@@ -166,9 +182,10 @@ Use:
 
 Ticket `spec_refs` must either point to requirements, design, and tasks specs or
 record a concrete `no_spec` reason. Tiny low-risk documentation or mechanical
-changes can skip full specs when there is no behavior, API, data, dependency,
-security, or UI contract change. Workers must stop when a blocking requirement
-or design decision remains `unknown` or `proposed`.
+changes can skip full specs only when there is no behavior, API, data,
+dependency, security, release, deployment, visual, or UI contract change.
+Workers must stop when a blocking requirement or design decision remains
+`unknown` or `proposed`.
 
 Delta specs describe changes to durable specs:
 

@@ -1,13 +1,11 @@
 # Agentic Engineering Workflow Template
 
-Current version: 0.3.0
-
-> **Codex 5.5-led setup:** do not install this workflow by hand first.
-> Use Codex 5.5 as the setup and orchestration agent, let it inspect the target
+> **Codex-led setup:** do not install this workflow by hand first.
+> Use Codex as the setup and orchestration agent, let it inspect the target
 > repository, and let it implement the workflow layer with a scoped setup plan.
 
 `Agentic Engineering Workflow Template` turns an existing or new repository into
-a governed agentic engineering workspace. It gives Codex 5.5 an automatic
+a governed agentic engineering workspace. It gives Codex an automatic
 ticket, documentation, proof, and memory workflow so agent work stays scoped,
 traceable, and reviewable.
 
@@ -25,7 +23,7 @@ implementation, review, and final verification.
 
 | Signal | Meaning |
 | --- | --- |
-| Codex 5.5 first | Use Codex 5.5 to understand, initialize, calibrate, and orchestrate the workflow. |
+| Codex first | Use Codex to understand, initialize, calibrate, and orchestrate the workflow. |
 | Ticket-driven memory | Tickets, closeouts, and `agent/*.md` files preserve context between agent steps. |
 | Drift control | Scope, proof gates, role boundaries, and documentation checkpoints keep work reviewable. |
 | Quick-flow path | Tiny low-risk tasks can use a quick ticket, but still require discovery, proof, review, context curation, and delivery gates. |
@@ -41,16 +39,19 @@ implementation, review, and final verification.
 
 ## Start Here
 
-Choose the path that matches your repository, then ask Codex 5.5 to take over
+Choose the path that matches your repository, then ask Codex to take over
 the setup.
 
 | If you are starting... | Do this |
 | --- | --- |
-| A new repository | Use this repository as a template, open the new repository in Codex 5.5, and ask Codex how the workflow works before changing product code. |
-| An existing repository | Download this repository as a zip or keep it as a local package folder, place it near the target repository, open Codex 5.5 in the target repository, and give Codex both paths. |
+| A new repository | Use this repository as a template, open the new repository in Codex, and ask Codex how the workflow works before changing product code. |
+| An existing repository | Download this repository as a zip or keep it as a local package folder, place it near the target repository, open Codex in the target repository, and give Codex both paths. |
+| One known small change | Create a quick ticket only when the files, proof, and risk are bounded. |
+| One complete ticket | Use the single-ticket autonomous runner after the source lock and plan are recorded. |
+| A source-locked package | Build or receive an autonomous package, validate it, then run tickets serially in the target repository. |
 
 > **Run calibration loops first:** before using this on important work, run 1-2
-> small test tickets. Let Codex 5.5 help tune ticket size, allowed files, proof
+> small test tickets. Let Codex help tune ticket size, allowed files, proof
 > gates, stop conditions, review style, and memory closeout rules to match how
 > you want agents to operate. As a best practice, remind Codex to document
 > decisions, ticket handoffs, extensions, skipped checks, and memory updates
@@ -64,11 +65,10 @@ the setup.
 
 ## Public Release Status
 
-Version 0.3.0 is an early public template release for Codex-managed repository
-workflows. It is meant to be copied, reviewed, and adapted inside a target
-repository before relying on it for day-to-day work.
-
-Maturity: early practical template / pre-1.0.
+This repository is a pre-1.0 workflow template. Check `VERSION` and
+`CHANGELOG.md` in the checkout you are using for release metadata. Installation
+docs intentionally avoid claiming a new release before the release ticket owns
+that metadata.
 
 The template is mature enough to describe repeatable Codex roles, scoped tickets,
 proof expectations, and closeout records. It is not a guarantee that a target
@@ -76,8 +76,8 @@ repository is ready to ship.
 
 ## Codex Quickstart
 
-1. Put this workflow template where Codex 5.5 can read it.
-2. Open Codex 5.5 in the target repository, not inside this template directory.
+1. Put this workflow template where Codex can read it.
+2. Open Codex in the target repository, not inside this template directory.
 3. Ask Codex to explain the workflow and initialize the target repository from
    this template.
 4. Give Codex the workflow template path and the target repository path.
@@ -94,7 +94,7 @@ them, and it should propose dependency installation before running it.
 ## Copy-Paste Codex Initialization Prompt
 
 ```text
-You are Codex 5.5 initializing this repository for Codex-managed software work.
+You are Codex initializing this repository for Codex-managed software work.
 
 Workflow template source:
 <path-to-workflow-template>
@@ -189,9 +189,25 @@ shape around its normal product code, tests, package files, docs, and scripts:
     └── reusable_feature_implementation_paths.md
 ```
 
+## Choose A Workflow Mode
+
+| Mode | Use when | Start with | Main artifacts |
+| --- | --- | --- | --- |
+| Full SDD | Requirements, design, data, API, security, UI, migration, or multi-module risk needs durable analysis. | `docs/workflow.md` and spec templates under `templates/specs/` | Requirements, design, tasks, ticket, plan, execution report, review, handoff. |
+| Quick flow | The change is tiny, low-risk, file-bounded, and has local proof. | `prompts/quick-dev.md` and `templates/TEMPLATE.quick-ticket.yaml` | Quick ticket, proof, review, execution result, memory check, delivery record when assigned. |
+| Single-ticket autonomous | One approved ticket should run end to end with planning, writing, review, repair, curation, and delivery gates. | `prompts/run-single-ticket-autonomously.md` | Source-lock proof, plan, repository ticket, execution report, review, handoff, delivery proof when assigned. |
+| Source-locked package autonomous | A package contains a serial ticket plan for a target repository. | `docs/autonomous_ticket_packages.md` and package `00_START_HERE.md` | Package manifest, source hashes, run state, per-ticket plans/reports/reviews/handoffs/delivery records. |
+
+Package build and validation are one command pair:
+
+```text
+python tools/build_autonomous_package.py --request request.json --output-dir /tmp/example-package
+python tools/validate_autonomous_package.py /tmp/example-package
+```
+
 ## How The Workflow Runs
 
-- `manager-orchestrator`: a Codex 5.5 session that keeps the ticket chain in
+- `manager-orchestrator`: a Codex session that keeps the ticket chain in
   view, creates child tickets, assigns scoped work, reviews proof, and decides
   whether to advance, retry, checkpoint, or stop.
 - `scoped worker`: a Codex worker that implements one bounded ticket inside
@@ -275,7 +291,7 @@ rules only after reviewing the target repository's real context.
 
 ## Example Flow
 
-1. Codex 5.5 initializes the target repository from this template.
+1. Codex initializes the target repository from this template.
 2. The manager creates a small calibration ticket from
    [`templates/TEMPLATE.ticket.yaml`](templates/TEMPLATE.ticket.yaml).
 3. The ticket names the goal, allowed files, forbidden files, proof gates, and
