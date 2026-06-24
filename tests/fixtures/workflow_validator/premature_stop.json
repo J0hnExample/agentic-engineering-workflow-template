@@ -1,0 +1,10 @@
+{
+  "status": "active",
+  "active_ticket_id": "TKT-10",
+  "active_phase": "implementation_spawned",
+  "continuation": {
+    "budget_total": 3,
+    "budget_used": 1,
+    "last_continuation_token": "same-token"
+  }
+}

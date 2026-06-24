@@ -31,6 +31,8 @@ implementation, review, and final verification.
 | Quick-flow path | Tiny low-risk tasks can use a quick ticket, but still require discovery, proof, review, context curation, and delivery gates. |
 | Single-ticket runner | One ticket can be run end to end with the same planner -> writer -> reviewer -> repair -> curator -> delivery state machine. |
 | Deterministic Git delivery | A recorded policy drives explicit staging, commit, push, dirty-path preservation, and upstream equality proof per ticket. |
+| Trusted lifecycle hooks | Optional Codex `SessionStart`, `SubagentStart`, and `Stop` hooks inject compact active-run context and bounded continuation checks after normal project trust review. |
+| Workflow validator | `tools/validate_workflow.py` checks hooks, config, tickets, references, run-state fixtures, version consistency, and adversarial workflow fixtures without project dependencies. |
 | Autonomous packages | Generic source-locked package builder and validator can produce serial ticket packages for arbitrary software requests. |
 | Native Codex profiles | Optional `.codex/agents/*.toml` profiles can define scoped planners, reviewers, implementers, and expert review lenses. |
 | Target-repo installed | This template stays the source; the workflow files are installed into another repo. |

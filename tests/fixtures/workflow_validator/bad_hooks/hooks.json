@@ -1,0 +1,13 @@
+{
+  "Stop": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python tools/codex_hooks/stop.py"
+        }
+      ]
+    }
+  ]
+}

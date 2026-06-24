@@ -149,3 +149,36 @@ Ticket 01 should start from the canonical package ticket, validate the source lo
 - The pre-existing untracked ZIP
   `tickets/Agentic_Engineering_Workflow_V0.5_Autonomous_Multiagent_Upgrade.zip`
   remains excluded from Ticket 09 delivery.
+
+## Ticket 10 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-10-hooks-validators-selftests`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-10-hooks-validators-selftests.yaml`.
+- Repository ticket copy: `tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-10-hooks-validators-selftests.yaml`.
+- Implementation starts from `main` at `da88539c8757e71bfe6a004dce3f67ff998ee2f2`, matching `origin/main`.
+- Hook configuration lives in `.codex/hooks.json` using the official top-level
+  `hooks` object with `SessionStart`, `SubagentStart`, and `Stop` command hooks.
+- Hook helpers live in `tools/codex_hooks/`; aggregate validation lives in
+  `tools/validate_workflow.py`.
+- Hook changes require normal Codex trust review. The workflow does not
+  recommend bypassing hook trust for normal operation.
+- Stop continuation requires valid source lock, nonterminal state, an incomplete
+  next phase, remaining continuation budget, and a changed progress token.
+- Independent review passed by subagent
+  `019efa44-64a6-7273-b92e-20f8eeeb6d6b`; repair rounds after review: `0`.
+- Proof passed: workflow validator, package-root source hash validation,
+  focused hook/validator tests with 12 tests, full discovery with 51 tests,
+  scoped diff check, and no `__pycache__` output.
+- The pre-existing untracked ZIP remains excluded from Ticket 10 delivery.
+
+## Ticket 10 Context
+
+- Active ticket: `TKT-2026-06-22-aew-v05-10-hooks-validators-selftests`.
+- Canonical ticket file: `/tmp/aew-v0.5-package/agentic-engineering-workflow-v0.5-autonomous-upgrade/tickets/TKT-2026-06-22-aew-v05-10-hooks-validators-selftests.yaml`.
+- Repository ticket copy: `tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-10-hooks-validators-selftests.yaml`.
+- Implementation starts from `main` at `da88539c8757e71bfe6a004dce3f67ff998ee2f2`, matching `origin/main`.
+- Trusted hook configuration lives in `.codex/hooks.json` and uses `SessionStart`, `SubagentStart`, and `Stop` command hooks backed by `tools/codex_hooks/`.
+- Hook changes require the normal Codex project trust review. The workflow must not recommend hook-trust bypass for normal operation.
+- `tools/validate_workflow.py` is a dependency-free aggregate validator for hook JSON, TOML, known YAML fields, references, AGENTS size, ticket fields, optional source hashes, run-state transitions, version consistency, stdlib imports, and adversarial fixture inventory.
+- Stop continuation is allowed only with valid source lock, nonterminal state, an incomplete next phase, changed progress token, and remaining continuation budget.
+- The pre-existing untracked ZIP remains excluded from Ticket 10 implementation and delivery.

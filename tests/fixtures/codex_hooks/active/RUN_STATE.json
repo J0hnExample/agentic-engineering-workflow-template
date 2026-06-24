@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "status": "active",
+  "package_id": "pkg-v05",
+  "mode": "full_chain",
+  "active_ticket_id": "TKT-10",
+  "active_phase": "focused_tests_passed",
+  "source_lock": {
+    "status": "valid",
+    "active_ticket_id": "TKT-10"
+  },
+  "continuation": {
+    "budget_total": 3,
+    "budget_used": 1,
+    "last_continuation_token": "old"
+  },
+  "tickets": [
+    {
+      "id": "TKT-10",
+      "phase": "focused_tests_passed",
+      "completed_phases": ["pending", "source_lock_validated"],
+      "scope": {
+        "allowed_paths": ["tools/**"],
+        "forbidden_paths": [".env", "secrets/**"]
+      }
+    }
+  ]
+}

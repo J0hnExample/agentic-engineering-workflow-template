@@ -158,6 +158,35 @@ On resume:
    push/upstream proof instead of recommitting.
 9. Stop with a blocker when repository evidence conflicts with run state.
 
+## Trusted Codex Hooks
+
+Project hook configuration lives only in `.codex/hooks.json`. Hook changes must
+go through the normal one-time Codex project trust review before they run. Do
+not bypass hook trust for normal workflow operation.
+
+The configured lifecycle events are `SessionStart`, `SubagentStart`, and
+`Stop`, each using the event -> matcher group -> command hook shape. The
+handlers are dependency-free Python scripts under `tools/codex_hooks/`.
+
+- `SessionStart` emits a compact active-run summary when live controller state
+  exists.
+- `SubagentStart` emits active ticket identity, scope, acceptance gates, and
+  hard-stop reminders only when source lock is valid.
+- `Stop` requests continuation only for an active, nonblocked, source-locked
+  run with an incomplete next phase, changed progress token, and remaining
+  continuation budget.
+
+Hooks are no-ops when no active run exists. They redact secret-looking keys and
+paths such as `.env`, `secrets`, `token`, `password`, and `credential`. Hooks do
+not override ticket scope, source-lock policy, review requirements, approval
+boundaries, or delivery policy.
+
+Validate hook and workflow integrity with:
+
+```bash
+python tools/validate_workflow.py
+```
+
 ## Repository Records
 
 Each ticket should keep compact records:

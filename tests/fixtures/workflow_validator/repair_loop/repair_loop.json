@@ -1,0 +1,6 @@
+{
+  "ticket_id": "TKT-10",
+  "max_repair_rounds": 3,
+  "attempted_repair_rounds": 4,
+  "bypass_requested": true
+}

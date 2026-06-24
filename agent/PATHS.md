@@ -38,6 +38,12 @@ note.
 - Git delivery helper: `tools/workflow_git.py`
 - Git delivery templates: `templates/TEMPLATE.workflow-policy.yaml`,
   `templates/TEMPLATE.git-delivery-result.yaml`
+- Codex hook config: `.codex/hooks.json`
+- Codex hook helpers: `tools/codex_hooks/`
+- Workflow validator: `tools/validate_workflow.py`
+- Trusted Codex hook config: `.codex/hooks.json`
+- Trusted Codex hook helpers: `tools/codex_hooks/`
+- Aggregate workflow validator: `tools/validate_workflow.py`
 
 ## Tests And Proof
 
@@ -55,6 +61,10 @@ note.
   and direct `python tools/validate_run_state.py tests/fixtures/run_state/<fixture>/RUN_STATE.json`
 - Review/repair/context proof: `python -m unittest tests.test_review_repair_context`
 - Git delivery proof: `PYTHONDONTWRITEBYTECODE=1 python -m unittest tests.test_workflow_git`
+- Hook/validator proof: `PYTHONDONTWRITEBYTECODE=1 python -m unittest tests.test_codex_hooks tests.test_validate_workflow`
+- Full workflow validation: `PYTHONDONTWRITEBYTECODE=1 python tools/validate_workflow.py`
+- Hook and workflow validator proof: `PYTHONDONTWRITEBYTECODE=1 python -m unittest tests.test_codex_hooks tests.test_validate_workflow`
+- Aggregate workflow proof: `PYTHONDONTWRITEBYTECODE=1 python tools/validate_workflow.py`
 - E2E/browser: `<command>`
 
 ## Artifacts

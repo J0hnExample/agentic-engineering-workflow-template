@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "status": "active",
+  "active_ticket_id": "TKT-later",
+  "last_completed_ticket_id": "TKT-earlier",
+  "active_phase": "implementation_spawned",
+  "tickets": [
+    {
+      "id": "TKT-earlier",
+      "completed_phases": ["pending"],
+      "phase": "source_lock_validated"
+    },
+    {
+      "id": "TKT-later",
+      "completed_phases": [],
+      "phase": "pending"
+    }
+  ]
+}

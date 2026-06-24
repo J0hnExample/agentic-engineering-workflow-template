@@ -1,0 +1,22 @@
+schema_version: 1
+id: TKT-actual
+order: 10
+title: Wrong ticket fixture
+target_repository: example/repo
+target_branch: main
+objective: Prove filename/id mismatch detection.
+scope:
+  allowed_paths:
+  - tools/**
+implementation_requirements:
+- fail
+acceptance_criteria:
+- fail
+required_tests:
+- fail
+review:
+  fresh_independent_reviewer: true
+delivery:
+  auto_commit: false
+hard_stop_conditions:
+- fail

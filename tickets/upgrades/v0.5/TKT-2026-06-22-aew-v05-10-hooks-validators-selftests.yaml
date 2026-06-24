@@ -1,0 +1,87 @@
+schema_version: 1
+id: TKT-2026-06-22-aew-v05-10-hooks-validators-selftests
+order: 10
+title: Add trusted Codex hooks, workflow validators and adversarial self-tests
+target_repository: J0hnExample/agentic-engineering-workflow-template
+target_branch: main
+depends_on:
+- TKT-2026-06-22-aew-v05-09-git-delivery-clean-worktree
+mandatory_plan:
+  required: true
+  fresh_subagent: ticket_planner
+  plan_mode_preferred: true
+  plan_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-10-hooks-validators-selftests/PLAN.md
+  implementation_must_wait_for_acceptance: true
+objective: Use deterministic tooling to load active state, prevent premature stopping and validate workflow integrity
+  without bypassing Codex trust or sandbox boundaries.
+source_requirements:
+- Official Codex hook lifecycle guidance
+- Need for autonomous continuation with a circuit breaker
+scope:
+  allowed_paths:
+  - tickets/upgrades/v0.5/TKT-2026-06-22-aew-v05-10-hooks-validators-selftests.yaml
+  - docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-10-hooks-validators-selftests/**
+  - docs/implementation/workflow-v0.5/CONTEXT_LEDGER.md
+  - agent/**
+  - .codex/hooks.json
+  - tools/codex_hooks/**
+  - tools/validate_workflow.py
+  - tests/**
+  - docs/autonomous_execution.md
+  - README.md
+  forbidden_paths:
+  - .env
+  - .env.*
+  - '**/secrets/**'
+  - node_modules/**
+  - dist/**
+  - build/**
+  - coverage/**
+  - .git/**
+  no_unrelated_refactors: true
+implementation_requirements:
+- Add project hooks only in `.codex/hooks.json` and document the one-time trust review.
+- SessionStart injects a compact active-run summary when a controller state exists.
+- SubagentStart injects active ticket identity and scope summary without secrets.
+- Stop continues an active nonblocked run only when state has progressed and a bounded continuation budget remains.
+- Never use or recommend bypassing hook trust in normal operation.
+- Add validators for JSON/TOML/YAML structures, references, AGENTS size, ticket fields, source hashes, state transitions
+  and version consistency.
+- Add adversarial fixtures for wrong ticket, stale state, dirty leakage, repair-loop bypass and premature stop.
+acceptance_criteria:
+- Hooks are no-ops when no active run exists and allow stop when complete/blocked/user-decision.
+- Continuation circuit breaker prevents infinite loops.
+- All validators run without installing project dependencies.
+- Changed hooks require normal Codex trust review; documentation is explicit.
+required_tests:
+- Validate hooks.json.
+- Unit-test hook stdin/stdout contracts.
+- Test continuation budget/progress token.
+- Run full workflow validator and adversarial fixture suite.
+required_evidence:
+- Hook test output.
+- Trust/setup documentation.
+- Validator coverage report.
+review:
+  fresh_independent_reviewer: true
+  max_repair_rounds: 3
+  must_review_actual_diff: true
+  no_acceptance_weakening: true
+context_handoff:
+  curator_required: true
+  handoff_record: docs/implementation/workflow-v0.5/tickets/TKT-2026-06-22-aew-v05-10-hooks-validators-selftests/HANDOFF.md
+  update_agent_memory_only_for_durable_facts: true
+delivery:
+  auto_commit: true
+  auto_push: true
+  branch: main
+  remote: origin
+  explicit_staging_only: true
+  include_ticket_and_workflow_records: true
+  require_head_equals_upstream: true
+  commit_message_prefix: TKT-2026-06-22-aew-v05-10-hooks-validators-selftests
+hard_stop_conditions:
+- Canonical ticket source-lock validation fails.
+- Required work needs forbidden secret access or irreversible external side effects without policy authorization.
+- The change would discard, stage or rewrite unrelated pre-existing user work.
+- Scope must expand materially and the blocker resolver cannot prove the expansion is necessary and safe.
